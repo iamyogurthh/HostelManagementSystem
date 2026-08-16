@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\tht_logo.png" />
+    <None Remove="Image\DefaultImages\default_building.png" />
+    <None Remove="Image\DefaultImages\default_floor.png" />
+    <None Remove="Image\DefaultImages\default_room.png" />
+    <None Remove="Image\tht_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Image\DefaultImages\default_building.png" />
+    <Resource Include="Image\DefaultImages\default_floor.png" />
+    <Resource Include="Image\DefaultImages\default_room.png" />
+    <Resource Include="Image\tht_logo.png" />
+  </ItemGroup>
+
+</Project>
