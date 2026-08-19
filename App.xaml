@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="/Styles/ButtonStyles.xaml" />
                 <ResourceDictionary Source="/Styles/Themes/LightTheme.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyles.xaml" />
+                <ResourceDictionary Source="/Styles/InteractiveCardStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

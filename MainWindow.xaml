@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:HostelManagementSystem"
         xmlns:viewmodels="clr-namespace:HostelManagementSystem.ViewModels"
         xmlns:views="clr-namespace:HostelManagementSystem.Views"
+        xmlns:roomVm="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels"
+        xmlns:roomdetailVm ="clr-namespace:HostelManagementSystem.ViewModels.RoomDetailViewModels"
+        xmlns:roomViews="clr-namespace:HostelManagementSystem.Views.RoomViews"
+        xmlns:roomDetailViews="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
         mc:Ignorable="d"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
@@ -17,6 +21,9 @@
     </Window.DataContext>
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <!-- Sidebar related pages-->
         <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
             <views:DashboardView />
         </DataTemplate>
@@ -29,12 +36,16 @@
         <DataTemplate DataType="{x:Type viewmodels:SettingViewModel}">
             <views:SettingView />
         </DataTemplate>
+
+        <!-- Building related pages-->
         <DataTemplate DataType="{x:Type viewmodels:CreateBuildingFormViewModel}">
             <views:CreateBuildingFormView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:EditBuildingFormViewModel}">
             <views:EditBuildingFormView />
         </DataTemplate>
+
+        <!-- Floor related pages-->
         <DataTemplate DataType="{x:Type viewmodels:FloorViewModel}">
             <views:FloorView />
         </DataTemplate>
@@ -44,6 +55,22 @@
         <DataTemplate DataType="{x:Type viewmodels:EditFloorFormViewModel}">
             <views:EditFloorFormView />
         </DataTemplate>
+
+        <!-- Room related pages-->
+        <DataTemplate DataType="{x:Type viewmodels:RoomViewModel}">
+            <views:RoomView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type roomVm:CreateRoomFormViewModel}">
+            <roomViews:CreateRoomFormView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type roomVm:EditRoomFormViewModel}">
+            <roomViews:EditRoomFormView />
+        </DataTemplate>
+        
+        <!-- Room Detail related pages-->
+        <DataTemplate DataType="{x:Type roomdetailVm:RoomDetailViewModel }">
+            <roomDetailViews:RoomDetailView />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid Background="{DynamicResource WindowBackground}">
@@ -52,7 +79,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Sidebar Panel with Theme Integration -->
+        <!-- Column 0: Sidebar Panel (Uncovered) -->
         <Border Grid.Column="0"
                 Background="{DynamicResource CardBackground}" 
                 Panel.ZIndex="1">
@@ -108,9 +135,73 @@
             </Grid>
         </Border>
 
-        <!-- Main Content Display Frame -->
-        <Border Grid.Column="1" Background="{DynamicResource WindowBackground}">
-            <ContentControl Content="{Binding CurrentView}" Margin="20"/>
-        </Border>
+        <!-- Column 1: Container wrapping Main Content & Loading Overlay -->
+        <Grid Grid.Column="1">
+            <!-- Main Content View Frame -->
+            <Border Background="{DynamicResource WindowBackground}">
+                <ContentControl Content="{Binding CurrentView}" Margin="20"/>
+            </Border>
+
+            <!-- Loading Spinner Overlay (Applies ONLY to Column 1) -->
+            <Grid Background="#80000000"
+                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
+                  Panel.ZIndex="999">
+
+                <Border HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Background="{DynamicResource CardBackground}" 
+                        CornerRadius="12" 
+                        Padding="30,25">
+                    <Border.Effect>
+                        <DropShadowEffect Direction="0" BlurRadius="20" ShadowDepth="4" Opacity="0.2" Color="#000000"/>
+                    </Border.Effect>
+
+                    <StackPanel HorizontalAlignment="Center">
+                        <!-- Spinner Icon -->
+                        <Viewbox Width="50" Height="50" Margin="0,0,0,15">
+                            <Grid Width="48" Height="48">
+                                <Ellipse Stroke="#E0E0E0" StrokeThickness="4" />
+                                <Path Stroke="#007ACC" 
+                                      StrokeThickness="4" 
+                                      StrokeStartLineCap="Round" 
+                                      StrokeEndLineCap="Round"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.Data>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="24,2">
+                                                <ArcSegment Point="46,24" Size="22,22" SweepDirection="Clockwise" />
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </Path.Data>
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="SpinnerRotation" Angle="0" />
+                                    </Path.RenderTransform>
+                                    <Path.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="SpinnerRotation"
+                                                                     Storyboard.TargetProperty="Angle"
+                                                                     From="0" To="360" 
+                                                                     Duration="0:0:0.9" 
+                                                                     RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Path.Triggers>
+                                </Path>
+                            </Grid>
+                        </Viewbox>
+
+                        <!-- Busy Text Readout -->
+                        <TextBlock Text="{Binding BusyText}" 
+                                   FontSize="14" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource TextPrimary}" 
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

@@ -5,7 +5,9 @@ using HostelManagementSystem.Messages;
 
 namespace HostelManagementSystem.ViewModels
 {
-    public partial class MainViewModel : ObservableObject, IRecipient<NavigateMessage>
+    public partial class MainViewModel : ObservableObject,
+        IRecipient<NavigateMessage>,
+        IRecipient<BusyMessage>
     {
         // Tracks whichever page is currently displayed in the ContentFrame
         [ObservableProperty]
@@ -16,7 +18,11 @@ namespace HostelManagementSystem.ViewModels
         public ResidentViewModel Resident { get; }
         public SettingViewModel Setting { get; }
 
-        
+        [ObservableProperty]
+        private bool _isBusy;
+
+        [ObservableProperty]
+        private string _busyText = "ခဏစောင့်ပါ...";
 
         // Constructor 
         public MainViewModel()
@@ -26,7 +32,9 @@ namespace HostelManagementSystem.ViewModels
             Resident = new ResidentViewModel();
             Setting = new SettingViewModel();
 
-            WeakReferenceMessenger.Default.Register(this);
+            // Registering 'this' subscribes to ALL IRecipient<T> implementations automatically
+            WeakReferenceMessenger.Default.Register<NavigateMessage>(this);
+            WeakReferenceMessenger.Default.Register<BusyMessage>(this);
 
             // Set default initial view 
             CurrentView = Dashboard;
@@ -41,13 +49,14 @@ namespace HostelManagementSystem.ViewModels
 
         // CommunityToolkit generates "NavigateToBuildingCommand"
         [RelayCommand]
-        private void NavigateToBuilding()
+        private async Task NavigateToBuilding()
         {
             CurrentView = Building;
+            await Building.LoadBuildingCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]
-        private void NavigateToResident() 
+        private void NavigateToResident()
         {
             CurrentView = Resident;
         }
@@ -60,7 +69,14 @@ namespace HostelManagementSystem.ViewModels
 
         public void Receive(NavigateMessage message)
         {
+            IsBusy = false;
             CurrentView = message.TargetViewModel;
+        }
+
+        public void Receive(BusyMessage message)
+        {
+            IsBusy = message.IsBusy;
+            BusyText = message.Message;
         }
     }
 }

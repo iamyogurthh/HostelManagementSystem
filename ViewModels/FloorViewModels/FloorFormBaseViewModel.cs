@@ -1,26 +1,28 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using HostelManagementSystem.Messages;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Text;
+using System.Windows;
 using System.Linq;
 
 namespace HostelManagementSystem.ViewModels
 {
-    public abstract partial class BuildingFormBaseViewModel : ObservableValidator
+    public abstract partial class FloorFormBaseViewModel: ObservableValidator
     {
-        protected const string DefaultBuildingImg = "pack://application:,,,/Image/DefaultImages/default_building.png";
+        protected const string DefaultFloorImg = "pack://application:,,,/Image/DefaultImages/default_floor.png";
 
         [ObservableProperty]
-        [Required(ErrorMessage = "အဆောင်အမည် ထည့်သွင်းရန် လိုအပ်ပါသည်")]
-        [MinLength(3, ErrorMessage = "အဆောင်အမည်သည် အနည်းဆုံး ၃ လုံး ရှိရပါမည်")]
-        private string _buildingName = string.Empty;
+        [Required(ErrorMessage = "အထပ်အမည် ထည့်သွင်းရန် လိုအပ်ပါသည်")]
+        [MinLength(3, ErrorMessage = "အထပ်အမည်သည် အနည်းဆုံး ၃ လုံး ရှိရပါမည်")]
+        private string _floorName = string.Empty;
 
         [ObservableProperty]
-        private string? _buildingNameError;
+        private string? _floorNameError;
 
         // Stores raw selected path from file picker, or existing DB path
         [ObservableProperty]
@@ -28,7 +30,7 @@ namespace HostelManagementSystem.ViewModels
 
         // Source used ONLY by the UI <Image /> control for live previewing
         [ObservableProperty]
-        private string _previewImageSource = DefaultBuildingImg;
+        private string _previewImageSource = DefaultFloorImg;
 
         [ObservableProperty]
         private bool _isActive = true;
@@ -36,11 +38,11 @@ namespace HostelManagementSystem.ViewModels
         [ObservableProperty]
         private string? _errorMessage;
 
-        partial void OnBuildingNameChanged(string value)
+        partial void OnFloorNameChanged(string value)
         {
-            ValidateProperty(value, nameof(BuildingName));
+            ValidateProperty(value, nameof(FloorName));
 
-            BuildingNameError = GetErrors(nameof(BuildingName))
+            FloorNameError = GetErrors(nameof(FloorName))
                 .FirstOrDefault()?.ErrorMessage;
         }
 
@@ -50,10 +52,10 @@ namespace HostelManagementSystem.ViewModels
             var dialog = new OpenFileDialog
             {
                 Filter = "Image Files (*.jpg; *.jpeg; *.png)|*.jpg;*.jpeg;*.png",
-                Title = "Select Building Image"
+                Title = "Select Floor Image"
             };
 
-            if (dialog.ShowDialog() == true)
+            if(dialog.ShowDialog() == true)
             {
                 ImgPath = dialog.FileName;
                 PreviewImageSource = dialog.FileName;
@@ -63,45 +65,35 @@ namespace HostelManagementSystem.ViewModels
         [RelayCommand]
         protected virtual void ClearSelectedImage()
         {
-            ImgPath = DefaultBuildingImg;
-            PreviewImageSource = DefaultBuildingImg;
+            ImgPath = DefaultFloorImg;
+            PreviewImageSource = DefaultFloorImg;
         }
 
-        [RelayCommand]
-        protected void Back()
-        {
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(new BuildingViewModel()));
-        }
-
-        // Shared helper for copying images to LocalAppData safely
         protected string SaveImageToAppData(string sourcePath, string existingDbPath = "")
         {
-            // If path hasn't changed or is already set to existing AppData file, reuse it
-            if (string.IsNullOrWhiteSpace(sourcePath) || sourcePath == existingDbPath)
+            if(string.IsNullOrWhiteSpace(sourcePath) || sourcePath == existingDbPath )
             {
                 return existingDbPath;
             }
 
-            if (sourcePath == DefaultBuildingImg || !File.Exists(sourcePath))
+            if(sourcePath == DefaultFloorImg || !File.Exists(sourcePath))
             {
-                return DefaultBuildingImg;
+                return DefaultFloorImg;
             }
 
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string targetDirectory = Path.Combine(appDataFolder, "HostelManagementSystem", "BuildingImages");
+            string targetDirectory = Path.Combine(appDataFolder, "HostelManagementSystem", "FloorImages");
 
             Directory.CreateDirectory(targetDirectory);
 
             string extension = Path.GetExtension(sourcePath);
-            string uniqueFileName = $"building_{Guid.NewGuid():N}{extension}";
+            string uniqueFileName = $"floor_{Guid.NewGuid():N}{extension}";
             string fullDestinationPath = Path.Combine(targetDirectory, uniqueFileName);
-
             File.Copy(sourcePath, fullDestinationPath, overwrite: true);
-
+        
             return fullDestinationPath;
         }
 
-        // Abstract save command to be implemented by child ViewModels
-        public abstract void Save();
+        public abstract Task SaveAsync();
     }
 }

@@ -1,16 +1,14 @@
-﻿<UserControl x:Class="HostelManagementSystem.Views.BuildingView"
+﻿<UserControl x:Class="HostelManagementSystem.Views.FloorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HostelManagementSystem.Views"
              mc:Ignorable="d" 
-             Loaded="UserControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
-
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </UserControl.Resources>
-
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <!-- Header Title -->
@@ -24,64 +22,72 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="အဆောင်များ" 
-                           Grid.Column="0"
+                <Button Content="Back"
+                        Grid.Column="0"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Command="{Binding BackCommand}" />
+
+                <TextBlock Text="{Binding Building.Name, StringFormat='&quot;{0}&quot; ၏ အထပ်များ'}" 
+                           Grid.Column="1"
                            FontSize="18" 
                            FontWeight="SemiBold"
                            Foreground="#671EE1"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
 
-                <Button Content="+ အဆောင်အသစ်"
-                        Grid.Column="1"
+                <Button Content="+ အထပ်အသစ်"
+                        Grid.Column="2"
                         Style="{StaticResource PrimaryButtonStyle}"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
-                        Command="{Binding OpenCreateBuildingFormCommand}" />
+                        Command="{Binding OpenCreateFloorFormCommand}" />        
             </Grid>
-
-            <!-- Main Content Area -->
+            
+            <!-- Main Content-->
             <Grid>
                 <!-- 1. Empty State Indicator -->
-                <StackPanel Visibility="{Binding HasNoBuildings, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Margin="0,60,0,60">
-                                    <Border Width="80" 
-                            Height="80" 
-                            CornerRadius="40" 
-                            Background="#F3F4F6" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,0,0,16">
-                                        <TextBlock Text="🏢" 
-                                   FontSize="36" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center" />
-                                    </Border>
+                <StackPanel Visibility="{Binding HasNoFloors, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0,60,0,60">
+                    <Border Width="80" 
+                           Height="80" 
+                           CornerRadius="40" 
+                           Background="#F3F4F6" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,16">
+                        <TextBlock Text="🏢" 
+                                  FontSize="36" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center" />
+                    </Border>
 
-                                    <TextBlock Text="အဆောင်များ မရှိသေးပါ" 
-                               FontSize="18" 
-                               FontWeight="Bold" 
-                               Foreground="{DynamicResource TextPrimary}" 
-                               HorizontalAlignment="Center" 
-                               Margin="0,0,0,6" />
+                    <TextBlock Text="အထပ်များ မရှိသေးပါ" 
+                              FontSize="18" 
+                              FontWeight="Bold" 
+                              Foreground="{DynamicResource TextPrimary}" 
+                              HorizontalAlignment="Center" 
+                              Margin="0,0,0,6" />
 
-                                    <TextBlock Text="အဆောင်အသစ် ထည့်သွင်းရန် '+ အဆောင်အသစ်' ခလုတ်ကို နှိပ်ပါ။" 
-                               FontSize="13" 
-                               Foreground="{DynamicResource TextSecondary}" 
-                               HorizontalAlignment="Center" 
-                               Margin="0,0,0,20" />
+                    <TextBlock Text="အထပ်အသစ် ထည့်သွင်းရန် '+ အထပ်အသစ်' ခလုတ်ကို နှိပ်ပါ။" 
+                              FontSize="13" 
+                              Foreground="{DynamicResource TextSecondary}" 
+                              HorizontalAlignment="Center" 
+                              Margin="0,0,0,20" />
 
-                            <Button Content="+ အဆောင်အသစ် ထည့်ရန်"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            HorizontalAlignment="Center"
-                            Command="{Binding OpenCreateBuildingFormCommand}" />    
+                    <Button Content="+ အထပ်အသစ် ထည့်ရန်"
+                           Style="{StaticResource PrimaryButtonStyle}"
+                           HorizontalAlignment="Center"
+                           Command="{Binding OpenCreateFloorFormCommand}" />
                 </StackPanel>
-
-                <!-- 2. Buildings Grid (Shown when HasBuildings is True) -->
-                <ItemsControl ItemsSource="{Binding Buildings}"
-                              Visibility="{Binding HasBuildings, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}">
+                <!-- 2. Floor Grid  -->
+                <ItemsControl ItemsSource="{Binding Floors}"
+                              Visibility="{Binding HasFloors, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel />
@@ -92,13 +98,8 @@
                         <DataTemplate>
                             <!-- Card Container with Natural Height Sizing -->
                             <Border Width="210" 
-                                    Padding="8"
-                                    Margin="0,0,20,20" 
-                                    CornerRadius="10" 
-                                    Background="{DynamicResource PrimaryBackgroundBrush}" 
-                                    BorderBrush="{DynamicResource BorderBrush}" 
-                                    BorderThickness="1"
-                                    Cursor="Hand">
+                                    Style="{StaticResource InteractiveCardStyle}"
+                            > 
 
                                 <Border.Effect>
                                     <DropShadowEffect Direction="270" BlurRadius="12" ShadowDepth="3" Opacity="0.08" Color="#000000"/>
@@ -106,7 +107,7 @@
 
                                 <Border.InputBindings>
                                     <MouseBinding MouseAction="LeftClick" 
-                                                  Command="{Binding DataContext.SelectBuildingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                  Command="{Binding DataContext.SelectFloorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                   CommandParameter="{Binding}" />
                                 </Border.InputBindings>
 
@@ -114,17 +115,22 @@
                                     <!-- Fixed 16:9 Image Preview Area (Width: 194px, Height: 120px) -->
                                     <Grid Height="120">
                                         <Border CornerRadius="6" ClipToBounds="True">
-                                            <Image Source="{Binding Img}" 
-                                                   Stretch="UniformToFill"
+                                            <Image Stretch="UniformToFill"
                                                    HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
+                                                   VerticalAlignment="Center">          
+                                                <Image.Source>
+                                                    <BitmapImage UriSource="{Binding Img, TargetNullValue='pack://application:,,,/Image/DefaultImages/default_floor.png'}" 
+                                                                 DecodePixelWidth="300" 
+                                                                 CacheOption="OnLoad" />    
+                                                </Image.Source>
+                                            </Image>
                                         </Border>
 
                                         <!-- Floating Action Buttons -->
                                         <StackPanel Orientation="Horizontal" 
                                                     HorizontalAlignment="Right" 
                                                     VerticalAlignment="Top" 
-                                                    Margin="6">
+                                                    Margin="6"> 
 
                                             <!-- Edit Button -->
                                             <Button Content="✏" 
@@ -137,8 +143,8 @@
                                                     BorderThickness="0"
                                                     FontSize="11"
                                                     Cursor="Hand"
-                                                    Command="{Binding DataContext.OpenEditBuildingFormCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                    CommandParameter="{Binding}">
+                                                    Command="{Binding DataContext.OpenEditFloorFormCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}">   
                                                 <Button.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius" Value="13"/>
@@ -156,8 +162,8 @@
                                                     BorderThickness="0"
                                                     FontSize="11"
                                                     Cursor="Hand"
-                                                    Command="{Binding DataContext.DeleteBuildingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                    CommandParameter="{Binding}">
+                                                    Command="{Binding DataContext.DeleteFloorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}">   
                                                 <Button.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius" Value="13"/>
@@ -174,7 +180,7 @@
                                                FontWeight="SemiBold" 
                                                TextWrapping="Wrap"
                                                Foreground="{DynamicResource TextPrimary}"
-                                               HorizontalAlignment="Left" />
+                                               HorizontalAlignment="Left" />    
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

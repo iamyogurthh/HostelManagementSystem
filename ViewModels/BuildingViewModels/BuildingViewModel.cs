@@ -4,10 +4,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using HostelManagementSystem.Database;
 using HostelManagementSystem.Messages;
 using HostelManagementSystem.Models;
+using HostelManagementSystem.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace HostelManagementSystem.ViewModels
@@ -26,7 +28,6 @@ namespace HostelManagementSystem.ViewModels
         {
             // Subscribe once to handle additions/deletions at runtime
             Buildings.CollectionChanged += (s, e) => NotifyStateChanges();
-            LoadBuilding();
         }
 
         private void NotifyStateChanges()
@@ -36,30 +37,32 @@ namespace HostelManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        public void LoadBuilding()
+        public async Task LoadBuildingAsync()
         {
-            using var db = new AppDbContext();
-
-            var buildingList = db.Buildings
-                .Where(b => b.IsActive)
-                .ToList();
-
-            // Clear and repopulate to retain the existing ObservableCollection reference
-            Buildings.Clear();
-            foreach (var b in buildingList)
+            await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
-                Buildings.Add(b);
-            }
+                using var db = new AppDbContext();
 
-            NotifyStateChanges();
+                var buildingList = await db.Buildings
+                    .AsNoTracking()
+                    .Where(b => b.IsActive)
+                    .ToListAsync();
+
+                // Clear and repopulate to retain existing ObservableCollection reference
+                Buildings.Clear();
+                foreach (var b in buildingList)
+                {
+                    Buildings.Add(b);
+                }
+
+                NotifyStateChanges();
+            }, "အဆောင်အချက်အလက်များ ရယူနေပါသည်...");
         }
 
         [RelayCommand]
-        public void DeleteBuilding(Building building)
+        public async Task DeleteBuildingAsync(Building building)
         {
             if (building == null) return;
-
-            using var db = new AppDbContext();
 
             // TODO: Replace with resident check logic upon Resident model implementation
             bool hasOccupiedRooms = false;
@@ -74,6 +77,7 @@ namespace HostelManagementSystem.ViewModels
                 return;
             }
 
+            // 1. Confirm dialog BEFORE triggering loading overlay
             var result = MessageBox.Show(
                 $"\"{building.Name}\" အဆောင်ကို အမှန်တကယ် ဖျက်လိုပါသလား။",
                 "အဆောင်ဖျက်ရန် အတည်ပြုပါ",
@@ -82,54 +86,62 @@ namespace HostelManagementSystem.ViewModels
 
             if (result != MessageBoxResult.Yes) return;
 
-            try
+            // 2. Perform DB deletion inside LoadingHelper
+            await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
-                var targetBuilding = db.Buildings
-                    .Include(b => b.Floors)
-                    .ThenInclude(f => f.Rooms)
-                    .FirstOrDefault(b => b.Id == building.Id);
-
-                if (targetBuilding != null)
+                try
                 {
-                    targetBuilding.IsActive = false;
+                    using var db = new AppDbContext();
 
-                    foreach (var floor in targetBuilding.Floors)
+                    var targetBuilding = await db.Buildings
+                        .Include(b => b.Floors)
+                        .ThenInclude(f => f.Rooms)
+                        .FirstOrDefaultAsync(b => b.Id == building.Id);
+
+                    if (targetBuilding != null)
                     {
-                        floor.IsActive = false;
+                        // Cascade soft delete
+                        targetBuilding.IsActive = false;
 
-                        foreach (var room in floor.Rooms)
+                        foreach (var floor in targetBuilding.Floors)
                         {
-                            room.IsActive = false;
+                            floor.IsActive = false;
+
+                            foreach (var room in floor.Rooms)
+                            {
+                                room.IsActive = false;
+                            }
                         }
+
+                        await db.SaveChangesAsync();
+
+                        // UI automatically updates HasBuildings/HasNoBuildings via CollectionChanged
+                        Buildings.Remove(building);
                     }
-
-                    db.SaveChanges();
-
-                    // UI automatically updates HasBuildings/HasNoBuildings via CollectionChanged
-                    Buildings.Remove(building);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"ဖျက်ရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
-                    "အမှား",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"ဖျက်ရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                        "အမှား",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }, "အဆောင်ဖျက်နေပါသည်...");
         }
 
         [RelayCommand]
-        private void SelectBuilding(Building selectedBuilding)
+        private async Task SelectBuilding(Building selectedBuilding)
         {
-            if (selectedBuilding == null)
-            {
-                return;
-            } else
-            {
-                WeakReferenceMessenger.Default.Send(new NavigateMessage(new FloorViewModel(selectedBuilding)));
-            }
+            if (selectedBuilding == null) return;
 
+            var floorViewModel = new FloorViewModel(selectedBuilding);
+
+            // 1. Switch View
+            WeakReferenceMessenger.Default.Send(new NavigateMessage(floorViewModel));
+
+            // 2. Load Floors with Spinner
+            await floorViewModel.LoadFloorsByBuildingIdCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]
