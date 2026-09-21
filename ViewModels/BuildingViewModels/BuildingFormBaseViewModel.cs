@@ -72,35 +72,7 @@ namespace HostelManagementSystem.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new NavigateMessage(new BuildingViewModel()));
         }
-
-        // Shared helper for copying images to LocalAppData safely
-        protected string SaveImageToAppData(string sourcePath, string existingDbPath = "")
-        {
-            // If path hasn't changed or is already set to existing AppData file, reuse it
-            if (string.IsNullOrWhiteSpace(sourcePath) || sourcePath == existingDbPath)
-            {
-                return existingDbPath;
-            }
-
-            if (sourcePath == DefaultBuildingImg || !File.Exists(sourcePath))
-            {
-                return DefaultBuildingImg;
-            }
-
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string targetDirectory = Path.Combine(appDataFolder, "HostelManagementSystem", "BuildingImages");
-
-            Directory.CreateDirectory(targetDirectory);
-
-            string extension = Path.GetExtension(sourcePath);
-            string uniqueFileName = $"building_{Guid.NewGuid():N}{extension}";
-            string fullDestinationPath = Path.Combine(targetDirectory, uniqueFileName);
-
-            File.Copy(sourcePath, fullDestinationPath, overwrite: true);
-
-            return fullDestinationPath;
-        }
-
+       
         // Abstract save command to be implemented by child ViewModels
         public abstract Task SaveAsync();
     }

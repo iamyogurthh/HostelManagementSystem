@@ -13,6 +13,9 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
 {
     public partial class CreateRoomFormViewModel : RoomFormBaseViewModel
     {
+        private readonly ImageManager _imageManager = new ImageManager();
+        private const string RoomImagesFolder = "RoomImages";
+
         [ObservableProperty]
         private Building _building;
 
@@ -56,14 +59,21 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
             {
                 try
                 {
-                    string savedImagePath = SaveImageToAppData(ImgPath);
+                    // Save image using ImageManager
+                    string savedImagePath = _imageManager.SaveImage(
+                        ImgPath,
+                        existingDbPath: string.Empty,
+                        subDirectory: RoomImagesFolder,
+                        defaultImageName: DefaultRoomImg
+                    );
+
                     using var db = new AppDbContext();
 
                     var newRoom = new Room
                     {
                         Name = RoomName.Trim(),
                         Capacity = RoomCapacity,
-                        Img = string.IsNullOrEmpty(savedImagePath) ? "pack://application:,,,/Image/DefaultImages/default_room.png" : savedImagePath,
+                        Img = savedImagePath,
                         IsActive = IsActive,
                         FloorId = Floor.Id,
                     };

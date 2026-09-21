@@ -10,6 +10,9 @@ namespace HostelManagementSystem.ViewModels
 {
     public partial class CreateBuildingFormViewModel : BuildingFormBaseViewModel
     {
+        private readonly ImageManager _imageManager = new ImageManager();
+        private const string BuildingImagesFolder = "BuildingImages";
+
         [RelayCommand]
         public override async Task SaveAsync()
         {
@@ -31,14 +34,20 @@ namespace HostelManagementSystem.ViewModels
             {
                 try
                 {
-                    string savedImagePath = SaveImageToAppData(ImgPath);
+                    // Save image to AppData using ImageManager
+                    string savedImagePath = _imageManager.SaveImage(
+                        ImgPath,
+                        existingDbPath: string.Empty,
+                        subDirectory: BuildingImagesFolder,
+                        defaultImageName: DefaultBuildingImg
+                    );
 
                     using var db = new AppDbContext();
 
                     var newBuilding = new Building
                     {
                         Name = BuildingName.Trim(),
-                        Img = string.IsNullOrEmpty(savedImagePath) ? "pack://application:,,,/Image/DefaultImages/default_building.png" : savedImagePath,
+                        Img = savedImagePath,
                         IsActive = IsActive
                     };
 

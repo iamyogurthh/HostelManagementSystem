@@ -15,6 +15,8 @@ namespace HostelManagementSystem.ViewModels
     public partial class EditFloorFormViewModel : FloorFormBaseViewModel
     {
         private readonly int _floorId;
+        private readonly ImageManager _imageManager = new ImageManager();
+        private const string FloorImagesFolder = "FloorImages";
 
         [ObservableProperty]
         private Building _building;
@@ -75,13 +77,28 @@ namespace HostelManagementSystem.ViewModels
                         return;
                     }
 
-                    string savedImagePath = SaveImageToAppData(ImgPath, floorToUpdate.Img);
+                    string oldImagePath = floorToUpdate.Img;
+
+                    // Save new image via ImageManager
+                    string savedImagePath = _imageManager.SaveImage(
+                        ImgPath,
+                        oldImagePath,
+                        FloorImagesFolder,
+                        DefaultFloorImg
+                    );
 
                     floorToUpdate.Name = FloorName.Trim();
                     floorToUpdate.Img = savedImagePath;
                     floorToUpdate.IsActive = IsActive;
 
                     await db.SaveChangesAsync();
+
+                    // Delete the old custom image file after database commit succeeds
+                    if (savedImagePath != oldImagePath)
+                    {
+                        _imageManager.DeleteImage(oldImagePath, DefaultFloorImg);
+                    }
+
                     isUpdatedSuccessfully = true;
                 }
                 catch (Exception ex)

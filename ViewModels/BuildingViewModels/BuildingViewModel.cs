@@ -16,6 +16,9 @@ namespace HostelManagementSystem.ViewModels
 {
     public partial class BuildingViewModel : ObservableObject
     {
+        private readonly ImageManager _imageManager = new ImageManager();
+        private const string DefaultBuildingImg = "pack://application:,,,/Image/DefaultImages/default_building.png";
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasBuildings))]
         [NotifyPropertyChangedFor(nameof(HasNoBuildings))]
@@ -100,6 +103,8 @@ namespace HostelManagementSystem.ViewModels
 
                     if (targetBuilding != null)
                     {
+                        string imageToDelete = targetBuilding.Img;
+
                         // Cascade soft delete
                         targetBuilding.IsActive = false;
 
@@ -114,6 +119,9 @@ namespace HostelManagementSystem.ViewModels
                         }
 
                         await db.SaveChangesAsync();
+
+                        // 3. Delete the custom image file from AppData after DB update succeeds
+                        _imageManager.DeleteImage(imageToDelete, DefaultBuildingImg);
 
                         // UI automatically updates HasBuildings/HasNoBuildings via CollectionChanged
                         Buildings.Remove(building);

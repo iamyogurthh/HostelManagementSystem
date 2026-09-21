@@ -6,13 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Text;
-using System.Windows;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace HostelManagementSystem.ViewModels
 {
-    public abstract partial class FloorFormBaseViewModel: ObservableValidator
+    public abstract partial class FloorFormBaseViewModel : ObservableValidator
     {
         protected const string DefaultFloorImg = "pack://application:,,,/Image/DefaultImages/default_floor.png";
 
@@ -55,7 +56,7 @@ namespace HostelManagementSystem.ViewModels
                 Title = "Select Floor Image"
             };
 
-            if(dialog.ShowDialog() == true)
+            if (dialog.ShowDialog() == true)
             {
                 ImgPath = dialog.FileName;
                 PreviewImageSource = dialog.FileName;
@@ -67,31 +68,6 @@ namespace HostelManagementSystem.ViewModels
         {
             ImgPath = DefaultFloorImg;
             PreviewImageSource = DefaultFloorImg;
-        }
-
-        protected string SaveImageToAppData(string sourcePath, string existingDbPath = "")
-        {
-            if(string.IsNullOrWhiteSpace(sourcePath) || sourcePath == existingDbPath )
-            {
-                return existingDbPath;
-            }
-
-            if(sourcePath == DefaultFloorImg || !File.Exists(sourcePath))
-            {
-                return DefaultFloorImg;
-            }
-
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string targetDirectory = Path.Combine(appDataFolder, "HostelManagementSystem", "FloorImages");
-
-            Directory.CreateDirectory(targetDirectory);
-
-            string extension = Path.GetExtension(sourcePath);
-            string uniqueFileName = $"floor_{Guid.NewGuid():N}{extension}";
-            string fullDestinationPath = Path.Combine(targetDirectory, uniqueFileName);
-            File.Copy(sourcePath, fullDestinationPath, overwrite: true);
-        
-            return fullDestinationPath;
         }
 
         public abstract Task SaveAsync();

@@ -14,6 +14,9 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
 {
     public partial class EditRoomFormViewModel : RoomFormBaseViewModel
     {
+        private readonly ImageManager _imageManager = new ImageManager();
+        private const string RoomImagesFolder = "RoomImages";
+
         [ObservableProperty]
         private Building _building;
 
@@ -69,18 +72,34 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
             {
                 try
                 {
-                    string savedImagePath = SaveImageToAppData(ImgPath, Room.Img);
                     using var db = new AppDbContext();
 
                     var dbRoom = await db.Rooms.FirstOrDefaultAsync(r => r.Id == Room.Id);
                     if (dbRoom != null)
                     {
+                        string oldImagePath = dbRoom.Img;
+
+                        // Save image using ImageManager
+                        string savedImagePath = _imageManager.SaveImage(
+                            ImgPath,
+                            oldImagePath,
+                            RoomImagesFolder,
+                            DefaultRoomImg
+                        );
+
                         dbRoom.Name = RoomName.Trim();
                         dbRoom.Capacity = RoomCapacity;
-                        dbRoom.Img = string.IsNullOrEmpty(savedImagePath) ? DefaultRoomImg : savedImagePath;
+                        dbRoom.Img = savedImagePath;
                         dbRoom.IsActive = IsActive;
 
                         await db.SaveChangesAsync();
+
+                        // Clean up old image if a new image path was saved
+                        if (savedImagePath != oldImagePath)
+                        {
+                            _imageManager.DeleteImage(oldImagePath, DefaultRoomImg);
+                        }
+
                         isUpdatedSuccessfully = true;
                     }
                     else
