@@ -37,7 +37,6 @@ namespace HostelManagementSystem.ViewModels
             Building = building ?? throw new ArgumentNullException(nameof(building));
             Floor = floor ?? throw new ArgumentNullException(nameof(floor));
 
-            // Subscribe once to handle additions/deletions at runtime
             Rooms.CollectionChanged += (s, e) => NotifyStateChanges();
         }
 
@@ -54,12 +53,13 @@ namespace HostelManagementSystem.ViewModels
             {
                 using var db = new AppDbContext();
 
+                // Eagerly load Students to compute CurrentResidentsCount accurately
                 var roomList = await db.Rooms
                     .AsNoTracking()
+                    .Include(r => r.Students)
                     .Where(r => r.IsActive && r.FloorId == Floor.Id)
                     .ToListAsync();
 
-                // Clear and repopulate to retain existing ObservableCollection reference
                 Rooms.Clear();
                 foreach (var room in roomList)
                 {
@@ -75,10 +75,8 @@ namespace HostelManagementSystem.ViewModels
         {
             if (room == null) return;
 
-            // TODO: Replace with resident check logic upon Resident model implementation
-            bool hasOccupants = false;
-
-            if (hasOccupants)
+            // Check dynamic count using the loaded Students collection
+            if (room.CurrentResidentsCount > 0)
             {
                 MessageBox.Show(
                     "ဤအခန်းတွင် လူနေထိုင်လျက်ရှိနေသေးသဖြင့် ဖျက်၍မရပါ။",
@@ -88,7 +86,6 @@ namespace HostelManagementSystem.ViewModels
                 return;
             }
 
-            // 1. Ask confirmation FIRST (before spinner starts)
             var result = MessageBox.Show(
                 $"\"{room.Name}\" ကို အမှန်တကယ် ဖျက်လိုပါသလား။",
                 "အခန်းဖျက်ရန် အတည်ပြုပါ",
@@ -97,7 +94,6 @@ namespace HostelManagementSystem.ViewModels
 
             if (result != MessageBoxResult.Yes) return;
 
-            // 2. Wrap soft-delete in LoadingHelper
             await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
                 try
@@ -107,12 +103,12 @@ namespace HostelManagementSystem.ViewModels
 
                     if (targetRoom != null)
                     {
-                        // Soft delete
                         targetRoom.IsActive = false;
                         await db.SaveChangesAsync();
-
-                        // Automatically triggers HasRooms/HasNoRooms state update via CollectionChanged
                         Rooms.Remove(room);
+
+                        //Update the Dashbaord
+                        WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Room", room.Id, DatabaseOperation.Deleted));
                     }
                 }
                 catch (Exception ex)
@@ -127,14 +123,10 @@ namespace HostelManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        private async Task Back() // Navigate back to Floor Page and refresh list
+        private async Task Back()
         {
             var floorViewModel = new FloorViewModel(Building);
-
-            // 1. Switch View
             WeakReferenceMessenger.Default.Send(new NavigateMessage(floorViewModel));
-
-            // 2. Load Floors
             await floorViewModel.LoadFloorsByBuildingIdCommand.ExecuteAsync(null);
         }
 
@@ -154,14 +146,10 @@ namespace HostelManagementSystem.ViewModels
         [RelayCommand]
         private async Task SelectRoom(Room selectedRoom)
         {
-            if(selectedRoom == null) return;
+            if (selectedRoom == null) return;
 
             var roomDetailViewModel = new RoomDetailViewModel(Building, Floor, selectedRoom);
-
-            //Switch View to RoomDetailView
             WeakReferenceMessenger.Default.Send(new NavigateMessage(roomDetailViewModel));
-
-            //Load Room detail
         }
     }
 }

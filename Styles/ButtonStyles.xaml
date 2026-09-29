@@ -1,7 +1,9 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
 
-    <!-- Primary Accent Button (Filled Purple) -->
+    <!--  Primary Accent Button (Filled Purple)  -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource PrimaryAccent}" />
         <Setter Property="Foreground" Value="#FFFFFF" />
@@ -13,10 +15,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" 
-                            Background="{TemplateBinding Background}" 
-                            CornerRadius="6" 
-                            Padding="{TemplateBinding Padding}">
+                    <Border
+                        x:Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -37,7 +40,7 @@
         </Setter>
     </Style>
 
-    <!-- Secondary Outlined Button -->
+    <!--  Secondary Outlined Button  -->
     <Style x:Key="SecondaryButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
@@ -50,12 +53,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" 
-                            Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="6" 
-                            Padding="{TemplateBinding Padding}">
+                    <Border
+                        x:Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -70,6 +74,58 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!--  Base Action Button Style  -->
+    <Style
+        x:Key="DataGridActionButtonStyle"
+        BasedOn="{StaticResource {x:Type ui:Button}}"
+        TargetType="{x:Type ui:Button}">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Appearance" Value="Light" />
+    </Style>
+
+    <!--  1. Info/Detail Button (Purple Accent)  -->
+    <Style
+        x:Key="InfoActionButtonStyle"
+        BasedOn="{StaticResource DataGridActionButtonStyle}"
+        TargetType="{x:Type ui:Button}">
+        <Setter Property="BorderBrush" Value="Green" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Appearance" Value="Success" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  2. Edit Button (Amber Accent)  -->
+    <Style
+        x:Key="EditActionButtonStyle"
+        BasedOn="{StaticResource DataGridActionButtonStyle}"
+        TargetType="{x:Type ui:Button}">
+        <Setter Property="BorderBrush" Value="#D97706" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Appearance" Value="Caution" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  3. Delete Button (Red Accent)  -->
+    <Style
+        x:Key="DeleteActionButtonStyle"
+        BasedOn="{StaticResource DataGridActionButtonStyle}"
+        TargetType="{x:Type ui:Button}">
+        <Setter Property="BorderBrush" Value="#DC2626" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Appearance" Value="Danger" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

@@ -22,5 +22,7 @@ namespace HostelManagementSystem.Views.RoomDetailViews
         {
             InitializeComponent();
         }
+
+       
     }
 }

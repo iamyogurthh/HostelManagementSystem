@@ -1,0 +1,203 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.DataTransferView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="650"
+    d:DesignWidth="950"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,16,0" HorizontalAlignment="Left">
+
+            <!--  Page Title Header  -->
+            <TextBlock
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="{DynamicResource TextPrimary}"
+                Text="ဒေတာ လွှဲပြောင်းခြင်း (Data Transfer)" />
+            <TextBlock
+                Margin="0,6,0,24"
+                FontSize="14"
+                Foreground="{DynamicResource TextSecondary}"
+                Text="စက်တစ်လုံးမှ အခြားတစ်လုံးသို့ ဒေတာများ ထုတ်ယူ/ထည့်သွင်း စီမံနိုင်ပါသည်။" />
+
+            <!--  Status Banner  -->
+            <Border
+                Margin="0,0,0,24"
+                Padding="16,12"
+                Background="{DynamicResource SidebarHoverTint}"
+                BorderBrush="{DynamicResource PrimaryAccent}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <!--  StatusMessage ဘာမှမရှိပါက/လွတ်နေပါက Border ကို ဖျောက်ထားမည်  -->
+                            <DataTrigger Binding="{Binding StatusMessage}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StatusMessage}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="{Binding StatusMessage}" />
+            </Border>
+
+            <!--  Cards Container Grid  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  CARD 1: EXPORT DATA  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="24"
+                    Background="{DynamicResource CardBackground}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="20"
+                            Direction="270"
+                            Opacity="0.15"
+                            ShadowDepth="4"
+                            Color="#000000" />
+                    </Border.Effect>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Header  -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="Export Data" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="13"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="ဤစက်မှ အချက်အလက်များကို Backup (.hmsb) ဖိုင်အဖြစ် ထုတ်ယူမည်။"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!--  Select Options  -->
+                        <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                            <TextBlock
+                                Margin="0,0,0,12"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="ထုတ်ယူမည့် ဒေတာများ ရွေးပါ:" />
+
+                            <CheckBox
+                                Margin="0,0,0,12"
+                                Content="အဆောက်အဦး၊ အထပ်နှင့် အခန်းများ"
+                                Foreground="{DynamicResource TextPrimary}"
+                                IsChecked="{Binding IncludeInfrastructure}" />
+
+                            <CheckBox
+                                Content="အဆောင်နေ ကျောင်းသား/သူ အချက်အလက်များ"
+                                Foreground="{DynamicResource TextPrimary}"
+                                IsChecked="{Binding IncludeStudents}" />
+                        </StackPanel>
+
+                        <!--  Action Button  -->
+                        <Button
+                            Grid.Row="3"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding ExportDataCommand}"
+                            Content="Export ဖိုင်ထုတ်ယူမည်"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                    </Grid>
+                </Border>
+
+                <!--  CARD 2: IMPORT DATA  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="{DynamicResource CardBackground}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="20"
+                            Direction="270"
+                            Opacity="0.15"
+                            ShadowDepth="4"
+                            Color="#000000" />
+                    </Border.Effect>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Header  -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="Import Data" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="13"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="အခြားစက်မှ ထုတ်ယူထားသော Backup (.hmsb) ဖိုင်ကို ဤစက်သို့ ထည့်သွင်းမည်။"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!--  Warning Banner  -->
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,0,0,24"
+                            Padding="16"
+                            VerticalAlignment="Top"
+                            Background="{DynamicResource SidebarHoverTint}"
+                            BorderBrush="{DynamicResource PrimaryAccent}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <TextBlock
+                                FontSize="13"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="⚠️ သတိပေးချက်: ဒေတာများ ထည့်သွင်းပါက ယခင်ရှိပြီးသား ID တူညီသော ဒေတာများကို ပူးပေါင်း/ပြင်ဆင်သွားမည် ဖြစ်ပါသည်။"
+                                TextWrapping="Wrap" />
+                        </Border>
+
+                        <!--  Action Button  -->
+                        <Button
+                            Grid.Row="2"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding ImportDataCommand}"
+                            Content="Import ဖိုင်ရွေးချယ်မည်"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

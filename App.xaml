@@ -1,16 +1,24 @@
-﻿<Application x:Class="HostelManagementSystem.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:HostelManagementSystem"
-             StartupUri="MainWindow.xaml">
+﻿<Application
+    x:Class="HostelManagementSystem.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:HostelManagementSystem"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/SidebarStyles.xaml" />
-                <ResourceDictionary Source="/Styles/ButtonStyles.xaml" />
-                <ResourceDictionary Source="/Styles/Themes/LightTheme.xaml" />
-                <ResourceDictionary Source="/Styles/TextBoxStyles.xaml" />
-                <ResourceDictionary Source="/Styles/InteractiveCardStyle.xaml" />
+                <!--  1. WPF UI Base Theme Brushes & Controls FIRST  -->
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
+
+                <!--  2. Application & Custom Styles SECOND  -->
+                <ResourceDictionary Source="/HostelManagementSystem;component/Resources/DataTemplates.xaml" />
+                <ResourceDictionary Source="/HostelManagementSystem;component/Styles/SidebarStyles.xaml" />
+                <ResourceDictionary Source="/HostelManagementSystem;component/Styles/ButtonStyles.xaml" />
+                <ResourceDictionary Source="/HostelManagementSystem;component/Styles/Themes/LightTheme.xaml" />
+                <ResourceDictionary Source="/HostelManagementSystem;component/Styles/TextBoxStyles.xaml" />
+                <ResourceDictionary Source="/HostelManagementSystem;component/Styles/InteractiveCardStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

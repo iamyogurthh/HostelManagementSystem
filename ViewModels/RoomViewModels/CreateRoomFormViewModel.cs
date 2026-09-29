@@ -81,6 +81,7 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
                     await db.Rooms.AddAsync(newRoom);
                     await db.SaveChangesAsync();
 
+                    WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Room", newRoom.Id, DatabaseOperation.Inserted));
                     isSavedSuccessfully = true;
                 }
                 catch (Exception ex)

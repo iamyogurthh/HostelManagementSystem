@@ -1,0 +1,612 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.StudentDetailViews.StudentDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="1200"
+    d:DesignWidth="1100"
+    mc:Ignorable="d">
+
+    <Grid>
+        <!--  MAIN CONTENT GRID  -->
+        <Grid Margin="0,0,16,0">
+            <Grid.RowDefinitions>
+                <!--  Top Navigation Header  -->
+                <RowDefinition Height="Auto" />
+                <!--  Main Scrollable Content Area  -->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  1. TOP NAVIGATION HEADER WITH EDIT & DELETE BUTTONS  -->
+            <Grid Grid.Row="0" Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Back Button  -->
+                <Button
+                    Margin="0,0,16,0"
+                    Command="{Binding BackCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+                <!--  Title & Room Info  -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ကျောင်းသား အသေးစိတ် အချက်အလက်များ" />
+                    <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                        <TextBlock Foreground="{DynamicResource TextSecondary}" Text="{Binding Building.Name}" />
+                        <TextBlock Foreground="{DynamicResource TextSecondary}" Text="  •  " />
+                        <TextBlock Foreground="{DynamicResource TextSecondary}" Text="{Binding Floor.Name}" />
+                        <TextBlock Foreground="{DynamicResource TextSecondary}" Text="  •  " />
+                        <TextBlock
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Room.Name}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!--  Action Buttons (Edit & Delete)  -->
+                <StackPanel
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,12,0"
+                        Command="{Binding EditStudentCommand}"
+                        Content="ပြင်ဆင်ရန်"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Command="{Binding DeleteStudentCommand}"
+                        Content="ဖျက်ရန်"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                </StackPanel>
+            </Grid>
+
+            <!--  2. SCROLLABLE CONTENT BODY  -->
+            <ScrollViewer
+                Grid.Row="1"
+                Focusable="False"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+
+                <StackPanel Margin="0,0,16,0">
+
+                    <!--  2.1 HEADER HERO SECTION  -->
+                    <Grid Margin="0,0,0,28">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Profile Picture (Clickable to View Larger)  -->
+                        <Border
+                            Grid.Column="0"
+                            Width="100"
+                            Height="120"
+                            Margin="0,0,24,0"
+                            Background="{DynamicResource WindowBackground}"
+                            BorderBrush="#A0A0A0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Cursor="Hand">
+                            <Border.InputBindings>
+                                <MouseBinding
+                                    Command="{Binding OpenImagePreviewCommand}"
+                                    CommandParameter="{Binding ProfileImagePath}"
+                                    MouseAction="LeftClick" />
+                            </Border.InputBindings>
+                            <Grid ClipToBounds="True">
+                                <ui:SymbolIcon
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="42"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Symbol="Person24" />
+                                <Image Source="{Binding ProfileImagePath}" Stretch="UniformToFill" />
+                            </Grid>
+                        </Border>
+
+                        <!--  Identity Details  -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="26"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="{Binding Student.Name}" />
+
+                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="မှတ်ပုံတင်အမှတ်: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.NRC}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="ဖုန်းနံပါတ်: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.Student_ph}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="အဓိကဘာသာ: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.Major}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="0,0,0,24" Background="#A0A0A0" />
+
+                    <!--  2.2 PERSONAL INFORMATION  -->
+                    <TextBlock
+                        Margin="0,0,0,16"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ကိုယ်ရေးအချက်အလက်များ" />
+
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Row 0: Father & Mother Name  -->
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="အဖအမည်" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,16,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Father_name}" />
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="အမိအမည်" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            Margin="0,0,0,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Mother_name}" />
+
+                        <!--  Row 1: SIDE-BY-SIDE FATHER & MOTHER NRC  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="အဖ မှတ်ပုံတင်" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,16,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Father_NRC, FallbackValue='-'}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="အမိ မှတ်ပုံတင်" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Margin="0,0,0,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Mother_NRC, FallbackValue='-'}" />
+
+                        <!--  Row 2: Contact Phone & Gender  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="မိဘဖုန်းနံပါတ်" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="0,0,16,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Parent_ph}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="ကျား/မ" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Margin="0,0,0,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Gender}" />
+
+                        <!--  Row 3: Birthday  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="မွေးသက္ကရာဇ်" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="0,0,16,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Birthday, StringFormat={}{0:dd/MM/yyyy}}" />
+                    </Grid>
+
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="နေရပ်လိပ်စာ" />
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.Address}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <Separator Margin="0,0,0,24" Background="#A0A0A0" />
+
+                    <!--  2.3 HIGH SCHOOL DETAILS  -->
+                    <TextBlock
+                        Margin="0,0,0,16"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အထက်တန်းကျောင်း အချက်အလက်များ" />
+
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="ကျောင်းအမည်" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,16,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.High_school_name, FallbackValue='-'}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="Grade 12 ခုံနံပါတ်" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.High_school_roll_no, FallbackValue='-'}" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Margin="0,12,0,12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="မြို့နယ်" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="0,12,0,12"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding Student.High_school_city, FallbackValue='-'}" />
+                    </Grid>
+
+                    <Separator Margin="0,0,0,24" Background="#A0A0A0" />
+
+                    <!--  2.4 ACADEMIC RECORDS  -->
+                    <TextBlock
+                        Margin="0,0,0,16"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="တက္ကသိုလ် ပညာအရည်အချင်း မှတ်တမ်းများ" />
+
+                    <DataGrid
+                        Margin="0,0,0,24"
+                        AutoGenerateColumns="False"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CanUserAddRows="False"
+                        ColumnHeaderHeight="42"
+                        Focusable="False"
+                        Foreground="{DynamicResource TextPrimary}"
+                        GridLinesVisibility="Horizontal"
+                        HeadersVisibility="Column"
+                        HorizontalGridLinesBrush="#E0E0E0"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding AcademicRecords}"
+                        RowHeight="40"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.Resources>
+                            <!--  Header Styling with extra vertical padding and centered text  -->
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                                <Setter Property="FontSize" Value="14" />
+                                <Setter Property="Padding" Value="12,10" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+
+                            <!--  Data Cell Styling - Focus and Selection visual triggers disabled  -->
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+                                <Setter Property="FontSize" Value="13" />
+                                <Setter Property="Padding" Value="12,8" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Focusable" Value="False" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="DataGridCell">
+                                            <Border
+                                                Padding="{TemplateBinding Padding}"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                <ContentPresenter VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+
+                            <!--  Data Row Styling  -->
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Margin" Value="0,2" />
+                                <Setter Property="Focusable" Value="False" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding AcademicYearLevel}"
+                                Header="သင်တန်းနှစ်" />
+                            <DataGridTextColumn
+                                Width="160"
+                                Binding="{Binding RollNumber}"
+                                Header="ခုံနံပါတ်" />
+                            <DataGridTextColumn
+                                Width="160"
+                                Binding="{Binding AttendedYear}"
+                                Header="ပညာသင်နှစ်" />
+                            <DataGridTextColumn
+                                Width="120"
+                                Binding="{Binding AttemptNumber}"
+                                Header="ကြိမ်မြောက်" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Separator Margin="0,0,0,24" Background="#A0A0A0" />
+
+                    <!--  2.5 CLICKABLE ATTACHED DOCUMENTS / IMAGES  -->
+                    <TextBlock
+                        Margin="0,0,0,20"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ပူးတွဲပါ အထောက်အထား ဓာတ်ပုံများ (နှိပ်၍ ပုံကြီးကြည့်နိုင်ပါသည်)" />
+
+                    <StackPanel Margin="0,0,0,24">
+
+                        <!--  SIDE-BY-SIDE NRC IMAGES GRID  -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <!--  Gap between cards  -->
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  NRC Front Image Card (Left Column)  -->
+                            <Border
+                                Grid.Column="0"
+                                Padding="16"
+                                Background="{DynamicResource WindowBackground}"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding OpenImagePreviewCommand}"
+                                        CommandParameter="{Binding NrcFrontImagePath}"
+                                        MouseAction="LeftClick" />
+                                </Border.InputBindings>
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,12"
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        Text="မှတ်ပုံတင် (အရှေ့)" />
+                                    <Image
+                                        MaxHeight="240"
+                                        HorizontalAlignment="Center"
+                                        Source="{Binding NrcFrontImagePath}"
+                                        Stretch="Uniform" />
+                                </StackPanel>
+                            </Border>
+
+                            <!--  NRC Back Image Card (Right Column)  -->
+                            <Border
+                                Grid.Column="2"
+                                Padding="16"
+                                Background="{DynamicResource WindowBackground}"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding OpenImagePreviewCommand}"
+                                        CommandParameter="{Binding NrcBackImagePath}"
+                                        MouseAction="LeftClick" />
+                                </Border.InputBindings>
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,12"
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        Text="မှတ်ပုံတင် (အနောက်)" />
+                                    <Image
+                                        MaxHeight="240"
+                                        HorizontalAlignment="Center"
+                                        Source="{Binding NrcBackImagePath}"
+                                        Stretch="Uniform" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!--  High School Certificate Image Card (Full Width Below)  -->
+                        <Border
+                            Margin="0,0,0,16"
+                            Padding="16"
+                            Background="{DynamicResource WindowBackground}"
+                            BorderBrush="#A0A0A0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Cursor="Hand">
+                            <Border.InputBindings>
+                                <MouseBinding
+                                    Command="{Binding OpenImagePreviewCommand}"
+                                    CommandParameter="{Binding HighSchoolCertImagePath}"
+                                    MouseAction="LeftClick" />
+                            </Border.InputBindings>
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,12"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="ဆယ်တန်း အောင်လက်မှတ်" />
+                                <Image
+                                    MaxHeight="300"
+                                    HorizontalAlignment="Left"
+                                    Source="{Binding HighSchoolCertImagePath}"
+                                    Stretch="Uniform" />
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!--  3. FULLSCREEN CLICKABLE IMAGE PREVIEW MODAL OVERLAY  -->
+        <Grid Background="#D9000000" Visibility="{Binding IsImagePreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid.InputBindings>
+                <MouseBinding Command="{Binding CloseImagePreviewCommand}" MouseAction="LeftClick" />
+            </Grid.InputBindings>
+
+            <Grid Margin="40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ui:Button
+                    Grid.Row="0"
+                    HorizontalAlignment="Right"
+                    Appearance="Transparent"
+                    Command="{Binding CloseImagePreviewCommand}"
+                    Foreground="#FFFFFF"
+                    Icon="{ui:SymbolIcon Dismiss24}" />
+
+                <Image
+                    Grid.Row="1"
+                    Source="{Binding PreviewImagePath}"
+                    Stretch="Uniform" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

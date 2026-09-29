@@ -12,7 +12,7 @@ namespace HostelManagementSystem.Models
 
         [Required]
         public string Name { get; set; } = string.Empty;
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_building.jpg";
+        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_building.png";
         public bool IsActive { get; set; } = true;
 
         //Navigating Property

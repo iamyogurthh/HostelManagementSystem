@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace HostelManagementSystem.Models
 {
@@ -14,7 +15,7 @@ namespace HostelManagementSystem.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_room.jpg";
+        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_room.png";
 
         public int Capacity { get; set; }
 
@@ -24,7 +25,14 @@ namespace HostelManagementSystem.Models
         [ForeignKey(nameof(FloorId))]
         public Floor Floor { get; set; } = null!;
 
-        // Computed helper for WPF availability logic (Not saved to DB)
+        // Navigation Property for assigned Students
+        public List<Student> Students { get; set; } = new();
+
+        // Computed property for UI resident count calculation
+        [NotMapped]
+        public int CurrentResidentsCount => Students?.Count(s => s.IsActive) ?? 0;
+
+        // Computed helper for WPF availability logic
         [NotMapped]
         public bool IsAvailableForBooking =>
             IsActive &&

@@ -1,14 +1,16 @@
-﻿<UserControl x:Class="HostelManagementSystem.Views.RoomViews.EditRoomFormView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HostelManagementSystem.Views.RoomViews"
-             mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.RoomViews.EditRoomFormView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:HostelManagementSystem.Views.RoomViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="700"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="10" HorizontalAlignment="Stretch">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="0,0,16,0" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -17,36 +19,43 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- 1. Header Section -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,15">
-                <!-- Breadcrumb showing Parent Floor Name -->
-                <TextBlock Text="{Binding Floor.Name, StringFormat='{}{0}၏ အခန်းများ'}" 
-                           FontSize="24" 
-                           FontWeight="Bold"
-                           Margin="0,0,0,10"
-                           Foreground="{DynamicResource TextPrimary}" />
+            <!--  1. Header Section  -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                <!--  Breadcrumb showing Parent Floor Name  -->
+                <TextBlock
+                    Margin="0,0,0,10"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextPrimary}"
+                    Text="{Binding Floor.Name, StringFormat='{}{0}၏ အခန်းများ'}" />
 
-                <TextBlock Text="အခန်းအချက်အလက် ပြင်ဆင်ရန်" 
-                           FontSize="14" 
-                           Foreground="{DynamicResource PrimaryAccent}"
-                           Margin="0,4,0,0" />
+                <TextBlock
+                    Margin="0,4,0,0"
+                    FontSize="14"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="အခန်းအချက်အလက် ပြင်ဆင်ရန်" />
             </StackPanel>
 
-            <!-- Section Divider -->
-            <Border Grid.Row="1" Height="1" Background="gray" Margin="0,0,0,0" />
+            <!--  Section Divider  -->
+            <Border
+                Grid.Row="1"
+                Height="1"
+                Margin="0,0,0,0"
+                Background="gray" />
 
-            <!-- 2. Global DB Error Banner -->
-            <TextBlock Grid.Row="2" 
-                       Text="{Binding ErrorMessage}" 
-                       Foreground="#EF4444" 
-                       FontSize="13"
-                       Margin="0,0,0,15"
-                       TextWrapping="Wrap" />
+            <!--  2. Global DB Error Banner  -->
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,0,0,15"
+                FontSize="13"
+                Foreground="#EF4444"
+                Text="{Binding ErrorMessage}"
+                TextWrapping="Wrap" />
 
-            <!-- 3. Form Content -->
+            <!--  3. Form Content  -->
             <StackPanel Grid.Row="3" Margin="0,0,0,30">
 
-                <!-- Room Name Field -->
+                <!--  Room Name Field  -->
                 <Grid Margin="0,0,0,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -54,25 +63,28 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="အခန်းအမည် *" 
-                               Foreground="{DynamicResource TextPrimary}" 
-                               FontSize="14" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,8" />
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းအမည် *" />
 
-                    <TextBox Grid.Row="1"
-                             Text="{Binding RoomName, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource TextBoxStyle}"
-                             HorizontalAlignment="Stretch" />
+                    <TextBox
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding RoomName, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Row="2"
-                               Text="{Binding RoomNameError}" 
-                               Foreground="#EF4444" 
-                               FontSize="12" 
-                               Margin="0,6,0,0" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding RoomNameError}" />
                 </Grid>
 
-                <!-- Room Capacity Field -->
+                <!--  Room Capacity Field  -->
                 <Grid Margin="0,0,0,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -80,36 +92,40 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="လူဝင်ဆံ့နိုင်မှုပမာဏ (ဦးရေ) *" 
-                               Foreground="{DynamicResource TextPrimary}" 
-                               FontSize="14" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,8" />
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="လူဝင်ဆံ့နိုင်မှုပမာဏ (ဦးရေ) *" />
 
-                    <TextBox Grid.Row="1"
-                             Text="{Binding RoomCapacityText, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource TextBoxStyle}"
-                             HorizontalAlignment="Stretch" />
+                    <TextBox
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding RoomCapacityText, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Row="2"
-                               Text="{Binding RoomCapacityError}" 
-                               Foreground="#EF4444" 
-                               FontSize="12" 
-                               Margin="0,6,0,0" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding RoomCapacityError}" />
                 </Grid>
 
-                <!-- Image Selection & Preview Section -->
+                <!--  Image Selection & Preview Section  -->
                 <Grid Margin="0,0,0,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="အခန်းဓာတ်ပုံ" 
-                               Foreground="{DynamicResource TextPrimary}" 
-                               FontSize="14" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,8" />
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းဓာတ်ပုံ" />
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -117,62 +133,76 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- Live 16:9 Image Preview (300x170) -->
-                        <Border Grid.Column="0" 
-                                Width="300" 
-                                Height="170" 
-                                CornerRadius="8" 
-                                BorderThickness="1.5" 
-                                BorderBrush="#A0A0A0" 
-                                Background="#F8F9FA"
-                                Margin="0,0,20,0">
+                        <!--  Live 16:9 Image Preview (300x170)  -->
+                        <Border
+                            Grid.Column="0"
+                            Width="300"
+                            Height="170"
+                            Margin="0,0,20,0"
+                            Background="#F8F9FA"
+                            BorderBrush="#A0A0A0"
+                            BorderThickness="1.5"
+                            CornerRadius="8">
                             <Border.Clip>
-                                <RectangleGeometry Rect="0,0,300,170" RadiusX="8" RadiusY="8" />
+                                <RectangleGeometry
+                                    RadiusX="8"
+                                    RadiusY="8"
+                                    Rect="0,0,300,170" />
                             </Border.Clip>
-                            <Image Source="{Binding PreviewImageSource}" 
-                                   Stretch="UniformToFill" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center" />
+                            <Image
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Source="{Binding PreviewImageSource}"
+                                Stretch="UniformToFill" />
                         </Border>
 
-                        <!-- Action Controls -->
+                        <!--  Action Controls  -->
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="ဓာတ်ပုံရွေးချယ်ပါ" 
-                                       FontSize="14" 
-                                       FontWeight="Medium" 
-                                       Foreground="{DynamicResource TextPrimary}" 
-                                       Margin="0,0,0,4" />
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="ဓာတ်ပုံရွေးချယ်ပါ" />
 
-                            <TextBlock Text="JPG သို့မဟုတ် PNG ဖိုင်များကိုသာ လက်ခံပါသည်။" 
-                                       FontSize="12" 
-                                       Foreground="{DynamicResource TextSecondary}" 
-                                       Margin="0,0,0,16" />
+                            <TextBlock
+                                Margin="0,0,0,16"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="JPG သို့မဟုတ် PNG ဖိုင်များကိုသာ လက်ခံပါသည်။" />
 
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Browse Image..." 
-                                        Command="{Binding BrowseImageCommand}" 
-                                        Style="{StaticResource SecondaryButtonStyle}"
-                                        Margin="0,0,10,0" />
+                                <Button
+                                    Margin="0,0,10,0"
+                                    Command="{Binding BrowseImageCommand}"
+                                    Content="Browse Image..."
+                                    Style="{StaticResource SecondaryButtonStyle}" />
 
-                                <Button Content="Remove" 
-                                        Command="{Binding ClearSelectedImageCommand}" 
-                                        Style="{StaticResource SecondaryButtonStyle}" />
+                                <Button
+                                    Command="{Binding ClearSelectedImageCommand}"
+                                    Content="Remove"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </StackPanel>
 
-            <!-- 4. Form Actions -->
-            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="ပြင်ဆင်မှု သိမ်းဆည်းမည်" 
-                        Command="{Binding SaveCommand}" 
-                        Style="{StaticResource PrimaryButtonStyle}" 
-                        Margin="0,0,12,0" />
+            <!--  4. Form Actions  -->
+            <StackPanel
+                Grid.Row="4"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <Button
+                    Margin="0,0,12,0"
+                    Command="{Binding SaveCommand}"
+                    Content="ပြင်ဆင်မှု သိမ်းဆည်းမည်"
+                    Style="{StaticResource PrimaryButtonStyle}" />
 
-                <Button Content="မလုပ်တော့ပါ" 
-                        Command="{Binding BackCommand}" 
-                        Style="{StaticResource SecondaryButtonStyle}" />
+                <Button
+                    Command="{Binding BackCommand}"
+                    Content="မလုပ်တော့ပါ"
+                    Style="{StaticResource SecondaryButtonStyle}" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

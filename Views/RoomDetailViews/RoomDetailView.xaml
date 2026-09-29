@@ -1,21 +1,27 @@
-﻿<UserControl x:Class="HostelManagementSystem.Views.RoomDetailViews.RoomDetailView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="10">
-            <!-- Header Title -->
-            <TextBlock Text="အဆောင်စီမံခန့်ခွဲမှု" 
-                       FontSize="24" 
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource TextPrimary}"
-                       Margin="0,0,0,20"/> 
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.RoomDetailViews.RoomDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="600"
+    d:DesignWidth="1100"
+    mc:Ignorable="d">
 
-            <!-- Action & Navigation Bar -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,16,0">
+            <!--  Header Title  -->
+            <TextBlock
+                Margin="0,0,0,16"
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="{DynamicResource TextPrimary}"
+                Text="အဆောင်စီမံခန့်ခွဲမှု" />
+
+            <!--  Action & Navigation Bar  -->
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -23,36 +29,140 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button Content="Back"
-                        Grid.Column="0"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"
-                        Command="{Binding BackCommand}" /> 
+                <Button
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding BackCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
 
-                <!-- Context Header: Building Name & Floor Name -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Building.Name, StringFormat='&quot;{0}&quot; - '}" 
-                               FontSize="18" 
-                               FontWeight="SemiBold"
-                               Foreground="#671EE1" />
-                    <TextBlock Text="{Binding Floor.Name, StringFormat='&quot;{0}&quot; - '}" 
-                               FontSize="18" 
-                               FontWeight="SemiBold"
-                               Foreground="#671EE1" />
-                    <TextBlock Text="{Binding Room.Name, StringFormat='&quot;{0}&quot; ၏ လူစာရင်း'}" 
-                               FontSize="18" 
-                               FontWeight="SemiBold"
-                               Foreground="#671EE1" />  
+                <!--  Context Header  -->
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="#4F46E5"
+                        Text="{Binding Building.Name, StringFormat='&quot;{0}&quot; - '}" />
+                    <TextBlock
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="#4F46E5"
+                        Text="{Binding Floor.Name, StringFormat='&quot;{0}&quot; - '}" />
+                    <TextBlock
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="#4F46E5"
+                        Text="{Binding Room.Name, StringFormat='&quot;{0}&quot; ၏ လူစာရင်း'}" />
                 </StackPanel>
 
-                <Button Content="+ လူအသစ်"
-                        Grid.Column="2"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Command="{Binding OpenCreateRoomFormCommand}" />   
+                <Button
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding OpenAddNewStudentFormCommand}"
+                    Content="+ လူအသစ်ထည့်ရန်"
+                    Style="{StaticResource PrimaryButtonStyle}" />
             </Grid>
+
+            <!--  UPDATED TABLE SECTION: Using WPF UI Card and DataGrid  -->
+            <ui:Card Padding="0">
+                <ui:DataGrid
+                    AutoGenerateColumns="False"
+                    Background="White"
+                    CanUserAddRows="False"
+                    ColumnWidth="*"
+                    GridLinesVisibility="Horizontal"
+                    HeadersVisibility="Column"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Students}"
+                    RowHeight="54">
+
+                    <DataGrid.Columns>
+                        <!--  Column 1: Name  -->
+                        <DataGridTextColumn
+                            Width="1.5*"
+                            Binding="{Binding Name}"
+                            Header="အမည်" />
+
+                        <!--  Column 2: NRC Number  -->
+                        <DataGridTextColumn
+                            Width="1.8*"
+                            Binding="{Binding NRC}"
+                            Header="မှတ်ပုံတင်အမှတ်" />
+
+                        <!--  Column 3: Phone Number  -->
+                        <DataGridTextColumn
+                            Width="1.4*"
+                            Binding="{Binding Student_ph}"
+                            Header="ဖုန်းနံပါတ်" />
+
+                        <!--  Column 4: Father Name  -->
+                        <DataGridTextColumn
+                            Width="1.5*"
+                            Binding="{Binding Father_name}"
+                            Header="အဖအမည်" />
+
+                        <!--  Column 5: Roll Number  -->
+                        <DataGridTextColumn
+                            Width="1.2*"
+                            Binding="{Binding LatestRollNumber}"
+                            Header="ခုံနံပါတ်" />
+
+                        <!--  Column 6: Actions  -->
+                        <DataGridTemplateColumn Width="150" Header="Actions">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+
+                                        <!--  Detail Button  -->
+                                        <ui:Button
+                                            Width="32"
+                                            Height="32"
+                                            Margin="0,0,8,0"
+                                            Padding="0"
+                                            Command="{Binding DataContext.NavigateToStudentDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding Id}"
+                                            Icon="{ui:SymbolIcon Info24}"
+                                            Style="{StaticResource InfoActionButtonStyle}"
+                                            ToolTip="အသေးစိတ်ကြည့်ရန်" />
+
+                                        <!--  Edit Button  -->
+                                        <ui:Button
+                                            Width="32"
+                                            Height="32"
+                                            Margin="0,0,8,0"
+                                            Padding="0"
+                                            Command="{Binding DataContext.EditStudentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding Id}"
+                                            Icon="{ui:SymbolIcon Edit24}"
+                                            Style="{StaticResource EditActionButtonStyle}"
+                                            ToolTip="ပြင်ဆင်ရန်" />
+
+                                        <!--  Delete Button  -->
+                                        <ui:Button
+                                            Width="32"
+                                            Height="32"
+                                            Padding="0"
+                                            Command="{Binding DataContext.DeleteStudentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding Id}"
+                                            Icon="{ui:SymbolIcon Delete24}"
+                                            Style="{StaticResource DeleteActionButtonStyle}"
+                                            ToolTip="ဖျက်ရန်" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </ui:DataGrid>
+            </ui:Card>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

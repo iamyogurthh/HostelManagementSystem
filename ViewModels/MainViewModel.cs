@@ -1,22 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using HostelManagementSystem.Messages;
 
 namespace HostelManagementSystem.ViewModels
 {
-    public partial class MainViewModel : ObservableObject,
+    public partial class MainViewModel : ObservableRecipient,
         IRecipient<NavigateMessage>,
         IRecipient<BusyMessage>
     {
-        // Tracks whichever page is currently displayed in the ContentFrame
         [ObservableProperty]
-        private ObservableObject _currentView;
-
-        public DashboardViewModel Dashboard { get; }
-        public BuildingViewModel Building { get; }
-        public ResidentViewModel Resident { get; }
-        public SettingViewModel Setting { get; }
+        private ObservableObject _currentView = null!;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -24,59 +19,98 @@ namespace HostelManagementSystem.ViewModels
         [ObservableProperty]
         private string _busyText = "ခဏစောင့်ပါ...";
 
-        // Constructor 
-        public MainViewModel()
+        public DashboardViewModel Dashboard { get; }
+        public BuildingViewModel Building { get; }
+        public ResidentViewModel Resident { get; }
+        public SettingViewModel Setting { get; }
+        public DataTransferViewModel DataTransfer { get; } 
+
+        public MainViewModel(
+            DashboardViewModel dashboard,
+            BuildingViewModel building,
+            ResidentViewModel resident,
+            SettingViewModel setting,
+            DataTransferViewModel dataTransfer)
         {
-            Dashboard = new DashboardViewModel();
-            Building = new BuildingViewModel();
-            Resident = new ResidentViewModel();
-            Setting = new SettingViewModel();
+            Dashboard = dashboard;
+            Building = building;
+            Resident = resident;
+            Setting = setting;
+            DataTransfer = dataTransfer;
 
-            // Registering 'this' subscribes to ALL IRecipient<T> implementations automatically
-            WeakReferenceMessenger.Default.Register<NavigateMessage>(this);
-            WeakReferenceMessenger.Default.Register<BusyMessage>(this);
-
-            // Set default initial view 
             CurrentView = Dashboard;
+            IsActive = true;
         }
 
-        // CommunityToolkit generates "NavigateToDashboardCommand"
-        [RelayCommand]
-        private void NavigateToDashboard()
+        public MainViewModel() : this(
+            new DashboardViewModel(),
+            new BuildingViewModel(),
+            new ResidentViewModel(),
+            new SettingViewModel(),
+            new DataTransferViewModel())
         {
-            CurrentView = Dashboard;
         }
 
-        // CommunityToolkit generates "NavigateToBuildingCommand"
+        /// <summary>
+        /// Single unified navigation command. Accepts view names like "Dashboard", "Building", "Resident", "Setting".
+        /// </summary>
         [RelayCommand]
-        private async Task NavigateToBuilding()
+        private async Task NavigateToAsync(string? viewName)
         {
-            CurrentView = Building;
-            await Building.LoadBuildingCommand.ExecuteAsync(null);
+            if (string.IsNullOrWhiteSpace(viewName)) return;
+
+            switch (viewName.ToLowerInvariant())
+            {
+                case "dashboard":
+                    SetCurrentView(Dashboard);
+                    break;
+
+                case "building":
+                    SetCurrentView(Building);
+                    if (Building.LoadBuildingCommand.CanExecute(null))
+                    {
+                        await Building.LoadBuildingCommand.ExecuteAsync(null);
+                    }
+                    break;
+
+                case "resident":
+                    SetCurrentView(Resident);
+                    break;
+
+                case "setting":
+                    SetCurrentView(Setting);
+                    break;
+
+                case "datatransfer":
+                    SetCurrentView(DataTransfer);
+                    break;
+            }
         }
 
-        [RelayCommand]
-        private void NavigateToResident()
+        private void SetCurrentView(ObservableObject targetViewModel)
         {
-            CurrentView = Resident;
-        }
-
-        [RelayCommand]
-        private void NavigateToSetting()
-        {
-            CurrentView = Setting;
+            if (CurrentView != targetViewModel)
+            {
+                CurrentView = targetViewModel;
+            }
         }
 
         public void Receive(NavigateMessage message)
         {
             IsBusy = false;
-            CurrentView = message.TargetViewModel;
+            if (message.TargetViewModel != null)
+            {
+                SetCurrentView(message.TargetViewModel);
+            }
         }
 
         public void Receive(BusyMessage message)
         {
             IsBusy = message.IsBusy;
-            BusyText = message.Message;
+            if (!string.IsNullOrWhiteSpace(message.Message))
+            {
+                BusyText = message.Message;
+            }
         }
     }
 }

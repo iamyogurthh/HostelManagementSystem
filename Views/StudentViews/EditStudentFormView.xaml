@@ -1,0 +1,992 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.StudentViews.EditStudentFormView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:HostelManagementSystem.Views.StudentViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="1800"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="0,0,16,0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  1. Header Section  -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,15">
+                <!--  ညာဘက်တွင် ကပ်မည့် ခလုတ်  -->
+                <Button
+                    Command="{Binding CancelCommand}"
+                    Content="မလုပ်တော့ပါ"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+                <!--  ဘယ်ဘက်တွင် ကျန်ရှိနေမည့် TextBlock  -->
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="ကျောင်းသား/သူ ပြင်ဆင်ရန်" />
+            </DockPanel>
+
+            <!--  Section Divider  -->
+            <Border
+                Grid.Row="1"
+                Height="1"
+                Margin="0,0,0,15"
+                Background="Gray" />
+
+            <!--  2. Global Error Banner  -->
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,0,0,15"
+                FontSize="13"
+                Foreground="#EF4444"
+                Text="{Binding ErrorMessage}"
+                TextWrapping="Wrap" />
+
+            <!--  3. Form Content  -->
+            <StackPanel Grid.Row="3" Margin="0,0,0,30">
+
+                <!--  SECTION 1: Profile Photo Selection  -->
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="၁။ ကျောင်းသား/သူ ဓာတ်ပုံ" />
+
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Profile Image Preview (3:4 Aspect Ratio)  -->
+                    <Border
+                        Grid.Column="0"
+                        Width="120"
+                        Height="150"
+                        Margin="0,0,20,0"
+                        Background="#F8F9FA"
+                        BorderBrush="#A0A0A0"
+                        BorderThickness="1.5"
+                        CornerRadius="8">
+                        <Border.Clip>
+                            <RectangleGeometry
+                                RadiusX="8"
+                                RadiusY="8"
+                                Rect="0,0,120,150" />
+                        </Border.Clip>
+                        <Image
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="{Binding StudentPhotoPreviewSource}"
+                            Stretch="UniformToFill" />
+                    </Border>
+
+                    <!--  Action Controls  -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontSize="14"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="ဓာတ်ပုံရွေးချယ်ပါ *" />
+
+                        <TextBlock
+                            Margin="0,0,0,16"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="JPG သို့မဟုတ် PNG ဖိုင်များကိုသာ လက်ခံပါသည်။" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,10,0"
+                                Command="{Binding BrowseStudentPhotoCommand}"
+                                Content="Browse Image..."
+                                Style="{StaticResource SecondaryButtonStyle}" />
+
+                            <Button
+                                Command="{Binding ClearStudentPhotoCommand}"
+                                Content="Remove"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
+
+                        <!--  Cascading Room Selection Dropdowns (Edit Form)  -->
+                        <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
+                            <!--  Building Dropdown  -->
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အဆောက်အအုံ" />
+                                <ComboBox
+                                    Width="150"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
+                                    ItemsSource="{Binding AvailableBuildings}"
+                                    SelectedItem="{Binding SelectedBuilding, Mode=TwoWay}" />
+                            </StackPanel>
+
+                            <!--  Floor Dropdown  -->
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အထပ်" />
+                                <ComboBox
+                                    Width="130"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
+                                    ItemsSource="{Binding AvailableFloors}"
+                                    SelectedItem="{Binding SelectedFloor, Mode=TwoWay}" />
+                            </StackPanel>
+
+                            <!--  Room Dropdown  -->
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အခန်း *" />
+                                <ComboBox
+                                    Width="130"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
+                                    ItemsSource="{Binding AvailableRooms}"
+                                    SelectedItem="{Binding Room, Mode=TwoWay}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!--  SECTION 2: Personal Information  -->
+                <TextBlock
+                    Margin="0,10,0,12"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="၂။ ကိုယ်ရေးအချက်အလက်များ" />
+
+                <!--  Name Field  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အမည် *" />
+
+                    <TextBox
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding StudentName, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding StudentNameError}" />
+                </Grid>
+
+                <!--  Birthday Selector (Day / Month / Year Dropdowns) & Gender  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Birthday Selector (Day / Month / Year)  -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="မွေးသက္ကရာဇ် (နှစ် / လ / ရက်) *" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="1.2*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Year  -->
+                            <ComboBox
+                                Grid.Column="0"
+                                ItemsSource="{Binding StudentDateOfBirth.Years}"
+                                SelectedItem="{Binding StudentDateOfBirth.SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <!--  Month  -->
+                            <ComboBox
+                                Grid.Column="2"
+                                ItemsSource="{Binding StudentDateOfBirth.Months}"
+                                SelectedItem="{Binding StudentDateOfBirth.SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <!--  Day  -->
+                            <ComboBox
+                                Grid.Column="4"
+                                ItemsSource="{Binding StudentDateOfBirth.Days}"
+                                SelectedItem="{Binding StudentDateOfBirth.SelectedDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+
+                        <!--  Error Message  -->
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding StudentDateOfBirth.ErrorMessage}" />
+                    </StackPanel>
+
+                    <!--  Gender  -->
+                    <StackPanel Grid.Column="2">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="ကျား/မ *" />
+
+                        <ComboBox SelectedValue="{Binding SelectedGender, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content">
+                            <ComboBoxItem Content="ကျား" />
+                            <ComboBoxItem Content="မ" />
+                        </ComboBox>
+
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding GenderError}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  Student NRC Field (3-Part Selector)  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="မှတ်ပုံတင်အမှတ် *" />
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <!--  1. Region Code (e.g., 12/)  -->
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="6" />
+                            <!--  2. Township Code (e.g., MAMANA)  -->
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="6" />
+                            <!--  3. Citizen Type (e.g., (N))  -->
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="6" />
+                            <!--  4. NRC 6-Digit Number  -->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  1. Region Code  -->
+                        <ComboBox
+                            Grid.Column="0"
+                            ItemsSource="{Binding StudentNrc.RegionCodes}"
+                            SelectedItem="{Binding StudentNrc.SelectedRegionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  2. Township Code (Fixed property name)  -->
+                        <ComboBox
+                            Grid.Column="2"
+                            ItemsSource="{Binding StudentNrc.TownshipCodes}"
+                            SelectedItem="{Binding StudentNrc.SelectedTownshipCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  3. Citizen Type (Added missing control)  -->
+                        <ComboBox
+                            Grid.Column="4"
+                            ItemsSource="{Binding StudentNrc.CitizenTypes}"
+                            SelectedItem="{Binding StudentNrc.SelectedCitizenType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  4. Number Part  -->
+                        <TextBox
+                            Grid.Column="6"
+                            MaxLength="6"
+                            Style="{StaticResource TextBoxStyle}"
+                            Text="{Binding StudentNrc.NrcNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="ဂဏန်း (၆) လုံး ထည့်ပါ" />
+                    </Grid>
+
+                    <!--  Error Message Display  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="Red"
+                        Text="{Binding StudentNrc.ErrorMessage}" />
+                </Grid>
+
+                <!--  Student Phone & Parent Phone  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="ကျောင်းသား/သူ ဖုန်းနံပါတ် *" />
+
+                        <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding StudentPh, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding StudentPhError}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="မိဘ ဖုန်းနံပါတ် *" />
+
+                        <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding ParentPh, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding ParentPhError}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  Address Field  -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="နေရပ်လိပ်စာ *" />
+
+                    <TextBox
+                        Grid.Row="1"
+                        Height="70"
+                        AcceptsReturn="True"
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding AddressError}" />
+                </Grid>
+
+                <!--  SECTION 3: Parent Information  -->
+                <TextBlock
+                    Margin="0,10,0,12"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="၃။ မိဘအချက်အလက်များ" />
+
+                <!--  Father & Mother Names  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="အဖအမည် *" />
+
+                        <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding FatherName, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding FatherNameError}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="အမိအမည် *" />
+
+                        <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding MotherName, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="#EF4444"
+                            Text="{Binding MotherNameError}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  Father NRC Field (4-Part Selector)  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အဖ မှတ်ပုံတင်အမှတ်" />
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <!--  1. Region Code  -->
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="6" />
+                            <!--  2. Township Code  -->
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="6" />
+                            <!--  3. Citizen Type  -->
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="6" />
+                            <!--  4. NRC Number  -->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Region Code  -->
+                        <ComboBox
+                            Grid.Column="0"
+                            ItemsSource="{Binding FatherNrc.RegionCodes}"
+                            SelectedItem="{Binding FatherNrc.SelectedRegionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  Township Code  -->
+                        <ComboBox
+                            Grid.Column="2"
+                            ItemsSource="{Binding FatherNrc.TownshipCodes}"
+                            SelectedItem="{Binding FatherNrc.SelectedTownshipCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  Citizen Type  -->
+                        <ComboBox
+                            Grid.Column="4"
+                            ItemsSource="{Binding FatherNrc.CitizenTypes}"
+                            SelectedItem="{Binding FatherNrc.SelectedCitizenType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  NRC Number  -->
+                        <TextBox
+                            Grid.Column="6"
+                            MaxLength="6"
+                            Style="{StaticResource TextBoxStyle}"
+                            Text="{Binding FatherNrc.NrcNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="ဂဏန်း (၆) လုံး ထည့်ပါ" />
+                    </Grid>
+
+                    <!--  Validation Error Display  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="Red"
+                        Text="{Binding FatherNrc.ErrorMessage}" />
+                </Grid>
+
+                <!--  Mother NRC Field (4-Part Selector)  -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အမိ မှတ်ပုံတင်အမှတ်" />
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <!--  1. Region Code  -->
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="6" />
+                            <!--  2. Township Code  -->
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="6" />
+                            <!--  3. Citizen Type  -->
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="6" />
+                            <!--  4. NRC Number  -->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Region Code  -->
+                        <ComboBox
+                            Grid.Column="0"
+                            ItemsSource="{Binding MotherNrc.RegionCodes}"
+                            SelectedItem="{Binding MotherNrc.SelectedRegionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  Township Code  -->
+                        <ComboBox
+                            Grid.Column="2"
+                            ItemsSource="{Binding MotherNrc.TownshipCodes}"
+                            SelectedItem="{Binding MotherNrc.SelectedTownshipCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  Citizen Type  -->
+                        <ComboBox
+                            Grid.Column="4"
+                            ItemsSource="{Binding MotherNrc.CitizenTypes}"
+                            SelectedItem="{Binding MotherNrc.SelectedCitizenType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  NRC Number  -->
+                        <TextBox
+                            Grid.Column="6"
+                            MaxLength="6"
+                            Style="{StaticResource TextBoxStyle}"
+                            Text="{Binding MotherNrc.NrcNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="ဂဏန်း (၆) လုံး ထည့်ပါ" />
+                    </Grid>
+
+                    <!--  Validation Error Display  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="Red"
+                        Text="{Binding MotherNrc.ErrorMessage}" />
+                </Grid>
+
+                <!--  SECTION 4: Academic Information  -->
+                <TextBlock
+                    Margin="0,10,0,12"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="၄။ ပညာရေးအချက်အလက်များ" />
+
+
+
+                <!--  GROUP: High School Info (Roll No, School Name, City, Buttons, and Image Preview)  -->
+                <Border
+                    Margin="0,0,0,20"
+                    Padding="14"
+                    Background="#0DFFFFFF"
+                    BorderBrush="#33A0A0A0"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="ဆယ်တန်း အချက်အလက်များ" />
+
+                        <!--  Row 1: High School Roll No, School Name & City Inputs  -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Roll No Field  -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="ဆယ်တန်း ခုံနံပါတ်" />
+                                <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding HighSchoolRollNo, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <!--  High School Name Field  -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="ကျောင်းအမည် (High School Name)" />
+                                <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding HighSchoolName, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <!--  High School City Field  -->
+                            <StackPanel Grid.Column="4">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="မြို့နယ်/ဒေသ (City)" />
+                                <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding HighSchoolCity, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!--  Row 2: Certificate Action Controls  -->
+                        <TextBlock
+                            Margin="0,0,0,6"
+                            FontSize="13"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="ဆယ်တန်းအောင်လက်မှတ် ဓာတ်ပုံ" />
+
+                        <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
+                            <Button
+                                Command="{Binding BrowseHighSchoolCertCommand}"
+                                Content="Browse Cert..."
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                            <Button
+                                Margin="8,0,0,0"
+                                Command="{Binding ClearHighSchoolCertCommand}"
+                                Content="Remove"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
+
+                        <!--  Certificate Vertical Image Preview Below Buttons  -->
+                        <Border
+                            Width="140"
+                            Height="180"
+                            HorizontalAlignment="Left"
+                            Background="#F8F9FA"
+                            BorderBrush="#A0A0A0"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <Border.Clip>
+                                <RectangleGeometry
+                                    RadiusX="6"
+                                    RadiusY="6"
+                                    Rect="0,0,140,180" />
+                            </Border.Clip>
+                            <Image Source="{Binding HighSchoolCertPreviewSource}" Stretch="UniformToFill" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!--  Major Field (ComboBox Selector)  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="မေဂျာ/ဘာသာရပ် *" />
+
+                    <!--  Changed from TextBox to ComboBox bound to StudentMajor  -->
+                    <ComboBox
+                        Grid.Row="1"
+                        ItemsSource="{Binding StudentMajor.Majors}"
+                        SelectedItem="{Binding StudentMajor.SelectedMajor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <!--  Error Message Display  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding StudentMajor.ErrorMessage}" />
+                </Grid>
+
+                <!--  University Academic History Section  -->
+                <StackPanel Margin="0,0,0,24">
+                    <!--  Header with Add Button  -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="တက္ကသိုလ် ပညာအရည်အချင်းနှင့် ခုံနံပါတ်များ (Academic Records)" />
+
+                        <Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddAcademicRecordCommand}"
+                            Content="+ ထပ်ထည့်မည်"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                    </Grid>
+
+                    <!--  Dynamic Academic Records List  -->
+                    <ItemsControl ItemsSource="{Binding AcademicRecords}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="0,0,0,10"
+                                    Padding="12"
+                                    Background="{DynamicResource CardBackground}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.5*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.5*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--  Academic Year / Level Dropdown  -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock
+                                                Margin="0,0,0,4"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Text="တက်ရောက်သည့်နှစ်" />
+                                            <ComboBox ItemsSource="{Binding DataContext.YearLevels, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedItem="{Binding AcademicYearLevel, Mode=TwoWay}" />
+                                        </StackPanel>
+
+                                        <!--  Attempt Number  -->
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock
+                                                Margin="0,0,0,4"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Text="အကြိမ်" />
+                                            <ComboBox ItemsSource="{Binding DataContext.AttemptNumbers, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedItem="{Binding AttemptNumber, Mode=TwoWay}" />
+                                        </StackPanel>
+
+                                        <!--  Roll Number  -->
+                                        <StackPanel Grid.Column="4">
+                                            <TextBlock
+                                                Margin="0,0,0,4"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Text="ခုံနံပါတ်" />
+                                            <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding RollNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+
+                                        <!--  Attended Academic Year  -->
+                                        <StackPanel Grid.Column="6">
+                                            <TextBlock
+                                                Margin="0,0,0,4"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Text="ပညာသင်နှစ် (ဥပမာ- 2023-2024)" />
+                                            <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding AttendedYear, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+
+                                        <!--  Is Honours CheckBox  -->
+                                        <CheckBox
+                                            Grid.Column="8"
+                                            Margin="10,20,10,0"
+                                            VerticalAlignment="Center"
+                                            Content="ဂုဏ်ထူး"
+                                            IsChecked="{Binding IsHonours}" />
+
+                                        <!--  Delete Row Button  -->
+                                        <Button
+                                            Grid.Column="9"
+                                            Margin="0,16,0,0"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding DataContext.RemoveAcademicRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Content="✕"
+                                            Foreground="Red" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!--  SECTION 5: Document Photos & Previews (NRC Front & Back)  -->
+                <TextBlock
+                    Margin="0,10,0,12"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryAccent}"
+                    Text="၅။ မှတ်ပုံတင် ဓာတ်ပုံများ" />
+
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  NRC Front Card & Preview  -->
+                    <Border
+                        Grid.Column="0"
+                        Padding="12"
+                        Background="#0DFFFFFF"
+                        BorderBrush="#33A0A0A0"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="0,0,0,8"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="မှတ်ပုံတင် (အရှေ့)" />
+
+                            <!--  Preview Container  -->
+                            <Border
+                                Height="110"
+                                Margin="0,0,0,10"
+                                Background="#F8F9FA"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1"
+                                ClipToBounds="True"
+                                CornerRadius="6">
+                                <Image
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Source="{Binding NrcFrontPreviewSource}"
+                                    Stretch="Uniform" />
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Command="{Binding BrowseNrcFrontCommand}"
+                                    Content="Browse Front..."
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding ClearNrcFrontCommand}"
+                                    Content="Remove"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  NRC Back Card & Preview  -->
+                    <Border
+                        Grid.Column="2"
+                        Padding="12"
+                        Background="#0DFFFFFF"
+                        BorderBrush="#33A0A0A0"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="0,0,0,8"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="မှတ်ပုံတင် (အနောက်)" />
+
+                            <!--  Preview Container  -->
+                            <Border
+                                Height="110"
+                                Margin="0,0,0,10"
+                                Background="#F8F9FA"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1"
+                                ClipToBounds="True"
+                                CornerRadius="6">
+                                <Image
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Source="{Binding NrcBackPreviewSource}"
+                                    Stretch="Uniform" />
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Command="{Binding BrowseNrcBackCommand}"
+                                    Content="Browse Back..."
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding ClearNrcBackCommand}"
+                                    Content="Remove"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+            </StackPanel>
+
+            <!--  4. Form Actions  -->
+            <StackPanel
+                Grid.Row="4"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <Button
+                    Margin="0,0,12,0"
+                    Command="{Binding SaveStudentCommand}"
+                    Content="သိမ်းဆည်းမည်"
+                    Style="{StaticResource PrimaryButtonStyle}" />
+
+                <Button
+                    Command="{Binding CancelCommand}"
+                    Content="မလုပ်တော့ပါ"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

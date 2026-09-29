@@ -14,7 +14,7 @@ namespace HostelManagementSystem.Models
 
         [Required]
         public string Name { get; set; } = string.Empty;
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_floor.jpg";
+        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_floor.png";
         public bool IsActive { get; set; } = true;
 
         [ForeignKey(nameof(BuildingId))]
