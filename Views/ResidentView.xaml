@@ -35,7 +35,7 @@
                             Margin="0,4,0,0"
                             FontSize="14"
                             Foreground="{DynamicResource TextSecondary}"
-                            Text="အဆောင်သားများ စာရင်းနှင့် ရှာဖွေမှု" />
+                            Text="အဆောင်သားများ စာရင်း" />
                     </StackPanel>
 
                     <Button
@@ -47,50 +47,113 @@
                 </Grid>
 
                 <!--  SEARCH & FILTER PANEL  -->
-                <Border
-                    Margin="0,0,0,16"
-                    BorderThickness="1"
-                    CornerRadius="8">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                <Border Margin="0,0,0,16" CornerRadius="8">
+                    <Grid VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <!--  Search Input (Using TextBoxStyle)  -->
-                            <StackPanel Grid.Column="0">
+                        <!--  Search Input (Using TextBoxStyle)  -->
+                        <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                            <ui:TextBox
+                                Height="48"
+                                VerticalContentAlignment="Center"
+                                ClearButtonEnabled="True"
+                                Icon="Search24"
+                                PlaceholderText="အမည် (သို့) မှတ်ပုံတင်ဖြင့် ရှာရန်"
+                                Text="{Binding SearchName, UpdateSourceTrigger=PropertyChanged}">
+                                <ui:TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding ApplyFilterAndReloadCommand}" />
+                                </ui:TextBox.InputBindings>
+                            </ui:TextBox>
+                        </StackPanel>
+
+                        <!--  Cascading Room Selection Dropdowns  -->
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="16,0"
+                            VerticalAlignment="Bottom"
+                            Orientation="Horizontal">
+
+                            <!--  Building Dropdown  -->
+                            <StackPanel Margin="0,0,10,0" VerticalAlignment="Bottom">
                                 <TextBlock
                                     Margin="0,0,0,6"
                                     FontSize="12"
                                     FontWeight="Medium"
-                                    Foreground="{DynamicResource TextSecondary}"
-                                    Text="အမည် (သို့) မှတ်ပုံတင်ဖြင့် ရှာရန်" />
-                                <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding SearchName, UpdateSourceTrigger=PropertyChanged}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Enter" Command="{Binding ApplyFilterAndReloadCommand}" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အဆောက်အအုံ" />
+                                <ComboBox
+                                    Width="150"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding AvailableBuildings}"
+                                    SelectedItem="{Binding SelectedBuilding, Mode=TwoWay}" />
                             </StackPanel>
 
-                            <!--  Action Buttons  -->
-                            <StackPanel
-                                Grid.Column="2"
-                                VerticalAlignment="Bottom"
-                                Orientation="Horizontal">
-                                <Button
-                                    Margin="0,0,8,0"
-                                    Command="{Binding ApplyFilterAndReloadCommand}"
-                                    Content="Search"
-                                    Style="{StaticResource PrimaryButtonStyle}" />
-                                <Button
-                                    Command="{Binding ResetFiltersCommand}"
-                                    Content="Clear"
-                                    Style="{StaticResource SecondaryButtonStyle}" />
+                            <!--  Floor Dropdown  -->
+                            <StackPanel Margin="0,0,10,0" VerticalAlignment="Bottom">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အထပ်" />
+                                <ComboBox
+                                    Width="130"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding AvailableFloors}"
+                                    SelectedItem="{Binding SelectedFloor, Mode=TwoWay}" />
                             </StackPanel>
-                        </Grid>
-                    </StackPanel>
+
+                            <!--  Room Dropdown  -->
+                            <StackPanel VerticalAlignment="Bottom">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="အခန်း" />
+                                <ComboBox
+                                    Width="130"
+                                    Height="38"
+                                    Padding="8,0"
+                                    VerticalContentAlignment="Center"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding AvailableRooms}"
+                                    SelectedItem="{Binding SelectedRoom, Mode=TwoWay}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!--  Action Buttons  -->
+                        <StackPanel
+                            Grid.Column="2"
+                            VerticalAlignment="Bottom"
+                            Orientation="Horizontal">
+                            <Button
+                                Height="38"
+                                Margin="0,0,8,0"
+                                Padding="16,0"
+                                VerticalContentAlignment="Center"
+                                Command="{Binding ApplyFilterAndReloadCommand}"
+                                Content="Search"
+                                Style="{StaticResource PrimaryButtonStyle}" />
+                            <Button
+                                Height="38"
+                                Padding="16,0"
+                                VerticalContentAlignment="Center"
+                                Command="{Binding ResetFiltersCommand}"
+                                Content="Clear"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
+                    </Grid>
                 </Border>
 
                 <!--  RESIDENTS DATA TABLE  -->

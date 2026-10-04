@@ -5,6 +5,7 @@ using HostelManagementSystem.Database;
 using HostelManagementSystem.DTOs;
 using HostelManagementSystem.Messages;
 using HostelManagementSystem.Models;
+using HostelManagementSystem.Services;
 using HostelManagementSystem.Utilities;
 using HostelManagementSystem.ViewModels.RoomDetailViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -525,6 +526,7 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             await NavigateBackAsync();
         }
 
+        // RelayCommand မလို class ထဲမှာဘဲ ခေါ်သုံးထား
         private async Task NavigateBackAsync()
         {
             // If explicit back callback was passed (e.g. from ResidentViewModel), run it
@@ -543,6 +545,29 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task ExportFormTemplateAsync()
+        {
+            try
+            {
+                ExportPDFService exportPDFService = new ExportPDFService();
+                await exportPDFService.ExportFormTemplateAsPdfAsync();
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(
+                    $"Unable to save the PDF. Please close the file which is open in another program and try again.\n\nError: {ex.Message}",
+                    "File Access Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PDF သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}", "PDF Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            await Task.CompletedTask;
+        }
         // ==========================================
         // Mapping Helper
         // ==========================================

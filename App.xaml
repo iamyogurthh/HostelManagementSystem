@@ -3,23 +3,35 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:HostelManagementSystem"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    StartupUri="MainWindow.xaml">
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+
     <Application.Resources>
+
         <ResourceDictionary>
+
             <ResourceDictionary.MergedDictionaries>
-                <!--  1. WPF UI Base Theme Brushes & Controls FIRST  -->
-                <ui:ThemesDictionary Theme="Light" />
+
+                <!--  WPF UI Base Theme  -->
+                <ui:ThemesDictionary Theme="Unknown" />
                 <ui:ControlsDictionary />
 
-                <!--  2. Application & Custom Styles SECOND  -->
+                <!--  Application Resources  -->
                 <ResourceDictionary Source="/HostelManagementSystem;component/Resources/DataTemplates.xaml" />
+
                 <ResourceDictionary Source="/HostelManagementSystem;component/Styles/SidebarStyles.xaml" />
+
                 <ResourceDictionary Source="/HostelManagementSystem;component/Styles/ButtonStyles.xaml" />
+
                 <ResourceDictionary Source="/HostelManagementSystem;component/Styles/Themes/LightTheme.xaml" />
+
                 <ResourceDictionary Source="/HostelManagementSystem;component/Styles/TextBoxStyles.xaml" />
+
                 <ResourceDictionary Source="/HostelManagementSystem;component/Styles/InteractiveCardStyle.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
+
     </Application.Resources>
+
 </Application>

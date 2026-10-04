@@ -11,18 +11,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\Pyidaungsu.ttf" />
     <None Remove="Images\tht_logo.png" />
     <None Remove="Image\DefaultImages\default_building.png" />
     <None Remove="Image\DefaultImages\default_floor.png" />
     <None Remove="Image\DefaultImages\default_room.png" />
+    <None Remove="Image\hms_logo.png" />
     <None Remove="Image\tht_logo.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\Fonts\Pyidaungsu.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github\copilot-instructions.md" />
     <None Include=".github\skills\abc\SKILL.md" />
   </ItemGroup>
 
@@ -33,6 +39,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="QuestPDF" Version="2026.9.1" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.12" />
     <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
@@ -40,7 +48,14 @@
     <Resource Include="Image\DefaultImages\default_building.png" />
     <Resource Include="Image\DefaultImages\default_floor.png" />
     <Resource Include="Image\DefaultImages\default_room.png" />
+    <Resource Include="Image\hms_logo.png" />
     <Resource Include="Image\tht_logo.png" />
   </ItemGroup>
 
+<ItemGroup>
+  <Compile Remove="HostelManagementSystem.Tests\**" />
+  <EmbeddedResource Remove="HostelManagementSystem.Tests\**" />
+  <None Remove="HostelManagementSystem.Tests\**" />
+  <Page Remove="HostelManagementSystem.Tests\**" />
+</ItemGroup>
 </Project>

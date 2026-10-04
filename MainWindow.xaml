@@ -50,18 +50,20 @@
                 <StackPanel Grid.Row="0" Margin="0,10,0,0">
                     <!--  App Title Logo Header  -->
                     <StackPanel
-                        Margin="10,0,0,0"
+                        Margin="10,0,0,10"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <Image
-                            Width="50"
-                            Height="50"
-                            Source="pack://application:,,,/Image/tht_logo.png" />
-                        <TextBlock
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,5,0"
+                            Source="pack://application:,,,/Image/hms_logo.png" />
+                        <!-- <TextBlock
                             VerticalAlignment="Center"
                             FontWeight="Bold"
                             Foreground="{DynamicResource TextPrimary}"
-                            Text="HMS" />
+                            Text="Hostel Management" />-->
                     </StackPanel>
 
                     <!--  Navigation Items  -->
@@ -108,6 +110,21 @@
                         GroupName="SidebarNav"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M9.671,4.136 A2.34,2.34 0 0,1 14.33,4.136 A2.34,2.34 0 0,0 17.649,6.051 A2.34,2.34 0 0,1 19.979,10.084 A2.34,2.34 0 0,0 19.979,13.915 A2.34,2.34 0 0,1 17.649,17.948 A2.34,2.34 0 0,0 14.33,19.863 A2.34,2.34 0 0,1 9.671,19.863 A2.34,2.34 0 0,0 6.351,17.948 A2.34,2.34 0 0,1 4.021,13.915 A2.34,2.34 0 0,0 4.021,10.084 A2.34,2.34 0 0,1 6.351,6.051 A2.34,2.34 0 0,0 9.671,4.136 Z M12,9 A3,3 0 1,1 12,15 A3,3 0 1,1 12,9 Z" />
+
+                    <Border
+                        Margin="10,0,10,15"
+                        Padding="10,6"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="1"
+                        CornerRadius="6">
+
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="11"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Text="Version dev1.0.0" />
+
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>
@@ -116,7 +133,7 @@
         <Grid Grid.Column="1">
             <!--  Main Content View Frame  -->
             <Border Background="{DynamicResource WindowBackground}">
-                <ContentControl Margin="20" Content="{Binding CurrentView}" />
+                <ContentControl Margin="16,16,0,16" Content="{Binding CurrentView}" />
             </Border>
 
             <!--  Loading Spinner Overlay (Applies ONLY to Column 1)  -->

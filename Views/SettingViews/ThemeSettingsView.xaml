@@ -1,0 +1,70 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.SettingViews.ThemeSettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+
+        <!--  Header  -->
+        <TextBlock
+            Margin="0,0,0,4"
+            FontSize="16"
+            FontWeight="Bold"
+            Foreground="{DynamicResource TextPrimary}"
+            Text="Theme" />
+
+        <TextBlock
+            Margin="0,0,0,16"
+            FontSize="13"
+            Foreground="{DynamicResource TextSecondary}"
+            Text="Customize the appearance of the application." />
+
+        <!--  Dark Mode  -->
+        <Border
+            Padding="16"
+            Background="{DynamicResource CardBackground}"
+            BorderBrush="{DynamicResource BorderColor}"
+            BorderThickness="1"
+            CornerRadius="8">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Description  -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="Dark Mode" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Switch between light and dark themes." />
+
+                </StackPanel>
+
+                <!--  Toggle  -->
+                <CheckBox
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    IsChecked="{Binding IsDarkMode, Mode=TwoWay}" />
+
+            </Grid>
+
+        </Border>
+
+    </StackPanel>
+
+</UserControl>

@@ -70,7 +70,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="Total Students" />
+                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="ကျောင်းသား အရေအတွက်" />
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="24"
@@ -80,9 +80,9 @@
                             <TextBlock
                                 Margin="0,6,0,0"
                                 FontSize="11"
-                                FontWeight="SemiBold"
+                                FontWeight="Light"
                                 Foreground="#10B981"
-                                Text="Active Residents" />
+                                Text="လက်ရှိနေထိုင်သူ" />
                         </StackPanel>
                         <ui:SymbolIcon
                             Grid.Column="1"
@@ -108,7 +108,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="Occupancy Rate" />
+                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="နေထိုင်မှုနှုန်း" />
                             <DockPanel Margin="0,4,0,0">
                                 <TextBlock
                                     FontSize="24"
@@ -153,7 +153,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="Available Rooms" />
+                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="ရနိုင်သောအခန်းများ" />
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="24"
@@ -191,7 +191,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="Total Rooms" />
+                            <TextBlock Foreground="{DynamicResource TextSecondary}" Text="အခန်းစုစုပေါင်း" />
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="24"
@@ -235,7 +235,7 @@
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextPrimary}"
-                            Text="Building Occupancy Status" />
+                            Text="အဆောက်အဦး နေထိုင်မှု အခြေအနေ" />
 
                         <ItemsControl Margin="0,16,0,0" ItemsSource="{Binding BuildingOccupancies}">
                             <ItemsControl.ItemTemplate>
@@ -291,7 +291,7 @@
                             FontSize="16"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextPrimary}"
-                            Text="Gender Distribution" />
+                            Text="ကျား၊မ ဦးရေ " />
 
                         <UniformGrid
                             Margin="0,20,0,8"

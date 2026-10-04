@@ -29,6 +29,12 @@
                     DockPanel.Dock="Right"
                     Style="{StaticResource SecondaryButtonStyle}" />
 
+                <Button
+                    Margin="0,0,12,0"
+                    Command="{Binding SaveStudentCommand}"
+                    Content="သိမ်းဆည်းမည်"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource PrimaryButtonStyle}" />
                 <!--  ဘယ်ဘက်တွင် ကျန်ရှိနေမည့် TextBlock  -->
                 <TextBlock
                     VerticalAlignment="Center"
@@ -112,7 +118,7 @@
                             <Button
                                 Margin="0,0,10,0"
                                 Command="{Binding BrowseStudentPhotoCommand}"
-                                Content="Browse Image..."
+                                Content="ပုံထည့်မည်"
                                 Style="{StaticResource SecondaryButtonStyle}" />
 
                             <Button
@@ -697,7 +703,7 @@
                         <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
                             <Button
                                 Command="{Binding BrowseHighSchoolCertCommand}"
-                                Content="Browse Cert..."
+                                Content="ပုံထည့်မည်"
                                 Style="{StaticResource SecondaryButtonStyle}" />
                             <Button
                                 Margin="8,0,0,0"
@@ -845,6 +851,7 @@
                                             Margin="10,20,10,0"
                                             VerticalAlignment="Center"
                                             Content="ဂုဏ်ထူး"
+                                            Foreground="{DynamicResource TextPrimary}"
                                             IsChecked="{Binding IsHonours}" />
 
                                         <!--  Delete Row Button  -->
@@ -912,7 +919,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button
                                     Command="{Binding BrowseNrcFrontCommand}"
-                                    Content="Browse Front..."
+                                    Content="ပုံထည့်မည်"
                                     Style="{StaticResource SecondaryButtonStyle}" />
                                 <Button
                                     Margin="8,0,0,0"
@@ -957,7 +964,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button
                                     Command="{Binding BrowseNrcBackCommand}"
-                                    Content="Browse Back..."
+                                    Content="ပုံထည့်မည်"
                                     Style="{StaticResource SecondaryButtonStyle}" />
                                 <Button
                                     Margin="8,0,0,0"

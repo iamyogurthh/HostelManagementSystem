@@ -207,7 +207,7 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
                         .AsNoTracking()
                         .Include(s => s.AcademicRecords)
                         .Include(s => s.Room)
-                            .ThenInclude(r => r.Floor)
+                            .ThenInclude(r => r!.Floor)
                                 .ThenInclude(f => f.Building)
                         .FirstOrDefaultAsync(s => s.Id == StudentId);
                 }
@@ -411,6 +411,7 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
                         existingStudent.High_school_certificate_img = dto.High_school_certificate_img;
                         existingStudent.NRC_img_front = dto.NRC_img_front;
                         existingStudent.NRC_img_back = dto.NRC_img_back;
+                        existingStudent.UpdatedAt = DateTime.Now;
 
                         existingStudent.AcademicRecords.Clear();
                         foreach (var ar in dto.AcademicRecords)

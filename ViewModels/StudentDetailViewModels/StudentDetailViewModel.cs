@@ -9,12 +9,18 @@ using HostelManagementSystem.Utilities;
 using HostelManagementSystem.ViewModels.RoomDetailViewModels;
 using HostelManagementSystem.ViewModels.StudentViewModels;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Drawing;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
 {
@@ -183,7 +189,7 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
             {
                 try
                 {
-                    var studentService = new StudentService(); // Or inject via DI
+                    var studentService = new StudentService();
                     await studentService.DeleteStudentWithRelatedDataAsync(Student.Id);
 
                     // Update the Dashboard
@@ -199,6 +205,23 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
             }, "ကျောင်းသား အချက်အလက် ဖျက်နေပါသည်...");
         }
 
+        [RelayCommand]
+        private async Task ExportStudentAsync()
+        {
+            if (Student == null) return;
+
+            try
+            {
+                ExportPDFService exportPDFService = new ExportPDFService();
+                await exportPDFService.ExportStudentAsPdfAsync(Student, ProfileImagePath!, Building, Floor, Room);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PDF သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}", "PDF Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            await Task.CompletedTask;
+        }
         // =========================================================
         // NAVIGATION COMMANDS
         // =========================================================

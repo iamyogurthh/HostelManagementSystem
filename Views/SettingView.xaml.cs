@@ -23,13 +23,9 @@ namespace HostelManagementSystem.Views
         {
             InitializeComponent();
 
-            ThemeCheckBox.IsChecked = ThemeManager.IsDarkMode;
+            
         }
 
-        private void ThemeCheckBox_Click(object sender, RoutedEventArgs e)
-        {
-            bool isDark = ThemeCheckBox.IsChecked ?? false;
-            ThemeManager.SetTheme(isDark);
-        }
+       
     }
 }

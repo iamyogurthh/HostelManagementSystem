@@ -40,6 +40,8 @@ namespace HostelManagementSystem.ViewModels
 
             CurrentView = Dashboard;
             IsActive = true;
+
+
         }
 
         public MainViewModel() : this(

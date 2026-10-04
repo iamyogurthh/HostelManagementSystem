@@ -48,10 +48,136 @@ namespace HostelManagementSystem.ViewModels
         public bool HasStudents => Students != null && Students.Count > 0;
         public bool HasNoStudents => !HasStudents;
 
+        // ==========================================
+        // Cascading Selection Collections & Properties
+        // ==========================================
+        public ObservableCollection<Building> AvailableBuildings { get; } = new();
+        public ObservableCollection<Floor> AvailableFloors { get; } = new();
+        public ObservableCollection<Room> AvailableRooms { get; } = new();
+
+        [ObservableProperty]
+        private Building? _selectedBuilding;
+
+        [ObservableProperty]
+        private Floor? _selectedFloor;
+
+        [ObservableProperty]
+        private Room? _selectedRoom;
+
         public ResidentViewModel()
         {
-            _ = LoadDataAsync();
+            _ = InitializeViewModelAsync();
         }
+
+        private async Task InitializeViewModelAsync()
+        {
+            await LoadBuildingsAsync();
+            await LoadDataAsync();
+        }
+
+        #region Cascading Property Changes
+
+        partial void OnSelectedBuildingChanged(Building? value)
+        {
+            SelectedFloor = null;
+            AvailableFloors.Clear();
+            SelectedRoom = null;
+            AvailableRooms.Clear();
+
+            if (value != null)
+            {
+                _ = LoadFloorsForBuildingAsync(value);
+            }
+        }
+
+        partial void OnSelectedFloorChanged(Floor? value)
+        {
+            SelectedRoom = null;
+            AvailableRooms.Clear();
+
+            if (value != null)
+            {
+                _ = LoadRoomsForFloorAsync(value);
+            }
+        }
+
+        #endregion
+
+        #region Cascading Data Loaders
+
+        private async Task LoadBuildingsAsync()
+        {
+            try
+            {
+                await using var db = new AppDbContext();
+                var buildings = await db.Buildings.AsNoTracking().ToListAsync();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    AvailableBuildings.Clear();
+                    foreach (var b in buildings)
+                    {
+                        AvailableBuildings.Add(b);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load buildings: {ex.Message}");
+            }
+        }
+
+        private async Task LoadFloorsForBuildingAsync(Building building)
+        {
+            try
+            {
+                await using var db = new AppDbContext();
+                var floors = await db.Floors
+                    .Where(f => f.BuildingId == building.Id)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    AvailableFloors.Clear();
+                    foreach (var f in floors)
+                    {
+                        AvailableFloors.Add(f);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load floors: {ex.Message}");
+            }
+        }
+
+        private async Task LoadRoomsForFloorAsync(Floor floor)
+        {
+            try
+            {
+                await using var db = new AppDbContext();
+                var rooms = await db.Rooms
+                    .Where(r => r.FloorId == floor.Id)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    AvailableRooms.Clear();
+                    foreach (var r in rooms)
+                    {
+                        AvailableRooms.Add(r);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load rooms: {ex.Message}");
+            }
+        }
+
+        #endregion
 
         partial void OnPageSizeChanged(int value)
         {
@@ -70,6 +196,7 @@ namespace HostelManagementSystem.ViewModels
         private async Task ResetFiltersAsync()
         {
             SearchName = string.Empty;
+            SelectedBuilding = null; // Clears Floor and Room via OnSelectedBuildingChanged
             CurrentPage = 1;
             await LoadDataAsync();
         }
@@ -84,12 +211,30 @@ namespace HostelManagementSystem.ViewModels
 
                 IQueryable<Student> query = db.Students.AsNoTracking();
 
+                // 1. Text Search Filter (Name / NRC)
                 if (!string.IsNullOrWhiteSpace(SearchName))
                 {
                     string term = SearchName.Trim();
                     query = query.Where(s =>
                         (s.Name != null && EF.Functions.Like(s.Name, $"%{term}%")) ||
                         (s.NRC != null && EF.Functions.Like(s.NRC, $"%{term}%")));
+                }
+
+                // 2. Cascading Location Filters
+                if (SelectedRoom != null)
+                {
+                    // Specific Room Selected
+                    query = query.Where(s => s.RoomId == SelectedRoom.Id);
+                }
+                else if (SelectedFloor != null)
+                {
+                    // Specific Floor Selected (Matches all rooms on this floor)
+                    query = query.Where(s => s.Room != null && s.Room.FloorId == SelectedFloor.Id);
+                }
+                else if (SelectedBuilding != null)
+                {
+                    // Specific Building Selected (Matches all rooms in this building)
+                    query = query.Where(s => s.Room != null && s.Room.Floor != null && s.Room.Floor.BuildingId == SelectedBuilding.Id);
                 }
 
                 TotalCount = await query.CountAsync();

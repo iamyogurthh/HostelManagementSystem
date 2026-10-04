@@ -1,11 +1,35 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CommunityToolkit.Mvvm.Input;
+using HostelManagementSystem.ViewModels.SettingViewModels;
 
-namespace HostelManagementSystem.ViewModels
+namespace HostelManagementSystem.ViewModels;
+
+public partial class SettingViewModel : ObservableObject
 {
-    public partial class SettingViewModel: ObservableObject
+    public ThemeSettingsViewModel Theme { get; }
+
+    public LicenseSettingsViewModel License { get; }
+
+    [ObservableProperty]
+    private ObservableObject _currentSettingViewModel;
+
+    public SettingViewModel()
     {
+        Theme = new ThemeSettingsViewModel();
+        License = new LicenseSettingsViewModel();
+
+        _currentSettingViewModel = Theme;
+    }
+
+    [RelayCommand]
+    private void SelectTheme()
+    {
+        CurrentSettingViewModel = Theme;
+    }
+
+    [RelayCommand]
+    private void SelectLicense()
+    {
+        CurrentSettingViewModel = License;
     }
 }

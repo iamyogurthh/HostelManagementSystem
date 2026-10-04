@@ -1,0 +1,232 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.SettingViews.LicenseSettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+
+        <!--  Header  -->
+        <TextBlock
+            Margin="0,0,0,4"
+            FontSize="16"
+            FontWeight="Bold"
+            Foreground="{DynamicResource TextPrimary}"
+            Text="License" />
+
+        <TextBlock
+            Margin="0,0,0,16"
+            FontSize="13"
+            Foreground="{DynamicResource TextSecondary}"
+            Text="View the current license and activation information." />
+
+        <!--  License Information  -->
+        <Border
+            Padding="16"
+            Background="{DynamicResource CardBackground}"
+            BorderBrush="{DynamicResource BorderColor}"
+            BorderThickness="1"
+            CornerRadius="8">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <!--  Product  -->
+                <Grid Grid.Row="0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Product" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding ProductName}" />
+                </Grid>
+
+
+                <!--  Status  -->
+                <Grid Grid.Row="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Status" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Status}" />
+                </Grid>
+
+
+                <!--  License Key  -->
+                <Grid Grid.Row="4">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="License Key" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding LicenseKey}"
+                        TextWrapping="Wrap" />
+                </Grid>
+
+                <!--  License Key  -->
+                <Grid Grid.Row="6">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="License Type" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding LicenseType}"
+                        TextWrapping="Wrap" />
+                </Grid>
+
+
+                <!--  Customer  -->
+                <Grid Grid.Row="8">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Customer" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding CustomerName}" />
+                </Grid>
+
+
+                <!--  Expiration  -->
+                <Grid Grid.Row="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Expiration" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Expiration}" />
+                </Grid>
+
+
+                <!--  Activated  -->
+                <Grid Grid.Row="12">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Activated" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding ActivatedDate}" />
+                </Grid>
+
+
+                <!--  Last Validated  -->
+                <Grid Grid.Row="14">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Last Validated" />
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding LastValidated}" />
+                </Grid>
+
+            </Grid>
+
+        </Border>
+
+    </StackPanel>
+
+</UserControl>

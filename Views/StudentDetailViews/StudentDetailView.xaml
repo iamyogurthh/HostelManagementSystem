@@ -60,6 +60,11 @@
                     Orientation="Horizontal">
                     <Button
                         Margin="0,0,12,0"
+                        Command="{Binding ExportStudentCommand}"
+                        Content="Save As PDF"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Margin="0,0,12,0"
                         Command="{Binding EditStudentCommand}"
                         Content="ပြင်ဆင်ရန်"
                         Style="{StaticResource PrimaryButtonStyle}" />
@@ -156,6 +161,28 @@
                                     FontWeight="Medium"
                                     Foreground="{DynamicResource TextPrimary}"
                                     Text="{Binding Student.Major}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="Created At: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.CreatedAt}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="Updated At: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.UpdatedAt, FallbackValue='-'}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
