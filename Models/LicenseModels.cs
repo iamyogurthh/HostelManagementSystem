@@ -2,6 +2,7 @@
 
 namespace HostelManagementSystem.Models;
 
+// not include in the database context, this is just a payload for license activation and validation operations
 public class LicenseActivationRequest
 {
     public string LicenseKey { get; set; } = string.Empty;

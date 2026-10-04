@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HostelManagementSystem.Models
@@ -10,13 +8,19 @@ namespace HostelManagementSystem.Models
         [Key]
         public int Id { get; set; }
 
+        // =========================================================
+        // BUILDING DETAILS
+        // =========================================================
         [Required]
         public string Name { get; set; } = string.Empty;
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_building.png";
+
+        public string Img { get; set; } = "pack://application:,,,/Image/DefaultImages/default_building.png";
+
         public bool IsActive { get; set; } = true;
 
-        //Navigating Property
+        // =========================================================
+        // NAVIGATION PROPERTIES
+        // =========================================================
         public List<Floor> Floors { get; set; } = new();
-
     }
 }

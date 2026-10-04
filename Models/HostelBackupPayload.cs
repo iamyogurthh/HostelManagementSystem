@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// not include in the database context, this is just a payload for backup and restore operations
 namespace HostelManagementSystem.Models
 {
     public class HostelBackupPayload

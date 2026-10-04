@@ -12,8 +12,14 @@ namespace HostelManagementSystem.Models
         public int Id { get; set; }
 
         // =========================================================
-        // ROOM RELATIONSHIP
+        // CATEGORY & ROOM RELATIONSHIPS
         // =========================================================
+        [Required]
+        public int StudentCategoryId { get; set; }
+
+        [ForeignKey(nameof(StudentCategoryId))]
+        public StudentCategory? StudentCategory { get; set; }
+
         public int? RoomId { get; set; }
 
         [ForeignKey(nameof(RoomId))]
@@ -26,7 +32,7 @@ namespace HostelManagementSystem.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_student.png";
+        public string Img { get; set; } = "pack://application:,,,/Image/DefaultImages/default_student.png";
 
         [Required]
         public DateTime Birthday { get; set; }
@@ -73,9 +79,12 @@ namespace HostelManagementSystem.Models
         public string? High_school_city { get; set; }
 
         // =========================================================
-        // ACADEMIC HISTORY RELATIONSHIP (1-to-Many)
+        // RELATIONSHIPS (1-to-Many)
         // =========================================================
         public List<StudentAcademicRecord> AcademicRecords { get; set; } = new();
+        public List<StudentAccommodation> Accommodations { get; set; } = new();
+        public List<FeeCharge> FeeCharges { get; set; } = new();
+        public List<Payment> Payments { get; set; } = new();
 
         // =========================================================
         // STATUS & METADATA

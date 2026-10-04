@@ -1,4 +1,6 @@
-﻿namespace HostelManagementSystem.Models
+﻿// not included in the database context, this is just a payload for NRC township information
+
+namespace HostelManagementSystem.Models
 {
     public class NrcTownship
     {

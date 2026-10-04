@@ -12,27 +12,44 @@ namespace HostelManagementSystem.Models
 
         public int FloorId { get; set; }
 
+        // =========================================================
+        // ROOM TYPE RELATIONSHIP
+        // =========================================================
+        public int RoomTypeId { get; set; }
+
+        [ForeignKey(nameof(RoomTypeId))]
+        public RoomType RoomType { get; set; } = null!;
+
+        // =========================================================
+        // ROOM DETAILS
+        // =========================================================
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        public string Img { get; set; } = "pack://application:,,,/Images/DefaultImages/default_room.png";
+        public string Img { get; set; } = "pack://application:,,,/Image/DefaultImages/default_room.png";
 
         public int Capacity { get; set; }
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation Properties
+        // =========================================================
+        // NAVIGATION PROPERTIES
+        // =========================================================
         [ForeignKey(nameof(FloorId))]
         public Floor Floor { get; set; } = null!;
 
-        // Navigation Property for assigned Students
+        // Assigned Students
         public List<Student> Students { get; set; } = new();
 
-        // Computed property for UI resident count calculation
+        // Accommodation History & Billing Tracking
+        public List<StudentAccommodation> Accommodations { get; set; } = new();
+
+        // =========================================================
+        // COMPUTED PROPERTIES (UI & WPF LOGIC)
+        // =========================================================
         [NotMapped]
         public int CurrentResidentsCount => Students?.Count(s => s.IsActive) ?? 0;
 
-        // Computed helper for WPF availability logic
         [NotMapped]
         public bool IsAvailableForBooking =>
             IsActive &&
