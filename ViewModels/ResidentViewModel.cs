@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using HostelManagementSystem.ViewModels.StudentCategoryViewModels;
 
 namespace HostelManagementSystem.ViewModels
 {
@@ -249,6 +250,7 @@ namespace HostelManagementSystem.ViewModels
                         .ThenInclude(r => r!.Floor)
                             .ThenInclude(f => f!.Building)
                     .Include(s => s.AcademicRecords)
+                    .Include(s => s.StudentCategory)
                     .ToListAsync();
 
                 Students = new ObservableCollection<Student>(items);
@@ -398,6 +400,8 @@ namespace HostelManagementSystem.ViewModels
             WeakReferenceMessenger.Default.Send(new NavigateMessage(editVm));
         }
 
+
+
         [RelayCommand]
         private async Task DeleteStudentAsync(int studentId)
         {
@@ -431,6 +435,26 @@ namespace HostelManagementSystem.ViewModels
             }, "အချက်အလက်များ ဖျက်နေပါသည်...");
         }
 
+        [RelayCommand]
+        private async Task OpenStudentCategoryManagement()
+        {
+            var studentCategoryViewModel =
+                new StudentCategoryViewModel(async () =>
+                {
+                    // Reload students so StudentCategory.Name is fresh
+                    await LoadDataAsync();
+
+                    WeakReferenceMessenger.Default.Send(
+                        new NavigateMessage(this));
+                });
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(studentCategoryViewModel));
+
+            await studentCategoryViewModel
+                .LoadCategoriesCommand
+                .ExecuteAsync(null);
+        }
         #endregion
     }
 }

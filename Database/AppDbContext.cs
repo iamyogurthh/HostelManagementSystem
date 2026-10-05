@@ -13,6 +13,7 @@ namespace HostelManagementSystem.Database
 
         public DbSet<RoomType> RoomTypes { get; set; } = null!;
         public DbSet<Student> Students { get; set; } = null!;
+        public DbSet<StudentCategory> StudentCategories { get; set; } = null!;
         public DbSet<StudentAcademicRecord> StudentAcademicRecords { get; set; } = null!;
         public DbSet<StudentAccommodation> StudentAccommodations { get; set; } = null!;
         public DbSet<FeeRule> FeeRules { get; set; } = null!;
@@ -20,6 +21,7 @@ namespace HostelManagementSystem.Database
         public DbSet<Payment> Payments { get; set; } = null!;
         public DbSet<PaymentAllocation> PaymentAllocations { get; set; } = null!;
 
+       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Set database path to %AppData%/HostelManagementSystem/hostel.db

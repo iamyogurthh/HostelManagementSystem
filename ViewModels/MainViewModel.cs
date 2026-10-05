@@ -77,6 +77,12 @@ namespace HostelManagementSystem.ViewModels
 
                 case "resident":
                     SetCurrentView(Resident);
+
+                    if (Resident.LoadDataCommand.CanExecute(null))
+                    {
+                        await Resident.LoadDataCommand.ExecuteAsync(null);
+                    }
+
                     break;
 
                 case "setting":

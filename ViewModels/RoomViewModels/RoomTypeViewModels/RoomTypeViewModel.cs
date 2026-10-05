@@ -17,23 +17,28 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
 {
     public partial class RoomTypeViewModel : ObservableObject
     {
-        private readonly RoomViewModel _previousViewModel;
+        // Callback used to return to the ViewModel that opened this page.
+        private readonly Func<Task> _navigateBackCallback;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasRoomTypes))]
         [NotifyPropertyChangedFor(nameof(HasNoRoomTypes))]
         private ObservableCollection<RoomType> _roomTypes = new();
 
-        public bool HasRoomTypes => RoomTypes != null && RoomTypes.Count > 0;
+        public bool HasRoomTypes =>
+            RoomTypes.Count > 0;
 
-        public bool HasNoRoomTypes => !HasRoomTypes;
+        public bool HasNoRoomTypes =>
+            RoomTypes.Count == 0;
 
-        public RoomTypeViewModel(RoomViewModel previousViewModel)
+        public RoomTypeViewModel(
+            Func<Task> navigateBackCallback)
         {
-            _previousViewModel = previousViewModel
-                ?? throw new ArgumentNullException(nameof(previousViewModel));
+            _navigateBackCallback = navigateBackCallback
+                ?? throw new ArgumentNullException(nameof(navigateBackCallback));
 
-            RoomTypes.CollectionChanged += (s, e) => NotifyStateChanges();
+            RoomTypes.CollectionChanged += (s, e) =>
+                NotifyStateChanges();
         }
 
         private void NotifyStateChanges()
@@ -42,13 +47,16 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
             OnPropertyChanged(nameof(HasNoRoomTypes));
         }
 
-        // Load all active Room Types
+        // ============================================================
+        // LOAD ROOM TYPES
+        // ============================================================
+
         [RelayCommand]
         public async Task LoadRoomTypesAsync()
         {
             await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
-                using var db = new AppDbContext();
+                await using var db = new AppDbContext();
 
                 var roomTypeList = await db.RoomTypes
                     .AsNoTracking()
@@ -68,7 +76,10 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
             }, "အခန်းအမျိုးအစားများ ရယူနေပါသည်...");
         }
 
-        // Open Add Room Type Form
+        // ============================================================
+        // CREATE
+        // ============================================================
+
         [RelayCommand]
         private void OpenCreateRoomTypeForm()
         {
@@ -77,31 +88,41 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
                     new RoomTypeFormViewModel(this)));
         }
 
-        // Open Edit Room Type Form
+        // ============================================================
+        // EDIT
+        // ============================================================
+
         [RelayCommand]
-        private void OpenEditRoomTypeForm(RoomType roomType)
+        private void OpenEditRoomTypeForm(RoomType? roomType)
         {
             if (roomType == null)
                 return;
 
             WeakReferenceMessenger.Default.Send(
                 new NavigateMessage(
-                    new RoomTypeFormViewModel(this, roomType)));
+                    new RoomTypeFormViewModel(
+                        this,
+                        roomType)));
         }
 
-        // Delete Room Type
+        // ============================================================
+        // DELETE
+        // ============================================================
+
         [RelayCommand]
-        public async Task DeleteRoomTypeAsync(RoomType roomType)
+        public async Task DeleteRoomTypeAsync(
+            RoomType? roomType)
         {
             if (roomType == null)
                 return;
 
             try
             {
-                using var db = new AppDbContext();
+                await using var db = new AppDbContext();
 
-                // A Room Type cannot be deleted while an active Room is using it.
-                var isUsed = await db.Rooms
+                // A Room Type cannot be deleted while
+                // an active Room is using it.
+                bool isUsed = await db.Rooms
                     .AnyAsync(r =>
                         r.RoomTypeId == roomType.Id &&
                         r.IsActive);
@@ -141,10 +162,12 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
             {
                 try
                 {
-                    using var db = new AppDbContext();
+                    await using var db = new AppDbContext();
 
-                    var targetRoomType = await db.RoomTypes
-                        .FirstOrDefaultAsync(rt => rt.Id == roomType.Id);
+                    var targetRoomType =
+                        await db.RoomTypes
+                            .FirstOrDefaultAsync(rt =>
+                                rt.Id == roomType.Id);
 
                     if (targetRoomType == null)
                         return;
@@ -156,7 +179,6 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
 
                     RoomTypes.Remove(roomType);
 
-                    // Notify other parts of the application
                     WeakReferenceMessenger.Default.Send(
                         new DatabaseUpdatedMessage(
                             "RoomType",
@@ -175,13 +197,14 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels
             }, "အခန်းအမျိုးအစားဖျက်နေပါသည်...");
         }
 
-        // Return to the exact Room View that opened this page
+        // ============================================================
+        // BACK
+        // ============================================================
+
         [RelayCommand]
-        private void Back()
+        private async Task BackAsync()
         {
-            WeakReferenceMessenger.Default.Send(
-                new NavigateMessage(_previousViewModel));
+            await _navigateBackCallback();
         }
     }
 }
-

@@ -148,6 +148,19 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
         private bool _isSaving;
 
         // ==========================================
+        // Student Category
+        // ==========================================
+
+        [ObservableProperty]
+        private ObservableCollection<StudentCategory> _availableStudentCategories = new();
+
+        [ObservableProperty]
+        private StudentCategory? _selectedStudentCategory;
+
+        [ObservableProperty]
+        private string _studentCategoryError = string.Empty;
+
+        // ==========================================
         // 3. Dynamic Academic Records Collection
         // ==========================================
         public ObservableCollection<AcademicRecordInputViewModel> AcademicRecords { get; } = new();
@@ -204,6 +217,7 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
 
             // Load available buildings asynchronously for room selection dropdowns
             _ = LoadBuildingsAsync();
+            _ = LoadStudentCategoriesAsync();
         }
 
         // Room Context Constructors (Used from RoomDetailViewModel)
@@ -417,8 +431,9 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             bool isMotherNrcValid = MotherNrc.Validate("Mother");
             bool isDobValid = StudentDateOfBirth.Validate("Date of Birth");
             bool isMajorValid = StudentMajor.Validate("Major");
+            bool isStudentCategoryValid = ValidateStudentCategory();
 
-            if (!isStudentNrcValid || !isFatherNrcValid || !isMotherNrcValid || !isDobValid || !isMajorValid)
+            if (!isStudentNrcValid || !isFatherNrcValid || !isMotherNrcValid || !isDobValid || !isMajorValid || !isStudentCategoryValid)
             {
                 
                 MessageBox.Show("ကျေးဇူးပြု၍ လိုအပ်သော အချက်အလက်များကို မှန်ကန်စွာ ဖြည့်သွင်းပါ။",
@@ -450,6 +465,8 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
                 var studentDto = new CreateStudentDto
                 {
                     RoomId = Room.Id,
+
+                    StudentCategoryId = SelectedStudentCategory!.Id,
                     Name = StudentName.Trim(),
                     Gender = SelectedGender,
                     Birthday = StudentDateOfBirth.SelectedDate ?? DateTime.MinValue,
@@ -568,6 +585,35 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
 
             await Task.CompletedTask;
         }
+
+        private async Task LoadStudentCategoriesAsync()
+        {
+            try
+            {
+                await using var db = new AppDbContext();
+
+                var categories = await db.StudentCategories
+                    .AsNoTracking()
+                    .Where(c => c.IsActive)
+                    .OrderBy(c => c.Name)
+                    .ToListAsync();
+
+                AvailableStudentCategories.Clear();
+
+                foreach (var category in categories)
+                {
+                    AvailableStudentCategories.Add(category);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"ကျောင်းသားအမျိုးအစားများ ရယူရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်:\n{ex.Message}",
+                    "အမှား",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
         // ==========================================
         // Mapping Helper
         // ==========================================
@@ -576,6 +622,8 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             return new Student
             {
                 RoomId = dto.RoomId,
+
+                StudentCategoryId = dto.StudentCategoryId,
                 Name = dto.Name,
                 Gender = dto.Gender,
                 Birthday = dto.Birthday,
@@ -626,6 +674,7 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             Parent_ph = string.Empty;
             Address = string.Empty;
             SelectedGender = string.Empty;
+            SelectedStudentCategory = null;
 
             HighSchoolRollNo = string.Empty;
             HighSchoolName = string.Empty;
@@ -659,6 +708,21 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             bitmap.EndInit();
             bitmap.Freeze(); // Multi-thread UI safety
             return bitmap;
+        }
+
+        private bool ValidateStudentCategory()
+        {
+            if (SelectedStudentCategory == null)
+            {
+                StudentCategoryError =
+                    "ကျောင်းသား/သူ အမျိုးအစား ရွေးချယ်ပါ။";
+
+                return false;
+            }
+
+            StudentCategoryError = string.Empty;
+
+            return true;
         }
     }
 }

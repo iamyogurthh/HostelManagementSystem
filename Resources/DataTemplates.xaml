@@ -7,6 +7,8 @@
     xmlns:roomViews="clr-namespace:HostelManagementSystem.Views.RoomViews"
     xmlns:roomVm="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels"
     xmlns:roomdetailVm="clr-namespace:HostelManagementSystem.ViewModels.RoomDetailViewModels"
+    xmlns:studentCategoryV="clr-namespace:HostelManagementSystem.Views.StudentCategoryViews"
+    xmlns:studentCategoryVM="clr-namespace:HostelManagementSystem.ViewModels.StudentCategoryViewModels"
     xmlns:studentDetailViews="clr-namespace:HostelManagementSystem.Views.StudentDetailViews"
     xmlns:studentDetailVm="clr-namespace:HostelManagementSystem.ViewModels.StudentDetailViewModels"
     xmlns:studentV="clr-namespace:HostelManagementSystem.Views.StudentViews"
@@ -79,6 +81,13 @@
     <DataTemplate DataType="{x:Type studentVM:EditStudentFormViewModel}">
         <studentV:EditStudentFormView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type studentCategoryVM:StudentCategoryViewModel}">
+        <studentCategoryV:StudentCategoryView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type studentCategoryVM:StudentCategoryFormViewModel}">
+        <studentCategoryV:StudentCategoryFormView />
+    </DataTemplate>
+
 
     <!--  Student Detail related pages  -->
     <DataTemplate DataType="{x:Type studentDetailVm:StudentDetailViewModel}">

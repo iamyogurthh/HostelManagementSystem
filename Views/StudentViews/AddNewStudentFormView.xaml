@@ -199,6 +199,35 @@
                     </StackPanel>
                 </Grid>
 
+                <!--  Student Category  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ကျောင်းသား/သူ အမျိုးအစား *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="38"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableStudentCategories}"
+                        SelectedItem="{Binding SelectedStudentCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding StudentCategoryError}" />
+                </Grid>
                 <!--  SECTION 2: Personal Information  -->
                 <TextBlock
                     Margin="0,10,0,12"

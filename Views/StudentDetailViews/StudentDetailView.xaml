@@ -166,6 +166,17 @@
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
+                                    Text="Category: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.StudentCategory.Name}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
                                     Text="Created At: " />
                                 <TextBlock
                                     FontSize="14"

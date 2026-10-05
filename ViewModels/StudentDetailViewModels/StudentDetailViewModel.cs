@@ -104,6 +104,7 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
                 var studentData = await db.Students
                     .AsNoTracking()
                     .Include(s => s.AcademicRecords)
+                    .Include(s => s.StudentCategory)
                     .FirstOrDefaultAsync(s => s.Id == studentId);
 
                 if (studentData != null)

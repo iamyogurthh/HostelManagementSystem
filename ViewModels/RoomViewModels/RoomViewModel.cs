@@ -158,12 +158,21 @@ namespace HostelManagementSystem.ViewModels
         [RelayCommand]
         private async Task OpenRoomTypeManagement()
         {
-            var roomTypeViewModel = new RoomTypeViewModel(this);
+            var roomTypeViewModel =
+                new RoomTypeViewModel(async () =>
+                {
+                    await LoadRoomsByFloorIdAsync();
+
+                    WeakReferenceMessenger.Default.Send(
+                        new NavigateMessage(this));
+                });
 
             WeakReferenceMessenger.Default.Send(
                 new NavigateMessage(roomTypeViewModel));
 
-            await roomTypeViewModel.LoadRoomTypesCommand.ExecuteAsync(null);
+            await roomTypeViewModel
+                .LoadRoomTypesCommand
+                .ExecuteAsync(null);
         }
     }
 }
