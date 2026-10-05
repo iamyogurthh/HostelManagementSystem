@@ -7,6 +7,8 @@ using HostelManagementSystem.Models;
 using HostelManagementSystem.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +28,15 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
         [ObservableProperty]
         private Room _room;
 
+        [ObservableProperty]
+        private ObservableCollection<RoomType> _roomTypes = new();
+
+        [ObservableProperty]
+        private RoomType? _selectedRoomType;
+
+        [ObservableProperty]
+        private string? _roomTypeError;
+
         public EditRoomFormViewModel(Building building, Floor floor, Room room)
         {
             Building = building ?? throw new ArgumentNullException(nameof(building));
@@ -38,6 +49,32 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
             ImgPath = Room.Img;
             PreviewImageSource = string.IsNullOrEmpty(Room.Img) ? DefaultRoomImg : Room.Img;
             IsActive = Room.IsActive;
+
+            _ = LoadRoomTypesAsync();
+        }
+
+        private async Task LoadRoomTypesAsync()
+        {
+            try
+            {
+                using var db = new AppDbContext();
+                var list = await db.RoomTypes.AsNoTracking().ToListAsync();
+                RoomTypes = new ObservableCollection<RoomType>(list);
+
+                // Select the existing Room's RoomType
+                if (Room != null && Room.RoomTypeId > 0)
+                {
+                    SelectedRoomType = RoomTypes.FirstOrDefault(rt => rt.Id == Room.RoomTypeId);
+                }
+                else if (RoomTypes.Any())
+                {
+                    SelectedRoomType = RoomTypes.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"အခန်းအမျိုးအစားများ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}";
+            }
         }
 
         [RelayCommand]
@@ -60,7 +97,17 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
                     .FirstOrDefault()?.ErrorMessage;
             }
 
-            if (HasErrors || !string.IsNullOrEmpty(RoomCapacityError))
+            // Room Type Validation
+            if (SelectedRoomType == null)
+            {
+                RoomTypeError = "အခန်းအမျိုးအစား ရွေးချယ်ပါ";
+            }
+            else
+            {
+                RoomTypeError = null;
+            }
+
+            if (HasErrors || !string.IsNullOrEmpty(RoomCapacityError) || !string.IsNullOrEmpty(RoomTypeError))
             {
                 return;
             }
@@ -89,6 +136,7 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
 
                         dbRoom.Name = RoomName.Trim();
                         dbRoom.Capacity = RoomCapacity;
+                        dbRoom.RoomTypeId = SelectedRoomType!.Id;
                         dbRoom.Img = savedImagePath;
                         dbRoom.IsActive = IsActive;
 
@@ -100,6 +148,7 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
                             _imageManager.DeleteImage(oldImagePath, DefaultRoomImg);
                         }
 
+                        WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Room", dbRoom.Id, DatabaseOperation.Updated));
                         isUpdatedSuccessfully = true;
                     }
                     else

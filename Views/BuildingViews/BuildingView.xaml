@@ -123,18 +123,11 @@
                                 <StackPanel>
                                     <!--  Fixed 16:9 Image Preview Area (Width: 194px, Height: 120px)  -->
                                     <Grid Height="120">
-                                        <Border ClipToBounds="True" CornerRadius="6">
-                                            <Image
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Stretch="UniformToFill">
-                                                <Image.Source>
-                                                    <BitmapImage
-                                                        CacheOption="OnLoad"
-                                                        DecodePixelWidth="300"
-                                                        UriSource="{Binding Img, TargetNullValue='pack://application:,,,/Image/DefaultImages/default_building.png'}" />
-                                                </Image.Source>
-                                            </Image>
+                                        <!--  Border.Background with ImageBrush clips perfectly to rounded corners  -->
+                                        <Border CornerRadius="6,6,0,0">
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding Img, TargetNullValue='pack://application:,,,/Image/DefaultImages/default_building.png'}" Stretch="UniformToFill" />
+                                            </Border.Background>
                                         </Border>
 
                                         <!--  Floating Action Buttons  -->
@@ -194,7 +187,6 @@
                                             </Button>
                                         </StackPanel>
                                     </Grid>
-
                                     <!--  Text Section  -->
                                     <TextBlock
                                         Margin="4,10,4,4"

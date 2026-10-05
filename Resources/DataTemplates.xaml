@@ -2,6 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:roomDetailViews="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
+    xmlns:roomTypeVM="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels"
+    xmlns:roomTypeViews="clr-namespace:HostelManagementSystem.Views.RoomViews.RoomTypeViews"
     xmlns:roomViews="clr-namespace:HostelManagementSystem.Views.RoomViews"
     xmlns:roomVm="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels"
     xmlns:roomdetailVm="clr-namespace:HostelManagementSystem.ViewModels.RoomDetailViewModels"
@@ -58,6 +60,12 @@
     <DataTemplate DataType="{x:Type roomVm:EditRoomFormViewModel}">
         <roomViews:EditRoomFormView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type roomTypeVM:RoomTypeViewModel}">
+        <roomTypeViews:RoomTypeView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type roomTypeVM:RoomTypeFormViewModel}">
+        <roomTypeViews:RoomTypeFormView />
+    </DataTemplate>
 
     <!--  Room Detail related pages  -->
     <DataTemplate DataType="{x:Type roomdetailVm:RoomDetailViewModel}">
@@ -76,5 +84,6 @@
     <DataTemplate DataType="{x:Type studentDetailVm:StudentDetailViewModel}">
         <studentDetailViews:StudentDetailView />
     </DataTemplate>
+
 
 </ResourceDictionary>

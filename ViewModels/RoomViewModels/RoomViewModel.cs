@@ -7,6 +7,7 @@ using HostelManagementSystem.Models;
 using HostelManagementSystem.Utilities;
 using HostelManagementSystem.ViewModels.RoomDetailViewModels;
 using HostelManagementSystem.ViewModels.RoomViewModels;
+using HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace HostelManagementSystem.ViewModels
 
         [ObservableProperty]
         private Floor _floor;
+
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasRooms))]
@@ -57,6 +59,7 @@ namespace HostelManagementSystem.ViewModels
                 var roomList = await db.Rooms
                     .AsNoTracking()
                     .Include(r => r.Students)
+                    .Include(r => r.RoomType)
                     .Where(r => r.IsActive && r.FloorId == Floor.Id)
                     .ToListAsync();
 
@@ -150,6 +153,17 @@ namespace HostelManagementSystem.ViewModels
 
             var roomDetailViewModel = new RoomDetailViewModel(Building, Floor, selectedRoom);
             WeakReferenceMessenger.Default.Send(new NavigateMessage(roomDetailViewModel));
+        }
+
+        [RelayCommand]
+        private async Task OpenRoomTypeManagement()
+        {
+            var roomTypeViewModel = new RoomTypeViewModel(this);
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(roomTypeViewModel));
+
+            await roomTypeViewModel.LoadRoomTypesCommand.ExecuteAsync(null);
         }
     }
 }

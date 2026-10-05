@@ -128,4 +128,49 @@
         </Style.Triggers>
     </Style>
 
+    <!--  Room Type Edit Button  -->
+    <Style x:Key="RoomTypeEditButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BorderBrush" Value="#D97706" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="12,7" />
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FEF3C7" />
+                <Setter Property="BorderBrush" Value="#D97706" />
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.7" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Room Type Delete Button  -->
+    <Style x:Key="RoomTypeDeleteButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BorderBrush" Value="#DC2626" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="12,7" />
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FEE2E2" />
+                <Setter Property="BorderBrush" Value="#DC2626" />
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.7" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

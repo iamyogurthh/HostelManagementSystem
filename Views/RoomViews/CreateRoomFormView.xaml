@@ -113,6 +113,38 @@
                         Text="{Binding RoomCapacityError}" />
                 </Grid>
 
+                <!--  Room Type Selection Field  -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းအမျိုးအစား *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding RoomTypes}"
+                        SelectedItem="{Binding SelectedRoomType}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding RoomTypeError}" />
+                </Grid>
+
                 <!--  Image Selection & Preview Section  -->
                 <Grid Margin="0,0,0,20">
                     <Grid.RowDefinitions>
