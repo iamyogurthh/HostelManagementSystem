@@ -58,7 +58,7 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
             try
             {
                 using var db = new AppDbContext();
-                var list = await db.RoomTypes.AsNoTracking().ToListAsync();
+                var list = await db.RoomTypes.AsNoTracking().Where(r => r.IsActive == true).ToListAsync();
                 RoomTypes = new ObservableCollection<RoomType>(list);
 
                 // Select the existing Room's RoomType
