@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using HostelManagementSystem.Messages;
+using HostelManagementSystem.ViewModels.FeeRuleViewModels;
 
 namespace HostelManagementSystem.ViewModels
 {
@@ -24,19 +25,22 @@ namespace HostelManagementSystem.ViewModels
         public ResidentViewModel Resident { get; }
         public SettingViewModel Setting { get; }
         public DataTransferViewModel DataTransfer { get; } 
+        public FeeRuleViewModel FeeRule { get; }
 
         public MainViewModel(
             DashboardViewModel dashboard,
             BuildingViewModel building,
             ResidentViewModel resident,
             SettingViewModel setting,
-            DataTransferViewModel dataTransfer)
+            DataTransferViewModel dataTransfer,
+            FeeRuleViewModel feeRule)
         {
             Dashboard = dashboard;
             Building = building;
             Resident = resident;
             Setting = setting;
             DataTransfer = dataTransfer;
+            FeeRule = feeRule;
 
             CurrentView = Dashboard;
             IsActive = true;
@@ -49,7 +53,8 @@ namespace HostelManagementSystem.ViewModels
             new BuildingViewModel(),
             new ResidentViewModel(),
             new SettingViewModel(),
-            new DataTransferViewModel())
+            new DataTransferViewModel(),
+            new FeeRuleViewModel())
         {
         }
 
@@ -82,7 +87,6 @@ namespace HostelManagementSystem.ViewModels
                     {
                         await Resident.LoadDataCommand.ExecuteAsync(null);
                     }
-
                     break;
 
                 case "setting":
@@ -91,6 +95,14 @@ namespace HostelManagementSystem.ViewModels
 
                 case "datatransfer":
                     SetCurrentView(DataTransfer);
+                    break;
+
+                case "feerule":
+                    SetCurrentView(FeeRule);
+                    if (FeeRule.LoadFeeRulesCommand.CanExecute(null))
+                    {
+                        await FeeRule.LoadFeeRulesCommand.ExecuteAsync(null);
+                    }       
                     break;
             }
         }

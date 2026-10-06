@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:feeRuleV="clr-namespace:HostelManagementSystem.Views.FeeRuleViews"
+    xmlns:feeRuleVM="clr-namespace:HostelManagementSystem.ViewModels.FeeRuleViewModels"
     xmlns:roomDetailViews="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
     xmlns:roomTypeVM="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels"
     xmlns:roomTypeViews="clr-namespace:HostelManagementSystem.Views.RoomViews.RoomTypeViews"
@@ -31,6 +33,9 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type viewmodels:DataTransferViewModel}">
         <views:DataTransferView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type feeRuleVM:FeeRuleViewModel}">
+        <feeRuleV:FeeRuleView />
     </DataTemplate>
 
     <!--  Building related pages  -->
@@ -92,6 +97,11 @@
     <!--  Student Detail related pages  -->
     <DataTemplate DataType="{x:Type studentDetailVm:StudentDetailViewModel}">
         <studentDetailViews:StudentDetailView />
+    </DataTemplate>
+
+    <!--  Fee Rule related pages  -->
+    <DataTemplate DataType="{x:Type feeRuleVM:FeeRuleFormViewModel}">
+        <feeRuleV:FeeRuleFormView />
     </DataTemplate>
 
 
