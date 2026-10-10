@@ -17,10 +17,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Printing;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
 {
@@ -28,24 +26,33 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
     {
         private readonly Func<Task>? _navigateBackCallback;
 
-        // Navigation Context
-        [ObservableProperty]
-        private Building _building = null!;
+        // =========================================================
+        // NAVIGATION CONTEXT
+        // =========================================================
 
         [ObservableProperty]
-        private Floor _floor = null!;
+        private Building? _building;
 
         [ObservableProperty]
-        private Room _room = null!;
+        private Floor? _floor;
 
-        // Student Data Properties
+        [ObservableProperty]
+        private Room? _room;
+
+        // =========================================================
+        // STUDENT DATA
+        // =========================================================
+
         [ObservableProperty]
         private Student? _student;
 
         [ObservableProperty]
         private ObservableCollection<StudentAcademicRecord> _academicRecords = new();
 
-        // Image Path Helpers
+        // =========================================================
+        // IMAGE PATH HELPERS
+        // =========================================================
+
         [ObservableProperty]
         private string? _profileImagePath;
 
@@ -58,7 +65,10 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
         [ObservableProperty]
         private string? _highSchoolCertImagePath;
 
-        // Image Preview Properties
+        // =========================================================
+        // IMAGE PREVIEW
+        // =========================================================
+
         [ObservableProperty]
         private bool _isImagePreviewOpen;
 
@@ -66,82 +76,162 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
         private string? _previewImagePath;
 
         // =========================================================
-        // CONSTRUCTORS
+        // CONSTRUCTOR
         // =========================================================
+
         public StudentDetailViewModel(
-            Building building,
-            Floor floor,
-            Room room,
             int studentId,
             Func<Task>? navigateBackCallback = null)
         {
-            Building = building ?? throw new ArgumentNullException(nameof(building));
-            Floor = floor ?? throw new ArgumentNullException(nameof(floor));
-            Room = room ?? throw new ArgumentNullException(nameof(room));
             _navigateBackCallback = navigateBackCallback;
 
-            // Automatically trigger data loading on navigation
-            _ = LoadStudentDetailsByStudentIdCommand.ExecuteAsync(studentId);
+            _ = LoadStudentDetailsByStudentIdCommand
+                .ExecuteAsync(studentId);
         }
 
-        // Default Constructor for Design-Time / XAML support
+        // Default constructor for design-time / XAML support
         public StudentDetailViewModel()
         {
         }
 
         // =========================================================
-        // DATA FETCHING COMMAND
+        // DATA FETCHING
         // =========================================================
+
         [RelayCommand]
-        public async Task LoadStudentDetailsByStudentIdAsync(int studentId)
+        public async Task LoadStudentDetailsByStudentIdAsync(
+            int studentId)
         {
-            if (studentId <= 0) return;
+            if (studentId <= 0)
+                return;
 
-            await LoadingHelper.ExecuteWithLoadingAsync(async () =>
-            {
-                await using var db = new AppDbContext();
-
-                var studentData = await db.Students
-                    .AsNoTracking()
-                    .Include(s => s.AcademicRecords)
-                    .Include(s => s.StudentCategory)
-                    .FirstOrDefaultAsync(s => s.Id == studentId);
-
-                if (studentData != null)
+            await LoadingHelper.ExecuteWithLoadingAsync(
+                async () =>
                 {
-                    Student = studentData;
-                    AcademicRecords = new ObservableCollection<StudentAcademicRecord>(studentData.AcademicRecords);
+                    await using var db =
+                        new AppDbContext();
 
-                    // Image Paths Resolution
-                    ProfileImagePath = ResolveImagePath(studentData.Img);
-                    NrcFrontImagePath = ResolveImagePath(studentData.NRC_img_front);
-                    NrcBackImagePath = ResolveImagePath(studentData.NRC_img_back);
-                    HighSchoolCertImagePath = ResolveImagePath(studentData.High_school_certificate_img);
-                }
-            }, "ကျောင်းသား အချက်အလက်များ ရယူနေပါသည်...");
+                    var studentData =
+                        await db.Students
+                            .AsNoTracking()
+                            .Include(s => s.AcademicRecords)
+                            .Include(s => s.StudentCategory)
+                            .Include(s => s.Accommodations
+                                .Where(a =>
+                                    a.IsActive &&
+                                    a.EndDate == null))
+                                .ThenInclude(a => a.Room)
+                                    .ThenInclude(r => r.Floor)
+                                        .ThenInclude(f => f.Building)
+                            .FirstOrDefaultAsync(
+                                s =>
+                                    s.Id == studentId &&
+                                    s.IsActive);
+
+                    if (studentData == null)
+                    {
+                        MessageBox.Show(
+                            "ကျောင်းသားအချက်အလက်ကို ရှာမတွေ့ပါ။",
+                            "သတိပေးချက်",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+
+                        return;
+                    }
+
+                    Student = studentData;
+
+                    AcademicRecords =
+                        new ObservableCollection<StudentAcademicRecord>(
+                            studentData.AcademicRecords);
+
+                    // =================================================
+                    // CURRENT ACCOMMODATION
+                    // =================================================
+
+                    var accommodation =
+                        studentData.Accommodations
+                            .FirstOrDefault(a =>
+                                a.IsActive &&
+                                a.EndDate == null);
+
+                    if (accommodation != null)
+                    {
+                        Room = accommodation.Room;
+                        Floor = accommodation.Room?.Floor;
+                        Building = accommodation.Room?.Floor?.Building;
+                    }
+                    else
+                    {
+                        Room = null;
+                        Floor = null;
+                        Building = null;
+                    }
+
+                    // =================================================
+                    // IMAGE PATHS
+                    // =================================================
+
+                    ProfileImagePath =
+                        ResolveImagePath(studentData.Img);
+
+                    NrcFrontImagePath =
+                        ResolveImagePath(
+                            studentData.NRC_img_front);
+
+                    NrcBackImagePath =
+                        ResolveImagePath(
+                            studentData.NRC_img_back);
+
+                    HighSchoolCertImagePath =
+                        ResolveImagePath(
+                            studentData.High_school_certificate_img);
+                },
+                "ကျောင်းသား အချက်အလက်များ ရယူနေပါသည်...");
         }
 
-        private string? ResolveImagePath(string? relativeOrAbsolutePath)
-        {
-            if (string.IsNullOrWhiteSpace(relativeOrAbsolutePath))
-                return null;
+        // =========================================================
+        // IMAGE PATH
+        // =========================================================
 
-            if (relativeOrAbsolutePath.StartsWith("pack://") || File.Exists(relativeOrAbsolutePath))
+        private string? ResolveImagePath(
+            string? relativeOrAbsolutePath)
+        {
+            if (string.IsNullOrWhiteSpace(
+                relativeOrAbsolutePath))
+            {
+                return null;
+            }
+
+            if (relativeOrAbsolutePath.StartsWith(
+                    "pack://",
+                    StringComparison.OrdinalIgnoreCase) ||
+                File.Exists(relativeOrAbsolutePath))
             {
                 return relativeOrAbsolutePath;
             }
 
-            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeOrAbsolutePath);
-            return File.Exists(fullPath) ? fullPath : null;
+            string fullPath =
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    relativeOrAbsolutePath);
+
+            return File.Exists(fullPath)
+                ? fullPath
+                : null;
         }
 
         // =========================================================
-        // ACTION & NAVIGATION COMMANDS
+        // IMAGE PREVIEW
         // =========================================================
+
         [RelayCommand]
-        private void OpenImagePreview(string? imagePath)
+        private void OpenImagePreview(
+            string? imagePath)
         {
-            if (string.IsNullOrWhiteSpace(imagePath)) return;
+            if (string.IsNullOrWhiteSpace(imagePath))
+                return;
+
             PreviewImagePath = imagePath;
             IsImagePreviewOpen = true;
         }
@@ -153,91 +243,168 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
             PreviewImagePath = null;
         }
 
+        // =========================================================
+        // EDIT STUDENT
+        // =========================================================
+
         [RelayCommand]
         private void EditStudent()
         {
-            if (Student == null || Student.Id <= 0) return;
+            if (Student == null ||
+                Student.Id <= 0)
+            {
+                return;
+            }
 
-            var editViewModel = new EditStudentFormViewModel(
-                Building, Floor, Room, Student.Id,
-                navigateBackCallback: async () =>
-                {
-                    var studentDetailVm = new StudentDetailViewModel(Building, Floor, Room, Student.Id, _navigateBackCallback);
-                    WeakReferenceMessenger.Default.Send(new NavigateMessage(studentDetailVm));
-                    if (studentDetailVm.LoadStudentDetailsByStudentIdCommand.CanExecute(Student.Id))
+            var studentId = Student.Id;
+
+            var editViewModel =
+                new EditStudentFormViewModel(
+                    studentId,
+                    navigateBackCallback: async () =>
                     {
-                        await studentDetailVm.LoadStudentDetailsByStudentIdCommand.ExecuteAsync(Student.Id);
-                    }
-                });
+                        var studentDetailVm =
+                            new StudentDetailViewModel(
+                                studentId,
+                                _navigateBackCallback);
 
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(editViewModel));
+                        WeakReferenceMessenger.Default.Send(
+                            new NavigateMessage(
+                                studentDetailVm));
+
+                        await Task.CompletedTask;
+                    });
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    editViewModel));
         }
+
+        // =========================================================
+        // DELETE STUDENT
+        // =========================================================
 
         [RelayCommand]
         private async Task DeleteStudentAsync()
         {
-            if (Student == null || Student.Id <= 0) return;
-
-            var result = MessageBox.Show(
-                $"ကျောင်းသား '{Student.Name}' ၏ အချက်အလက်များကို ဖျက်ရန် သေချာပါသလား။",
-                "ကျောင်းသား အချက်အလက် ဖျက်ရန် အတည်ပြုခြင်း",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result != MessageBoxResult.Yes) return;
-
-            await LoadingHelper.ExecuteWithLoadingAsync(async () =>
+            if (Student == null ||
+                Student.Id <= 0)
             {
-                try
-                {
-                    var studentService = new StudentService();
-                    await studentService.DeleteStudentWithRelatedDataAsync(Student.Id);
+                return;
+            }
 
-                    // Update the Dashboard
-                    WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Student", Student.Id, DatabaseOperation.Deleted));
+            var result =
+                MessageBox.Show(
+                    $"ကျောင်းသား '{Student.Name}' ၏ အချက်အလက်များကို ဖျက်ရန် သေချာပါသလား။",
+                    "ကျောင်းသား အချက်အလက် ဖျက်ရန် အတည်ပြုခြင်း",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-                    // Navigate back after successful deletion
-                    await App.Current.Dispatcher.InvokeAsync(async () => await BackAsync());
-                }
-                catch (Exception ex)
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            await LoadingHelper.ExecuteWithLoadingAsync(
+                async () =>
                 {
-                    MessageBox.Show($"ဖျက်ရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }, "ကျောင်းသား အချက်အလက် ဖျက်နေပါသည်...");
+                    try
+                    {
+                        var studentService =
+                            new StudentService();
+
+                        await studentService
+                            .DeleteStudentWithRelatedDataAsync(
+                                Student.Id,
+                                DateOnly.FromDateTime(DateTime.Today));
+
+                        WeakReferenceMessenger.Default.Send(
+                            new DatabaseUpdatedMessage(
+                                "Student",
+                                Student.Id,
+                                DatabaseOperation.Deleted));
+
+                        await BackAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            $"ဖျက်ရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                            "Database Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                },
+                "ကျောင်းသား အချက်အလက် ဖျက်နေပါသည်...");
         }
+
+        // =========================================================
+        // EXPORT STUDENT
+        // =========================================================
 
         [RelayCommand]
         private async Task ExportStudentAsync()
         {
-            if (Student == null) return;
+            if (Student == null)
+                return;
 
             try
             {
-                ExportPDFService exportPDFService = new ExportPDFService();
-                await exportPDFService.ExportStudentAsPdfAsync(Student, ProfileImagePath!, Building, Floor, Room);
+                var exportPDFService =
+                    new ExportPDFService();
+
+                await exportPDFService
+                    .ExportStudentAsPdfAsync(
+                        Student,
+                        ProfileImagePath!,
+                        Building,
+                        Floor,
+                        Room);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"PDF သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}", "PDF Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    $"PDF သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                    "PDF Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
-
-            await Task.CompletedTask;
         }
+
         // =========================================================
-        // NAVIGATION COMMANDS
+        // NAVIGATION
         // =========================================================
+
         [RelayCommand]
         private async Task BackAsync()
         {
             if (_navigateBackCallback != null)
             {
                 await _navigateBackCallback.Invoke();
+                return;
             }
-            else
+
+            // No room context means there is nowhere to return
+            // to RoomDetail. Fall back to ResidentView.
+
+            if (Building == null ||
+                Floor == null ||
+                Room == null)
             {
-                var roomDetailViewModel = new RoomDetailViewModel(Building, Floor, Room);
-                WeakReferenceMessenger.Default.Send(new NavigateMessage(roomDetailViewModel));
+                WeakReferenceMessenger.Default.Send(
+                    new NavigateMessage(
+                        new ResidentViewModel()));
+
+                return;
             }
+
+            var roomDetailViewModel =
+                new RoomDetailViewModel(
+                    Building,
+                    Floor,
+                    Room);
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    roomDetailViewModel));
         }
     }
 }

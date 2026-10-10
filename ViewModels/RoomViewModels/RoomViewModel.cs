@@ -25,21 +25,30 @@ namespace HostelManagementSystem.ViewModels
         [ObservableProperty]
         private Floor _floor;
 
-
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasRooms))]
         [NotifyPropertyChangedFor(nameof(HasNoRooms))]
         private ObservableCollection<Room> _rooms = new();
 
-        public bool HasRooms => Rooms != null && Rooms.Count > 0;
-        public bool HasNoRooms => !HasRooms;
+        public bool HasRooms =>
+            Rooms != null &&
+            Rooms.Count > 0;
 
-        public RoomViewModel(Building building, Floor floor)
+        public bool HasNoRooms =>
+            !HasRooms;
+
+        public RoomViewModel(
+            Building building,
+            Floor floor)
         {
-            Building = building ?? throw new ArgumentNullException(nameof(building));
-            Floor = floor ?? throw new ArgumentNullException(nameof(floor));
+            Building = building ??
+                throw new ArgumentNullException(nameof(building));
 
-            Rooms.CollectionChanged += (s, e) => NotifyStateChanges();
+            Floor = floor ??
+                throw new ArgumentNullException(nameof(floor));
+
+            Rooms.CollectionChanged +=
+                (s, e) => NotifyStateChanges();
         }
 
         private void NotifyStateChanges()
@@ -53,32 +62,46 @@ namespace HostelManagementSystem.ViewModels
         {
             await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
-                using var db = new AppDbContext();
+                await using var db =
+                    new AppDbContext();
 
-                // Eagerly load Students to compute CurrentResidentsCount accurately
-                var roomList = await db.Rooms
-                    .AsNoTracking()
-                    .Include(r => r.Students)
-                    .Include(r => r.RoomType)
-                    .Where(r => r.IsActive && r.FloorId == Floor.Id)
-                    .ToListAsync();
+                var roomList =
+                    await db.Rooms
+                        .AsNoTracking()
+
+                        .Include(r => r.Accommodations
+                            .Where(a =>
+                                a.IsActive &&
+                                a.EndDate == null))
+
+                        .Include(r => r.RoomType)
+
+                        .Where(r =>
+                            r.IsActive &&
+                            r.FloorId == Floor.Id)
+
+                        .ToListAsync();
 
                 Rooms.Clear();
+
                 foreach (var room in roomList)
                 {
                     Rooms.Add(room);
                 }
 
                 NotifyStateChanges();
+
             }, "အခန်းအချက်အလက်များ ရယူနေပါသည်...");
         }
 
         [RelayCommand]
         public async Task DeleteRoomAsync(Room room)
         {
-            if (room == null) return;
+            if (room == null)
+                return;
 
-            // Check dynamic count using the loaded Students collection
+            // CurrentResidentsCount now counts only:
+            // IsActive == true AND EndDate == null
             if (room.CurrentResidentsCount > 0)
             {
                 MessageBox.Show(
@@ -86,6 +109,7 @@ namespace HostelManagementSystem.ViewModels
                     "သတိပေးချက်",
                     MessageBoxButton.OK,
                     MessageBoxImage.Stop);
+
                 return;
             }
 
@@ -95,23 +119,34 @@ namespace HostelManagementSystem.ViewModels
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
-            if (result != MessageBoxResult.Yes) return;
+            if (result != MessageBoxResult.Yes)
+                return;
 
             await LoadingHelper.ExecuteWithLoadingAsync(async () =>
             {
                 try
                 {
-                    using var db = new AppDbContext();
-                    var targetRoom = await db.Rooms.FirstOrDefaultAsync(r => r.Id == room.Id);
+                    await using var db =
+                        new AppDbContext();
+
+                    var targetRoom =
+                        await db.Rooms
+                            .FirstOrDefaultAsync(
+                                r => r.Id == room.Id);
 
                     if (targetRoom != null)
                     {
                         targetRoom.IsActive = false;
+
                         await db.SaveChangesAsync();
+
                         Rooms.Remove(room);
 
-                        //Update the Dashbaord
-                        WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Room", room.Id, DatabaseOperation.Deleted));
+                        WeakReferenceMessenger.Default.Send(
+                            new DatabaseUpdatedMessage(
+                                "Room",
+                                room.Id,
+                                DatabaseOperation.Deleted));
                     }
                 }
                 catch (Exception ex)
@@ -122,53 +157,83 @@ namespace HostelManagementSystem.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
+
             }, "အခန်းဖျက်နေပါသည်...");
         }
 
         [RelayCommand]
         private async Task Back()
         {
-            var floorViewModel = new FloorViewModel(Building);
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(floorViewModel));
-            await floorViewModel.LoadFloorsByBuildingIdCommand.ExecuteAsync(null);
+            var floorViewModel =
+                new FloorViewModel(Building);
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(floorViewModel));
+
+            await floorViewModel
+                .LoadFloorsByBuildingIdCommand
+                .ExecuteAsync(null);
         }
 
         [RelayCommand]
         private void OpenCreateRoomForm()
         {
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(new CreateRoomFormViewModel(Building, Floor)));
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    new CreateRoomFormViewModel(
+                        Building,
+                        Floor)));
         }
 
         [RelayCommand]
         private void OpenEditRoomForm(Room room)
         {
-            if (room == null) return;
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(new EditRoomFormViewModel(Building, Floor, room)));
+            if (room == null)
+                return;
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    new EditRoomFormViewModel(
+                        Building,
+                        Floor,
+                        room)));
         }
 
         [RelayCommand]
         private async Task SelectRoom(Room selectedRoom)
         {
-            if (selectedRoom == null) return;
+            if (selectedRoom == null)
+                return;
 
-            var roomDetailViewModel = new RoomDetailViewModel(Building, Floor, selectedRoom);
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(roomDetailViewModel));
+            var roomDetailViewModel =
+                new RoomDetailViewModel(
+                    Building,
+                    Floor,
+                    selectedRoom);
+
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    roomDetailViewModel));
+
+            await Task.CompletedTask;
         }
 
         [RelayCommand]
         private async Task OpenRoomTypeManagement()
         {
             var roomTypeViewModel =
-                new RoomTypeViewModel(async () =>
-                {
-                    await LoadRoomsByFloorIdAsync();
+                new RoomTypeViewModel(
+                    async () =>
+                    {
+                        await LoadRoomsByFloorIdAsync();
 
-                    WeakReferenceMessenger.Default.Send(
-                        new NavigateMessage(this));
-                });
+                        WeakReferenceMessenger.Default.Send(
+                            new NavigateMessage(this));
+                    });
 
             WeakReferenceMessenger.Default.Send(
-                new NavigateMessage(roomTypeViewModel));
+                new NavigateMessage(
+                    roomTypeViewModel));
 
             await roomTypeViewModel
                 .LoadRoomTypesCommand

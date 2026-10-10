@@ -22,6 +22,11 @@
             <settingViews:LicenseSettingsView />
         </DataTemplate>
 
+        <!--  Version View  -->
+        <DataTemplate DataType="{x:Type settingVm:VersionSettingsViewModel}">
+            <settingViews:VersionSettingsView />
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid Margin="0,0,16,0">
@@ -87,7 +92,7 @@
                     </RadioButton>
 
                     <RadioButton
-                        Command="{Binding SelectLicenseCommand}"
+                        Command="{Binding SelectVersionCommand}"
                         GroupName="SettingsNavigation"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M6,2H14L19,7V22H6V2M14,2V8H19M9,12H16M9,16H16M9,20H13">
@@ -96,7 +101,7 @@
 
                     </RadioButton>
                     <RadioButton
-                        Command="{Binding SelectLicenseCommand}"
+                        Command="{Binding SelectVersionCommand}"
                         GroupName="SettingsNavigation"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M12,2A10,10 0,1 0,12,22A10,10 0,0 0,12,2M11,10H13V17H11V10M11,6H13V8H11V6Z">

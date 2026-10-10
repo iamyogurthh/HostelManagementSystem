@@ -21,7 +21,6 @@ namespace HostelManagementSystem.Database
         public DbSet<Payment> Payments { get; set; } = null!;
         public DbSet<PaymentAllocation> PaymentAllocations { get; set; } = null!;
 
-       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Set database path to %AppData%/HostelManagementSystem/hostel.db
@@ -45,110 +44,123 @@ namespace HostelManagementSystem.Database
             base.OnModelCreating(modelBuilder);
 
             // =========================================================
-            // FOREIGN KEY RELATIONSHIPS
+            // BUILDING → FLOOR
             // =========================================================
-
-            // Building -> Floor
             modelBuilder.Entity<Floor>()
                 .HasOne(f => f.Building)
                 .WithMany(b => b.Floors)
                 .HasForeignKey(f => f.BuildingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Floor -> Room
+            // =========================================================
+            // FLOOR → ROOM
+            // =========================================================
             modelBuilder.Entity<Room>()
                 .HasOne(r => r.Floor)
                 .WithMany(f => f.Rooms)
                 .HasForeignKey(r => r.FloorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Room -> Student
-            // Keep student record if room is deleted.
-            modelBuilder.Entity<Student>()
-                .HasOne(s => s.Room)
-                .WithMany(r => r.Students)
-                .HasForeignKey(s => s.RoomId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // Student -> StudentAcademicRecord
+            // =========================================================
+            // STUDENT → STUDENT ACADEMIC RECORD
+            // =========================================================
             modelBuilder.Entity<StudentAcademicRecord>()
                 .HasOne(ar => ar.Student)
                 .WithMany(s => s.AcademicRecords)
                 .HasForeignKey(ar => ar.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Student -> StudentAccommodation
-            // Preserve accommodation history when possible.
+            // =========================================================
+            // STUDENT → STUDENT ACCOMMODATION
+            //
+            // Accommodation history must be preserved.
+            // =========================================================
             modelBuilder.Entity<StudentAccommodation>()
                 .HasOne(sa => sa.Student)
                 .WithMany(s => s.Accommodations)
                 .HasForeignKey(sa => sa.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Room -> StudentAccommodation
-            // Prevent deleting a room that has accommodation history.
+            // =========================================================
+            // ROOM → STUDENT ACCOMMODATION
+            //
+            // A room cannot be deleted if accommodation history
+            // references it.
+            // =========================================================
             modelBuilder.Entity<StudentAccommodation>()
                 .HasOne(sa => sa.Room)
                 .WithMany(r => r.Accommodations)
                 .HasForeignKey(sa => sa.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // StudentCategory -> FeeRule
+            // =========================================================
+            // STUDENT CATEGORY → FEE RULE
+            // =========================================================
             modelBuilder.Entity<FeeRule>()
                 .HasOne(fr => fr.StudentCategory)
                 .WithMany(sc => sc.FeeRules)
                 .HasForeignKey(fr => fr.StudentCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // RoomType -> FeeRule
+            // =========================================================
+            // ROOM TYPE → FEE RULE
+            // =========================================================
             modelBuilder.Entity<FeeRule>()
                 .HasOne(fr => fr.RoomType)
                 .WithMany(rt => rt.FeeRules)
                 .HasForeignKey(fr => fr.RoomTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Student -> FeeCharge
-            // Protect financial history.
+            // =========================================================
+            // STUDENT → FEE CHARGE
+            //
+            // Financial history must be protected.
+            // =========================================================
             modelBuilder.Entity<FeeCharge>()
                 .HasOne(fc => fc.Student)
                 .WithMany(s => s.FeeCharges)
                 .HasForeignKey(fc => fc.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // FeeRule -> FeeCharge
-            // Keep the charge even if the original fee rule is removed.
+            // =========================================================
+            // FEE RULE → FEE CHARGE
+            // =========================================================
             modelBuilder.Entity<FeeCharge>()
                 .HasOne(fc => fc.FeeRule)
                 .WithMany(fr => fr.FeeCharges)
                 .HasForeignKey(fc => fc.FeeRuleId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // StudentAccommodation -> FeeCharge
-            // Keep the charge even if the accommodation record is removed.
+            // =========================================================
+            // STUDENT ACCOMMODATION → FEE CHARGE
+            // =========================================================
             modelBuilder.Entity<FeeCharge>()
                 .HasOne(fc => fc.StudentAccommodation)
                 .WithMany(sa => sa.FeeCharges)
                 .HasForeignKey(fc => fc.StudentAccommodationId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Student -> Payment
-            // Protect payment history.
+            // =========================================================
+            // STUDENT → PAYMENT
+            // =========================================================
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Student)
                 .WithMany(s => s.Payments)
                 .HasForeignKey(p => p.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Payment -> PaymentAllocation
-            // Deleting a payment also deletes its allocations.
+            // =========================================================
+            // PAYMENT → PAYMENT ALLOCATION
+            // =========================================================
             modelBuilder.Entity<PaymentAllocation>()
                 .HasOne(pa => pa.Payment)
                 .WithMany(p => p.Allocations)
                 .HasForeignKey(pa => pa.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // FeeCharge -> PaymentAllocation
-            // Prevent deleting a fee charge that has payment history.
+            // =========================================================
+            // FEE CHARGE → PAYMENT ALLOCATION
+            // =========================================================
             modelBuilder.Entity<PaymentAllocation>()
                 .HasOne(pa => pa.FeeCharge)
                 .WithMany(fc => fc.Allocations)
@@ -179,21 +191,17 @@ namespace HostelManagementSystem.Database
             modelBuilder.Entity<Student>()
                 .HasIndex(s => s.IsActive);
 
-            modelBuilder.Entity<Student>()
-                .HasIndex(s => new
-                {
-                    s.RoomId,
-                    s.IsActive
-                });
-
-            // Fast lookup for a student's academic history.
+            // =========================================================
+            // ACADEMIC RECORD INDEX
+            // =========================================================
             modelBuilder.Entity<StudentAcademicRecord>()
                 .HasIndex(ar => ar.StudentId);
 
             // =========================================================
-            // PAYMENT MANAGEMENT INDEXES
+            // ACCOMMODATION INDEXES
             // =========================================================
 
+            // Fast lookup of a student's accommodation records.
             modelBuilder.Entity<StudentAccommodation>()
                 .HasIndex(sa => new
                 {
@@ -201,6 +209,7 @@ namespace HostelManagementSystem.Database
                     sa.IsActive
                 });
 
+            // Fast lookup of room occupancy/history.
             modelBuilder.Entity<StudentAccommodation>()
                 .HasIndex(sa => new
                 {
@@ -208,6 +217,23 @@ namespace HostelManagementSystem.Database
                     sa.IsActive
                 });
 
+            // =========================================================
+            // ONE CURRENT ACCOMMODATION PER STUDENT
+            //
+            // IsActive = true means the record has not been soft-deleted.
+            // EndDate IS NULL means the accommodation has not ended.
+            //
+            // Therefore, only one record can represent the student's
+            // current accommodation.
+            // =========================================================
+            modelBuilder.Entity<StudentAccommodation>()
+                .HasIndex(sa => sa.StudentId)
+                .IsUnique()
+                .HasFilter("\"IsActive\" = 1 AND \"EndDate\" IS NULL");
+
+            // =========================================================
+            // FEE RULE INDEX
+            // =========================================================
             modelBuilder.Entity<FeeRule>()
                 .HasIndex(fr => new
                 {
@@ -216,6 +242,9 @@ namespace HostelManagementSystem.Database
                     fr.IsActive
                 });
 
+            // =========================================================
+            // FEE CHARGE INDEXES
+            // =========================================================
             modelBuilder.Entity<FeeCharge>()
                 .HasIndex(fc => new
                 {
@@ -226,12 +255,28 @@ namespace HostelManagementSystem.Database
             modelBuilder.Entity<FeeCharge>()
                 .HasIndex(fc => fc.DueDate);
 
+            // Prevent duplicate charges for the same
+            // accommodation segment and billing period.
+            modelBuilder.Entity<FeeCharge>()
+                .HasIndex(fc => new
+                {
+                    fc.StudentAccommodationId,
+                    fc.PeriodStart
+                })
+                .IsUnique();
+
+            // =========================================================
+            // PAYMENT INDEXES
+            // =========================================================
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.StudentId);
 
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.PaymentDate);
 
+            // =========================================================
+            // PAYMENT ALLOCATION INDEXES
+            // =========================================================
             modelBuilder.Entity<PaymentAllocation>()
                 .HasIndex(pa => pa.PaymentId);
 

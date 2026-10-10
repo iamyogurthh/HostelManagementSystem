@@ -6,55 +6,65 @@ using HostelManagementSystem.Messages;
 using HostelManagementSystem.Models;
 using HostelManagementSystem.Services;
 using HostelManagementSystem.Utilities;
+using HostelManagementSystem.ViewModels.Base;
+using HostelManagementSystem.ViewModels.RoomAssignmentViewModels;
+using HostelManagementSystem.ViewModels.StudentCategoryViewModels;
 using HostelManagementSystem.ViewModels.StudentDetailViewModels;
 using HostelManagementSystem.ViewModels.StudentViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using HostelManagementSystem.ViewModels.StudentCategoryViewModels;
 
 namespace HostelManagementSystem.ViewModels
 {
-    public partial class ResidentViewModel : ObservableObject
+    public partial class ResidentViewModel :
+        PaginationViewModel
     {
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
         [ObservableProperty]
         private string _searchName = string.Empty;
 
-        [ObservableProperty]
-        private int _totalCount;
-
-        [ObservableProperty]
-        private int _currentPage = 1;
-
-        [ObservableProperty]
-        private int _totalPages = 1;
-
-        [ObservableProperty]
-        private int _pageSize = 10;
-
-        [ObservableProperty]
-        private bool _isLoading;
-
-        public ObservableCollection<int> PageSizeOptions { get; } = new() { 10, 20, 50 };
+        // =========================================================
+        // DATA
+        // =========================================================
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasStudents))]
         [NotifyPropertyChangedFor(nameof(HasNoStudents))]
-        private ObservableCollection<Student> _students = new();
+        private ObservableCollection<Student> _students =
+            new();
 
-        public bool HasStudents => Students != null && Students.Count > 0;
-        public bool HasNoStudents => !HasStudents;
+        [ObservableProperty]
+        private bool _isLoading;
 
-        // ==========================================
-        // Cascading Selection Collections & Properties
-        // ==========================================
-        public ObservableCollection<Building> AvailableBuildings { get; } = new();
-        public ObservableCollection<Floor> AvailableFloors { get; } = new();
-        public ObservableCollection<Room> AvailableRooms { get; } = new();
+        public bool HasStudents =>
+            Students.Count > 0;
+
+        public bool HasNoStudents =>
+            !HasStudents;
+
+        // =========================================================
+        // LOCATION FILTERS
+        // =========================================================
+
+        public ObservableCollection<Building>
+            AvailableBuildings
+        { get; } = new();
+
+        public ObservableCollection<Floor>
+            AvailableFloors
+        { get; } = new();
+
+        public ObservableCollection<Room>
+            AvailableRooms
+        { get; } = new();
 
         [ObservableProperty]
         private Building? _selectedBuilding;
@@ -65,195 +75,397 @@ namespace HostelManagementSystem.ViewModels
         [ObservableProperty]
         private Room? _selectedRoom;
 
+        // =========================================================
+        // CONSTRUCTOR
+        // =========================================================
+
         public ResidentViewModel()
         {
+            WeakReferenceMessenger.Default.Register<DatabaseUpdatedMessage>(
+                this,
+                async (recipient, message) =>
+                {
+                    if (message.EntityName is
+                        "Building" or
+                        "Floor" or
+                        "Room" or
+                        "RoomType" or
+                        "Student" or
+                        "StudentAccommodation")
+                    {
+                        await RefreshLocationDataAsync();
+                    }
+                });
+
             _ = InitializeViewModelAsync();
         }
+
+        // =========================================================
+        // INITIALIZATION
+        // =========================================================
 
         private async Task InitializeViewModelAsync()
         {
             await LoadBuildingsAsync();
+
             await LoadDataAsync();
         }
 
-        #region Cascading Property Changes
+        private async Task RefreshLocationDataAsync()
+        {
+            try
+            {
+                SelectedRoom = null;
+                SelectedFloor = null;
+                SelectedBuilding = null;
 
-        partial void OnSelectedBuildingChanged(Building? value)
+                AvailableRooms.Clear();
+                AvailableFloors.Clear();
+                AvailableBuildings.Clear();
+
+                await LoadBuildingsAsync();
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to refresh resident data: {ex}");
+            }
+        }
+
+        // =========================================================
+        // CASCADING FILTERS
+        // =========================================================
+
+        partial void OnSelectedBuildingChanged(
+            Building? value)
         {
             SelectedFloor = null;
+
             AvailableFloors.Clear();
+
             SelectedRoom = null;
+
             AvailableRooms.Clear();
 
             if (value != null)
             {
-                _ = LoadFloorsForBuildingAsync(value);
+                _ =
+                    LoadFloorsForBuildingAsync(value);
             }
         }
 
-        partial void OnSelectedFloorChanged(Floor? value)
+        partial void OnSelectedFloorChanged(
+            Floor? value)
         {
             SelectedRoom = null;
+
             AvailableRooms.Clear();
 
             if (value != null)
             {
-                _ = LoadRoomsForFloorAsync(value);
+                _ =
+                    LoadRoomsForFloorAsync(value);
             }
         }
 
-        #endregion
-
-        #region Cascading Data Loaders
+        // =========================================================
+        // LOAD BUILDINGS
+        // =========================================================
 
         private async Task LoadBuildingsAsync()
         {
             try
             {
-                await using var db = new AppDbContext();
-                var buildings = await db.Buildings.AsNoTracking().ToListAsync();
+                await using var db =
+                    new AppDbContext();
 
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    AvailableBuildings.Clear();
-                    foreach (var b in buildings)
+                var buildings =
+                    await db.Buildings
+                        .AsNoTracking()
+                        .Where(b => b.IsActive)
+                        .OrderBy(b => b.Name)
+                        .ToListAsync();
+
+                Application.Current
+                    .Dispatcher
+                    .Invoke(() =>
                     {
-                        AvailableBuildings.Add(b);
-                    }
-                });
+                        AvailableBuildings.Clear();
+
+                        foreach (var building
+                            in buildings)
+                        {
+                            AvailableBuildings.Add(
+                                building);
+                        }
+                    });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load buildings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"Failed to load buildings: {ex.Message}");
             }
         }
 
-        private async Task LoadFloorsForBuildingAsync(Building building)
+        // =========================================================
+        // LOAD FLOORS
+        // =========================================================
+
+        private async Task LoadFloorsForBuildingAsync(
+            Building building)
         {
             try
             {
-                await using var db = new AppDbContext();
-                var floors = await db.Floors
-                    .Where(f => f.BuildingId == building.Id)
-                    .AsNoTracking()
-                    .ToListAsync();
+                await using var db =
+                    new AppDbContext();
 
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    AvailableFloors.Clear();
-                    foreach (var f in floors)
+                var floors =
+                    await db.Floors
+                        .Where(f =>
+                            f.BuildingId ==
+                                building.Id &&
+                            f.IsActive)
+                        .AsNoTracking()
+                        .OrderBy(f => f.Name)
+                        .ToListAsync();
+
+                Application.Current
+                    .Dispatcher
+                    .Invoke(() =>
                     {
-                        AvailableFloors.Add(f);
-                    }
-                });
+                        AvailableFloors.Clear();
+
+                        foreach (var floor
+                            in floors)
+                        {
+                            AvailableFloors.Add(
+                                floor);
+                        }
+                    });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load floors: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"Failed to load floors: {ex.Message}");
             }
         }
 
-        private async Task LoadRoomsForFloorAsync(Floor floor)
+        // =========================================================
+        // LOAD ROOMS
+        // =========================================================
+
+        private async Task LoadRoomsForFloorAsync(
+            Floor floor)
         {
             try
             {
-                await using var db = new AppDbContext();
-                var rooms = await db.Rooms
-                    .Where(r => r.FloorId == floor.Id)
-                    .AsNoTracking()
-                    .ToListAsync();
+                await using var db =
+                    new AppDbContext();
 
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    AvailableRooms.Clear();
-                    foreach (var r in rooms)
+                var rooms =
+                    await db.Rooms
+                        .Where(r =>
+                            r.FloorId ==
+                                floor.Id &&
+                            r.IsActive)
+                        .AsNoTracking()
+                        .OrderBy(r => r.Name)
+                        .ToListAsync();
+
+                Application.Current
+                    .Dispatcher
+                    .Invoke(() =>
                     {
-                        AvailableRooms.Add(r);
-                    }
-                });
+                        AvailableRooms.Clear();
+
+                        foreach (var room
+                            in rooms)
+                        {
+                            AvailableRooms.Add(
+                                room);
+                        }
+                    });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load rooms: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"Failed to load rooms: {ex.Message}");
             }
         }
 
-        #endregion
-
-        partial void OnPageSizeChanged(int value)
-        {
-            CurrentPage = 1;
-            _ = LoadDataAsync();
-        }
+        // =========================================================
+        // APPLY FILTERS
+        // =========================================================
 
         [RelayCommand]
         private async Task ApplyFilterAndReloadAsync()
         {
             CurrentPage = 1;
+
             await LoadDataAsync();
         }
+
+        // =========================================================
+        // RESET FILTERS
+        // =========================================================
 
         [RelayCommand]
         private async Task ResetFiltersAsync()
         {
             SearchName = string.Empty;
-            SelectedBuilding = null; // Clears Floor and Room via OnSelectedBuildingChanged
+
+            SelectedBuilding = null;
+
+            SelectedFloor = null;
+
+            SelectedRoom = null;
+
+            AvailableFloors.Clear();
+
+            AvailableRooms.Clear();
+
             CurrentPage = 1;
+
             await LoadDataAsync();
         }
+
+        // =========================================================
+        // LOAD STUDENTS
+        // =========================================================
 
         [RelayCommand]
         public async Task LoadDataAsync()
         {
-            IsLoading = true;
+            if (IsLoading)
+            {
+                return;
+            }
+
             try
             {
-                using var db = new AppDbContext();
+                IsLoading = true;
 
-                IQueryable<Student> query = db.Students.AsNoTracking();
+                await using var db =
+                    new AppDbContext();
 
-                // 1. Text Search Filter (Name / NRC)
-                if (!string.IsNullOrWhiteSpace(SearchName))
+                IQueryable<Student> query =
+                    db.Students
+                        .AsNoTracking()
+                        .Where(s => s.IsActive);
+
+                // =================================================
+                // TEXT SEARCH
+                // =================================================
+
+                if (!string.IsNullOrWhiteSpace(
+                    SearchName))
                 {
-                    string term = SearchName.Trim();
-                    query = query.Where(s =>
-                        (s.Name != null && EF.Functions.Like(s.Name, $"%{term}%")) ||
-                        (s.NRC != null && EF.Functions.Like(s.NRC, $"%{term}%")));
+                    string term =
+                        SearchName.Trim();
+
+                    query =
+                        query.Where(s =>
+                            (s.Name != null &&
+                             EF.Functions.Like(
+                                 s.Name,
+                                 $"%{term}%")) ||
+
+                            (s.NRC != null &&
+                             EF.Functions.Like(
+                                 s.NRC,
+                                 $"%{term}%")));
                 }
 
-                // 2. Cascading Location Filters
+                // =================================================
+                // LOCATION FILTER
+                // =================================================
+
                 if (SelectedRoom != null)
                 {
-                    // Specific Room Selected
-                    query = query.Where(s => s.RoomId == SelectedRoom.Id);
+                    int roomId =
+                        SelectedRoom.Id;
+
+                    query =
+                        query.Where(s =>
+                            s.Accommodations.Any(
+                                a =>
+                                    a.IsActive &&
+                                    a.EndDate == null &&
+                                    a.RoomId == roomId));
                 }
                 else if (SelectedFloor != null)
                 {
-                    // Specific Floor Selected (Matches all rooms on this floor)
-                    query = query.Where(s => s.Room != null && s.Room.FloorId == SelectedFloor.Id);
+                    int floorId =
+                        SelectedFloor.Id;
+
+                    query =
+                        query.Where(s =>
+                            s.Accommodations.Any(
+                                a =>
+                                    a.IsActive &&
+                                    a.EndDate == null &&
+                                    a.Room.FloorId ==
+                                        floorId));
                 }
                 else if (SelectedBuilding != null)
                 {
-                    // Specific Building Selected (Matches all rooms in this building)
-                    query = query.Where(s => s.Room != null && s.Room.Floor != null && s.Room.Floor.BuildingId == SelectedBuilding.Id);
+                    int buildingId =
+                        SelectedBuilding.Id;
+
+                    query =
+                        query.Where(s =>
+                            s.Accommodations.Any(
+                                a =>
+                                    a.IsActive &&
+                                    a.EndDate == null &&
+                                    a.Room.Floor.BuildingId ==
+                                        buildingId));
                 }
 
-                TotalCount = await query.CountAsync();
-                TotalPages = (int)Math.Ceiling((double)TotalCount / PageSize);
-                if (TotalPages < 1) TotalPages = 1;
+                // =================================================
+                // PAGINATION
+                // =================================================
 
-                var items = await query
-                    .OrderByDescending(s => s.CreatedAt)
-                    .Skip((CurrentPage - 1) * PageSize)
-                    .Take(PageSize)
-                    .Include(s => s.Room)
-                        .ThenInclude(r => r!.Floor)
-                            .ThenInclude(f => f!.Building)
-                    .Include(s => s.AcademicRecords)
-                    .Include(s => s.StudentCategory)
-                    .ToListAsync();
+                var totalCount =
+                    await query.CountAsync();
 
-                Students = new ObservableCollection<Student>(items);
+                UpdatePagination(totalCount);
+
+                // =================================================
+                // CURRENT PAGE
+                // =================================================
+
+                var items =
+                    await query
+                        .OrderByDescending(
+                            s => s.CreatedAt)
+
+                        .Skip(GetSkipCount())
+
+                        .Take(PageSize)
+
+                        .Include(s =>
+                            s.Accommodations
+                                .Where(a =>
+                                    a.IsActive &&
+                                    a.EndDate == null))
+                            .ThenInclude(a => a.Room)
+                                .ThenInclude(r =>
+                                    r.Floor)
+                                    .ThenInclude(f =>
+                                        f.Building)
+
+                        .Include(s =>
+                            s.AcademicRecords)
+
+                        .Include(s =>
+                            s.StudentCategory)
+
+                        .ToListAsync();
+
+                Students =
+                    new ObservableCollection<Student>(
+                        items);
             }
             catch (Exception ex)
             {
@@ -269,192 +481,242 @@ namespace HostelManagementSystem.ViewModels
             }
         }
 
-        #region Pagination Commands
+        // =========================================================
+        // PAGINATION REFRESH
+        // =========================================================
 
-        [RelayCommand]
-        private async Task FirstPageAsync()
+        protected override async Task RefreshPageAsync()
         {
-            if (CurrentPage > 1)
-            {
-                CurrentPage = 1;
-                await LoadDataAsync();
-            }
+            await LoadDataAsync();
         }
 
-        [RelayCommand]
-        private async Task PreviousPageAsync()
-        {
-            if (CurrentPage > 1)
-            {
-                CurrentPage--;
-                await LoadDataAsync();
-            }
-        }
-
-        [RelayCommand]
-        private async Task NextPageAsync()
-        {
-            if (CurrentPage < TotalPages)
-            {
-                CurrentPage++;
-                await LoadDataAsync();
-            }
-        }
-
-        [RelayCommand]
-        private async Task LastPageAsync()
-        {
-            if (CurrentPage < TotalPages)
-            {
-                CurrentPage = TotalPages;
-                await LoadDataAsync();
-            }
-        }
-
-        #endregion
-
-        #region Actions & Navigation
-
-        [RelayCommand]
-        private void OpenAddNewStudentForm()
-        {
-            Func<Task> navigateBackCallback = () =>
-            {
-                WeakReferenceMessenger.Default.Send(new NavigateMessage(new ResidentViewModel()));
-                return Task.CompletedTask;
-            };
-
-            var addVm = new AddNewStudentFormViewModel(navigateBackCallback);
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(addVm));
-        }
-
-        [RelayCommand]
-        private void NavigateToStudentDetail(Student student)
-        {
-            if (student == null) return;
-
-            var room = student.Room;
-            var floor = room?.Floor;
-            var building = floor?.Building;
-
-            if (building == null || floor == null || room == null)
-            {
-                MessageBox.Show(
-                    "ကျောင်းသား၏ အခန်း အချက်အလက်များ မပြည့်စုံပါ၊",
-                    "သတိပေးချက်",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-                return;
-            }
-
-            Func<Task> navigateBackCallback = () =>
-            {
-                WeakReferenceMessenger.Default.Send(new NavigateMessage(new ResidentViewModel()));
-                return Task.CompletedTask;
-            };
-
-            var detailVm = new StudentDetailViewModel(
-                building,
-                floor,
-                room,
-                student.Id,
-                navigateBackCallback
-            );
-
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(detailVm));
-        }
-
-        [RelayCommand]
-        private void EditStudent(Student student)
-        {
-            if (student == null) return;
-
-            var room = student.Room;
-            var floor = room?.Floor;
-            var building = floor?.Building;
-
-            if (building == null || floor == null || room == null)
-            {
-                MessageBox.Show(
-                    "ကျောင်းသား၏ အခန်း အချက်အလက်များ မပြည့်စုံပါ၊",
-                    "သတိပေးချက်",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-                return;
-            }
-
-            Func<Task> navigateBackCallback = () =>
-            {
-                WeakReferenceMessenger.Default.Send(new NavigateMessage(new ResidentViewModel()));
-                return Task.CompletedTask;
-            };
-
-            var editVm = new EditStudentFormViewModel(
-                building,
-                floor,
-                room,
-                student.Id,
-                navigateBackCallback
-            );
-
-            WeakReferenceMessenger.Default.Send(new NavigateMessage(editVm));
-        }
-
-
-
-        [RelayCommand]
-        private async Task DeleteStudentAsync(int studentId)
-        {
-            var result = MessageBox.Show(
-                "ဤအဆောင်သားကို အမှန်တကယ် ဖျက်လိုပါသလား။",
-                "ဖျက်ရန် အတည်ပြုပါ",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result != MessageBoxResult.Yes) return;
-
-            await LoadingHelper.ExecuteWithLoadingAsync(async () =>
-            {
-                try
-                {
-                    var studentService = new StudentService();
-                    await studentService.DeleteStudentWithRelatedDataAsync(studentId);
-
-                    await LoadDataAsync();
-
-                    WeakReferenceMessenger.Default.Send(new DatabaseUpdatedMessage("Student", studentId, DatabaseOperation.Deleted));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(
-                        $"ဖျက်ရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
-                        "အမှား",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
-            }, "အချက်အလက်များ ဖျက်နေပါသည်...");
-        }
+        // =========================================================
+        // STUDENT CATEGORY
+        // =========================================================
 
         [RelayCommand]
         private async Task OpenStudentCategoryManagement()
         {
             var studentCategoryViewModel =
-                new StudentCategoryViewModel(async () =>
-                {
-                    // Reload students so StudentCategory.Name is fresh
-                    await LoadDataAsync();
+                new StudentCategoryViewModel(
+                    async () =>
+                    {
+                        await LoadDataAsync();
 
-                    WeakReferenceMessenger.Default.Send(
-                        new NavigateMessage(this));
-                });
+                        WeakReferenceMessenger
+                            .Default
+                            .Send(
+                                new NavigateMessage(
+                                    this));
+                    });
 
-            WeakReferenceMessenger.Default.Send(
-                new NavigateMessage(studentCategoryViewModel));
+            WeakReferenceMessenger
+                .Default
+                .Send(
+                    new NavigateMessage(
+                        studentCategoryViewModel));
 
             await studentCategoryViewModel
                 .LoadCategoriesCommand
                 .ExecuteAsync(null);
         }
-        #endregion
+
+        // =========================================================
+        // ADD STUDENT
+        // =========================================================
+
+        [RelayCommand]
+        private void OpenAddNewStudentForm()
+        {
+            Func<Task>
+                navigateBackCallback = () =>
+                {
+                    WeakReferenceMessenger
+                        .Default
+                        .Send(
+                            new NavigateMessage(
+                                new ResidentViewModel()));
+
+                    return Task.CompletedTask;
+                };
+
+            var addVm =
+                new AddNewStudentFormViewModel(
+                    navigateBackCallback);
+
+            WeakReferenceMessenger
+                .Default
+                .Send(
+                    new NavigateMessage(
+                        addVm));
+        }
+
+        // =========================================================
+        // STUDENT DETAIL
+        // =========================================================
+
+        [RelayCommand]
+        private void NavigateToStudentDetail(
+            Student student)
+        {
+            if (student == null)
+            {
+                return;
+            }
+
+            Func<Task>
+                navigateBackCallback = () =>
+                {
+                    WeakReferenceMessenger
+                        .Default
+                        .Send(
+                            new NavigateMessage(
+                                new ResidentViewModel()));
+
+                    return Task.CompletedTask;
+                };
+
+            var detailVm =
+                new StudentDetailViewModel(
+                    student.Id,
+                    navigateBackCallback);
+
+            WeakReferenceMessenger
+                .Default
+                .Send(
+                    new NavigateMessage(
+                        detailVm));
+        }
+
+        // =========================================================
+        // EDIT STUDENT
+        // =========================================================
+
+        [RelayCommand]
+        private void EditStudent(
+            Student student)
+        {
+            if (student == null)
+            {
+                return;
+            }
+
+            Func<Task>
+                navigateBackCallback = () =>
+                {
+                    WeakReferenceMessenger
+                        .Default
+                        .Send(
+                            new NavigateMessage(
+                                new ResidentViewModel()));
+
+                    return Task.CompletedTask;
+                };
+
+            var editVm =
+                new EditStudentFormViewModel(
+                    student.Id,
+                    navigateBackCallback);
+
+            WeakReferenceMessenger
+                .Default
+                .Send(
+                    new NavigateMessage(
+                        editVm));
+        }
+
+        
+        // =========================================================
+        // ASSIGN / CHANGE ROOM
+        // =========================================================
+
+        [RelayCommand]
+        private void AssignRoom(int studentId)
+        {
+                    if (studentId <= 0)
+                    {
+                        return;
+                    }
+
+                    Func<Task> navigateBackCallback = async () =>
+                    {
+                        // Refresh the existing ResidentViewModel
+                        // so current room information is immediately updated.
+                        await LoadDataAsync();
+
+                        WeakReferenceMessenger.Default.Send(
+                            new NavigateMessage(this));
+                    };
+
+                    var roomAssignmentVm =
+                        new RoomAssignmentViewModel(
+                            studentId,
+                            navigateBackCallback);
+
+                    WeakReferenceMessenger.Default.Send(
+                        new NavigateMessage(
+                            roomAssignmentVm));
+        }
+
+
+
+        // =========================================================
+        // DELETE STUDENT
+        // =========================================================
+
+        [RelayCommand]
+        private async Task DeleteStudentAsync(
+            int studentId)
+        {
+            var result =
+                MessageBox.Show(
+                    "ဤအဆောင်သားကို အမှန်တကယ် ဖျက်လိုပါသလား။",
+                    "ဖျက်ရန် အတည်ပြုပါ",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+            if (result !=
+                MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            await LoadingHelper
+                .ExecuteWithLoadingAsync(
+                    async () =>
+                    {
+                        try
+                        {
+                            var studentService =
+                                new StudentService();
+
+                            await studentService
+                                .DeleteStudentWithRelatedDataAsync(
+                                    studentId,
+                                    DateOnly.FromDateTime(
+                                        DateTime.Today));
+
+                            await LoadDataAsync();
+
+                            WeakReferenceMessenger
+                                .Default
+                                .Send(
+                                    new DatabaseUpdatedMessage(
+                                        "Student",
+                                        studentId,
+                                        DatabaseOperation
+                                            .Deleted));
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(
+                                $"ဖျက်ရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                                "အမှား",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+                        }
+                    },
+                    "အချက်အလက်များ ဖျက်နေပါသည်...");
+        }
     }
 }

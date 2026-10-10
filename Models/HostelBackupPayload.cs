@@ -1,18 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HostelManagementSystem.Models;
 
-// not include in the database context, this is just a payload for backup and restore operations
-namespace HostelManagementSystem.Models
+public class HostelBackupPayload
 {
-    public class HostelBackupPayload
-    {
-        public DateTime ExportedAt { get; set; } = DateTime.Now;
-        public string MachineName { get; set; } = Environment.MachineName;
+    public DateTime ExportedAt { get; set; }
 
-        public List<Building>? Buildings { get; set; }
-        public List<Floor>? Floors { get; set; }
-        public List<Room>? Rooms { get; set; }
-        public List<Student>? Students { get; set; }
-        public List<StudentAcademicRecord>? AcademicRecords { get; set; }
-    }
+    public string MachineName { get; set; } = string.Empty;
+
+
+    // Infrastructure
+    public List<Building> Buildings { get; set; } = new();
+    public List<Floor> Floors { get; set; } = new();
+    public List<Room> Rooms { get; set; } = new();
+    public List<RoomType> RoomTypes { get; set; } = new();
+
+
+    // Students
+    public List<StudentCategory> StudentCategories { get; set; } = new();
+    public List<Student> Students { get; set; } = new();
+    public List<StudentAcademicRecord> AcademicRecords { get; set; } = new();
+    public List<StudentAccommodation> StudentAccommodations { get; set; } = new();
+
+
+    // Financial
+    public List<FeeRule> FeeRules { get; set; } = new();
+    public List<FeeCharge> FeeCharges { get; set; } = new();
+    public List<Payment> Payments { get; set; } = new();
+    public List<PaymentAllocation> PaymentAllocations { get; set; } = new();
 }

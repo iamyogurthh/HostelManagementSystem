@@ -228,7 +228,7 @@
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Floor.Building.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, FallbackValue='-'}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Floor  -->
@@ -239,7 +239,7 @@
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Floor.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Name, FallbackValue='-'}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Room  -->
@@ -250,7 +250,7 @@
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Name, FallbackValue='-'}"
                                                     TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
                                         </DataTemplate>
@@ -285,6 +285,19 @@
                                                     Icon="{ui:SymbolIcon Info24}"
                                                     Style="{StaticResource InfoActionButtonStyle}"
                                                     ToolTip="အသေးစိတ်ကြည့်ရန်" />
+
+                                                <!--  Assign Room Button  -->
+                                                <ui:Button
+                                                    Width="32"
+                                                    Height="32"
+                                                    Margin="0,0,8,0"
+                                                    Padding="0"
+                                                    Command="{Binding DataContext.AssignRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Icon="{ui:SymbolIcon Home24}"
+                                                    Style="{StaticResource InfoActionButtonStyle}"
+                                                    ToolTip="အခန်းသတ်မှတ်ရန် / ပြောင်းရန်" />
+
 
                                                 <!--  Edit Button  -->
                                                 <ui:Button

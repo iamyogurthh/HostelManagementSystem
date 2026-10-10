@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using HostelManagementSystem.Messages;
 using HostelManagementSystem.ViewModels.FeeRuleViewModels;
+using HostelManagementSystem.ViewModels.PaymentViewModels;
+using HostelManagementSystem.Models;
 
 namespace HostelManagementSystem.ViewModels
 {
@@ -26,6 +28,9 @@ namespace HostelManagementSystem.ViewModels
         public SettingViewModel Setting { get; }
         public DataTransferViewModel DataTransfer { get; } 
         public FeeRuleViewModel FeeRule { get; }
+        public PaymentViewModel Payment { get; }
+
+        public string CurrentVersion => AppVersionInfo.CurrentVersion;
 
         public MainViewModel(
             DashboardViewModel dashboard,
@@ -33,7 +38,8 @@ namespace HostelManagementSystem.ViewModels
             ResidentViewModel resident,
             SettingViewModel setting,
             DataTransferViewModel dataTransfer,
-            FeeRuleViewModel feeRule)
+            FeeRuleViewModel feeRule,
+            PaymentViewModel payment)
         {
             Dashboard = dashboard;
             Building = building;
@@ -41,6 +47,7 @@ namespace HostelManagementSystem.ViewModels
             Setting = setting;
             DataTransfer = dataTransfer;
             FeeRule = feeRule;
+            Payment = payment;
 
             CurrentView = Dashboard;
             IsActive = true;
@@ -54,7 +61,8 @@ namespace HostelManagementSystem.ViewModels
             new ResidentViewModel(),
             new SettingViewModel(),
             new DataTransferViewModel(),
-            new FeeRuleViewModel())
+            new FeeRuleViewModel(),
+            new PaymentViewModel())
         {
         }
 
@@ -103,6 +111,13 @@ namespace HostelManagementSystem.ViewModels
                     {
                         await FeeRule.LoadFeeRulesCommand.ExecuteAsync(null);
                     }       
+                    break;
+
+                case "payment": SetCurrentView(Payment); 
+                    if (Payment.LoadStudentsCommand.CanExecute(null)) 
+                    { 
+                        await Payment.LoadStudentsCommand.ExecuteAsync(null); 
+                    } 
                     break;
             }
         }

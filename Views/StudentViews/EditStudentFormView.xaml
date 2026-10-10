@@ -126,66 +126,6 @@
                                 Content="Remove"
                                 Style="{StaticResource SecondaryButtonStyle}" />
                         </StackPanel>
-
-                        <!--  Cascading Room Selection Dropdowns (Edit Form)  -->
-                        <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
-                            <!--  Building Dropdown  -->
-                            <StackPanel Margin="0,0,10,0">
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အဆောက်အအုံ" />
-                                <ComboBox
-                                    Width="150"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableBuildings}"
-                                    SelectedItem="{Binding SelectedBuilding, Mode=TwoWay}" />
-                            </StackPanel>
-
-                            <!--  Floor Dropdown  -->
-                            <StackPanel Margin="0,0,10,0">
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အထပ်" />
-                                <ComboBox
-                                    Width="130"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableFloors}"
-                                    SelectedItem="{Binding SelectedFloor, Mode=TwoWay}" />
-                            </StackPanel>
-
-                            <!--  Room Dropdown  -->
-                            <StackPanel>
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အခန်း *" />
-                                <ComboBox
-                                    Width="130"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableRooms}"
-                                    SelectedItem="{Binding Room, Mode=TwoWay}" />
-                            </StackPanel>
-                        </StackPanel>
                     </StackPanel>
                 </Grid>
 

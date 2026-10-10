@@ -6,7 +6,6 @@ namespace HostelManagementSystem.DTOs
 {
     class CreateStudentDto
     {
-        public int RoomId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int StudentCategoryId { get; set; }
         public string Gender { get; set; } = string.Empty;

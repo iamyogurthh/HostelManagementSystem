@@ -17,13 +17,13 @@ namespace HostelManagementSystem.Models
         public int StudentId { get; set; }
 
         [ForeignKey(nameof(StudentId))]
-        public Student? Student { get; set; }
+        public Student Student { get; set; } = null!;
 
         [Required]
         public int RoomId { get; set; }
 
         [ForeignKey(nameof(RoomId))]
-        public Room? Room { get; set; }
+        public Room Room { get; set; } = null!;
 
         // =========================================================
         // STAY DETAILS
@@ -31,8 +31,16 @@ namespace HostelManagementSystem.Models
         [Required]
         public DateOnly StartDate { get; set; }
 
+        /// <summary>
+        /// Null means the student is currently staying in this room.
+        /// </summary>
         public DateOnly? EndDate { get; set; }
 
+        /// <summary>
+        /// Soft-delete status.
+        /// True = record is valid.
+        /// False = record has been soft-deleted.
+        /// </summary>
         public bool IsActive { get; set; } = true;
 
         // =========================================================

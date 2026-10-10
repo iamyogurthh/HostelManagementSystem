@@ -9,6 +9,7 @@ public partial class SettingViewModel : ObservableObject
     public ThemeSettingsViewModel Theme { get; }
 
     public LicenseSettingsViewModel License { get; }
+    public VersionSettingsViewModel Version { get; } 
 
     [ObservableProperty]
     private ObservableObject _currentSettingViewModel;
@@ -17,6 +18,7 @@ public partial class SettingViewModel : ObservableObject
     {
         Theme = new ThemeSettingsViewModel();
         License = new LicenseSettingsViewModel();
+        Version = new VersionSettingsViewModel();
 
         _currentSettingViewModel = Theme;
     }
@@ -31,5 +33,11 @@ public partial class SettingViewModel : ObservableObject
     private void SelectLicense()
     {
         CurrentSettingViewModel = License;
+    }
+
+    [RelayCommand]
+    private void SelectVersion()
+    {
+        CurrentSettingViewModel = Version;
     }
 }

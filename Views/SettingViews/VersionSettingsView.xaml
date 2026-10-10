@@ -1,0 +1,126 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.SettingViews.VersionSettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <!--  Header  -->
+            <TextBlock
+                Margin="0,0,0,4"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="{DynamicResource TextPrimary}"
+                Text="Version History" />
+
+            <TextBlock
+                Margin="0,0,0,16"
+                FontSize="13"
+                Foreground="{DynamicResource TextSecondary}"
+                Text="View application releases and their changes." />
+
+            <!--  Release List  -->
+            <ItemsControl ItemsSource="{Binding Releases}">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="16"
+                            Background="{DynamicResource CardBackground}"
+                            BorderBrush="{DynamicResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+
+                            <StackPanel>
+
+                                <!--  Version Information  -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock
+                                            FontSize="15"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            Text="{Binding Version, StringFormat=Version {0}}" />
+
+                                        <TextBlock
+                                            Margin="0,4,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextSecondary}"
+                                            Text="{Binding ReleaseDate}" />
+                                    </StackPanel>
+
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="10,5"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource BorderColor}"
+                                        CornerRadius="6">
+
+                                        <TextBlock
+                                            FontSize="11"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            Text="{Binding ReleaseType}" />
+                                    </Border>
+                                </Grid>
+
+                                <!--  Divider  -->
+                                <Border
+                                    Height="1"
+                                    Margin="0,14,0,12"
+                                    Background="{DynamicResource BorderColor}" />
+
+                                <!--  Release Notes Header  -->
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="Release Notes" />
+
+                                <!--  Release Notes  -->
+                                <ItemsControl ItemsSource="{Binding ReleaseNotes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+
+                                                <TextBlock
+                                                    Margin="0,0,8,0"
+                                                    FontSize="12"
+                                                    Foreground="{DynamicResource TextSecondary}"
+                                                    Text="•" />
+
+                                                <TextBlock
+                                                    MaxWidth="650"
+                                                    FontSize="12"
+                                                    Foreground="{DynamicResource TextSecondary}"
+                                                    Text="{Binding}"
+                                                    TextWrapping="Wrap" />
+
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </Border>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

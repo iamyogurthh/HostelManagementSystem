@@ -51,6 +51,9 @@ namespace HostelManagementSystem.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ChargedDays")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -58,6 +61,12 @@ namespace HostelManagementSystem.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("FeeRuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsProrated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PeriodDays")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateOnly>("PeriodEnd")
@@ -81,7 +90,8 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasIndex("FeeRuleId");
 
-                    b.HasIndex("StudentAccommodationId");
+                    b.HasIndex("StudentAccommodationId", "PeriodStart")
+                        .IsUnique();
 
                     b.HasIndex("StudentId", "Status");
 
@@ -265,7 +275,7 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoomType");
+                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.Student", b =>
@@ -343,9 +353,6 @@ namespace HostelManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("StudentCategoryId")
                         .HasColumnType("INTEGER");
 
@@ -361,8 +368,6 @@ namespace HostelManagementSystem.Migrations
                     b.HasIndex("IsActive");
 
                     b.HasIndex("StudentCategoryId");
-
-                    b.HasIndex("RoomId", "IsActive");
 
                     b.ToTable("Students");
                 });
@@ -425,6 +430,10 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StudentId")
+                        .IsUnique()
+                        .HasFilter("\"IsActive\" = 1 AND \"EndDate\" IS NULL");
+
                     b.HasIndex("RoomId", "IsActive");
 
                     b.HasIndex("StudentId", "IsActive");
@@ -450,7 +459,7 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StudentCategory");
+                    b.ToTable("StudentCategories");
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.FeeCharge", b =>
@@ -559,18 +568,11 @@ namespace HostelManagementSystem.Migrations
 
             modelBuilder.Entity("HostelManagementSystem.Models.Student", b =>
                 {
-                    b.HasOne("HostelManagementSystem.Models.Room", "Room")
-                        .WithMany("Students")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("HostelManagementSystem.Models.StudentCategory", "StudentCategory")
                         .WithMany("Students")
                         .HasForeignKey("StudentCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Room");
 
                     b.Navigation("StudentCategory");
                 });
@@ -633,8 +635,6 @@ namespace HostelManagementSystem.Migrations
             modelBuilder.Entity("HostelManagementSystem.Models.Room", b =>
                 {
                     b.Navigation("Accommodations");
-
-                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.RoomType", b =>

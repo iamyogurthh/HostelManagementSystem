@@ -143,18 +143,22 @@ public partial class DashboardViewModel : ObservableObject
             {
                 await using var db = new AppDbContext();
 
-                // Core KPIs
+                // ====================================================
+                // CORE KPIs
+                // ====================================================
+
                 TotalStudents = await db.Students
                     .CountAsync(s => s.IsActive);
 
                 TotalRooms = await db.Rooms
-                    .Where(r => r.IsActive)
-                    .CountAsync();
+                    .CountAsync(r => r.IsActive);
 
                 AvailableRooms = await db.Rooms
                     .Where(r =>
                         r.IsActive &&
-                        r.Students.Count(s => s.IsActive) < r.Capacity)
+                        r.Accommodations.Count(a =>
+                            a.IsActive &&
+                            a.EndDate == null) < r.Capacity)
                     .CountAsync();
 
                 TotalCapacity = await db.Rooms
@@ -167,7 +171,10 @@ public partial class DashboardViewModel : ObservableObject
                         1)
                     : 0;
 
-                // Building Occupancy Status
+                // ====================================================
+                // BUILDING OCCUPANCY
+                // ====================================================
+
                 var buildings = await db.Rooms
                     .Where(r =>
                         r.IsActive &&
@@ -177,7 +184,9 @@ public partial class DashboardViewModel : ObservableObject
                     .Select(g => new BuildingOccupancyItem(
                         g.Key,
                         g.Sum(r =>
-                            r.Students.Count(s => s.IsActive)),
+                            r.Accommodations.Count(a =>
+                                a.IsActive &&
+                                a.EndDate == null)),
                         g.Sum(r => r.Capacity)
                     ))
                     .ToListAsync();
@@ -186,7 +195,10 @@ public partial class DashboardViewModel : ObservableObject
                     new ObservableCollection<BuildingOccupancyItem>(
                         buildings);
 
-                // Student distribution by Major
+                // ====================================================
+                // STUDENT DISTRIBUTION BY MAJOR
+                // ====================================================
+
                 var majorData = await db.Students
                     .Where(s =>
                         s.IsActive &&
@@ -208,7 +220,10 @@ public partial class DashboardViewModel : ObservableObject
                                 m.StudentCount))
                     );
 
-                // Gender Distribution
+                // ====================================================
+                // GENDER DISTRIBUTION
+                // ====================================================
+
                 var maleCount = await db.Students
                     .CountAsync(s =>
                         s.IsActive &&
@@ -224,7 +239,10 @@ public partial class DashboardViewModel : ObservableObject
                         maleCount,
                         femaleCount);
 
-                // Year Level Distribution
+                // ====================================================
+                // YEAR LEVEL DISTRIBUTION
+                // ====================================================
+
                 var activeStudentsLatestRecord =
                     await db.Students
                         .Where(s => s.IsActive)

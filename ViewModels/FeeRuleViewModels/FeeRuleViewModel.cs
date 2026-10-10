@@ -4,13 +4,14 @@ using CommunityToolkit.Mvvm.Messaging;
 using HostelManagementSystem.Database;
 using HostelManagementSystem.Messages;
 using HostelManagementSystem.Models;
+using HostelManagementSystem.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
 {
-    public partial class FeeRuleViewModel : ObservableObject
+    public partial class FeeRuleViewModel : PaginationViewModel
     {
         // =========================================================
         // DATA
@@ -48,31 +49,7 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                 "လာမည့်",
                 "ပိတ်ထားသည်"
             };
-
-        // =========================================================
-        // PAGINATION
-        // =========================================================
-
-        [ObservableProperty]
-        private int _currentPage = 1;
-
-        [ObservableProperty]
-        private int _totalPages = 1;
-
-        [ObservableProperty]
-        private int _pageSize = 10;
-
-        [ObservableProperty]
-        private int _totalFilteredCount;
-
-        public ObservableCollection<int> PageSizeOptions { get; } =
-            new()
-            {
-                10,
-                20,
-                50,
-                100
-            };
+        
 
         // =========================================================
         // DISPLAY PROPERTIES
@@ -106,6 +83,7 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                 //
                 // We intentionally do NOT filter by IsActive here.
                 // Historical and deactivated rules must remain visible.
+
                 _allFeeRules = await db.FeeRules
                     .AsNoTracking()
                     .Include(fr => fr.StudentCategory)
@@ -115,7 +93,7 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                     .ThenByDescending(fr => fr.EffectiveFrom)
                     .ToListAsync();
 
-                CurrentPage = 1;
+                ResetPagination();
 
                 ApplyFiltersAndPagination();
             }
@@ -134,7 +112,7 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
         }
 
         // =========================================================
-        // FILTER
+        // APPLY FILTER
         // =========================================================
 
         [RelayCommand]
@@ -144,6 +122,10 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
 
             ApplyFiltersAndPagination();
         }
+
+        // =========================================================
+        // CLEAR FILTER
+        // =========================================================
 
         [RelayCommand]
         private void ClearFilter()
@@ -157,27 +139,16 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
             ApplyFiltersAndPagination();
         }
 
+        // =========================================================
+        // FILTER + SORT + PAGINATION
+        // =========================================================
+
         private void ApplyFiltersAndPagination()
         {
             IEnumerable<FeeRule> filteredRules = _allFeeRules;
 
             // =====================================================
             // DATE RANGE FILTER
-            // =====================================================
-            //
-            // Show rules whose effective period overlaps
-            // the selected date range.
-            //
-            // Example:
-            //
-            // Rule:
-            // 01/06/2026 -> 31/08/2026
-            //
-            // Filter:
-            // 01/07/2026 -> 31/07/2026
-            //
-            // Result:
-            // Included
             // =====================================================
 
             if (FilterFromDate.HasValue)
@@ -217,29 +188,18 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                 .ThenByDescending(fr => fr.EffectiveFrom)
                 .ToList();
 
-            TotalFilteredCount = filteredList.Count;
-
             // =====================================================
-            // CALCULATE TOTAL PAGES
+            // UPDATE SHARED PAGINATION
             // =====================================================
 
-            TotalPages = TotalFilteredCount == 0
-                ? 1
-                : (int)Math.Ceiling(
-                    TotalFilteredCount / (double)PageSize);
-
-            if (CurrentPage < 1)
-                CurrentPage = 1;
-
-            if (CurrentPage > TotalPages)
-                CurrentPage = TotalPages;
+            UpdatePagination(filteredList.Count);
 
             // =====================================================
             // APPLY PAGINATION
             // =====================================================
 
             var pagedRules = filteredList
-                .Skip((CurrentPage - 1) * PageSize)
+                .Skip(GetSkipCount())
                 .Take(PageSize)
                 .ToList();
 
@@ -250,7 +210,19 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                 FeeRules.Add(feeRule);
             }
 
-            NotifyPaginationProperties();
+            OnPropertyChanged(nameof(HasFeeRules));
+            OnPropertyChanged(nameof(HasNoFeeRules));
+        }
+
+        // =========================================================
+        // REFRESH CURRENT PAGE
+        // =========================================================
+
+        protected override Task RefreshPageAsync()
+        {
+            ApplyFiltersAndPagination();
+
+            return Task.CompletedTask;
         }
 
         // =========================================================
@@ -278,114 +250,6 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
 
             // Currently effective.
             return "လက်ရှိ";
-        }
-
-        // =========================================================
-        // FIRST PAGE
-        // =========================================================
-
-        [RelayCommand]
-        private void FirstPage()
-        {
-            if (CurrentPage == 1)
-                return;
-
-            CurrentPage = 1;
-
-            ApplyFiltersAndPagination();
-        }
-
-        // =========================================================
-        // PREVIOUS PAGE
-        // =========================================================
-
-        [RelayCommand]
-        private void PreviousPage()
-        {
-            if (CurrentPage <= 1)
-                return;
-
-            CurrentPage--;
-
-            ApplyFiltersAndPagination();
-        }
-
-        // =========================================================
-        // NEXT PAGE
-        // =========================================================
-
-        [RelayCommand]
-        private void NextPage()
-        {
-            if (CurrentPage >= TotalPages)
-                return;
-
-            CurrentPage++;
-
-            ApplyFiltersAndPagination();
-        }
-
-        // =========================================================
-        // LAST PAGE
-        // =========================================================
-
-        [RelayCommand]
-        private void LastPage()
-        {
-            if (CurrentPage >= TotalPages)
-                return;
-
-            CurrentPage = TotalPages;
-
-            ApplyFiltersAndPagination();
-        }
-
-        // =========================================================
-        // PAGE SIZE CHANGED
-        // =========================================================
-
-        partial void OnPageSizeChanged(int value)
-        {
-            if (value <= 0)
-                return;
-
-            CurrentPage = 1;
-
-            ApplyFiltersAndPagination();
-        }
-
-        // =========================================================
-        // FILTER PROPERTY CHANGES
-        // =========================================================
-
-        partial void OnSelectedStatusChanged(string value)
-        {
-            CurrentPage = 1;
-
-            if (_allFeeRules.Count > 0)
-            {
-                ApplyFiltersAndPagination();
-            }
-        }
-
-        partial void OnFilterFromDateChanged(DateTime? value)
-        {
-            CurrentPage = 1;
-
-            if (_allFeeRules.Count > 0)
-            {
-                ApplyFiltersAndPagination();
-            }
-        }
-
-        partial void OnFilterToDateChanged(DateTime? value)
-        {
-            CurrentPage = 1;
-
-            if (_allFeeRules.Count > 0)
-            {
-                ApplyFiltersAndPagination();
-            }
         }
 
         // =========================================================
@@ -437,7 +301,10 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
 
                 await db.SaveChangesAsync();
 
-                // Update the local copy.
+                // =================================================
+                // UPDATE LOCAL COPY
+                // =================================================
+
                 var localRule = _allFeeRules
                     .FirstOrDefault(fr => fr.Id == existingFeeRule.Id);
 
@@ -446,8 +313,15 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                     localRule.IsActive = false;
                 }
 
-                // Refresh the current filtered/paginated list.
+                // =================================================
+                // REFRESH CURRENT FILTERED/PAGINATED LIST
+                // =================================================
+
                 ApplyFiltersAndPagination();
+
+                // =================================================
+                // NOTIFY OTHER VIEWS
+                // =================================================
 
                 WeakReferenceMessenger.Default.Send(
                     new DatabaseUpdatedMessage(
@@ -485,18 +359,6 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
                 new NavigateMessage(formViewModel));
 
             await formViewModel.InitializeAsync();
-        }
-
-        // =========================================================
-        // PROPERTY NOTIFICATIONS
-        // =========================================================
-
-        private void NotifyPaginationProperties()
-        {
-            OnPropertyChanged(nameof(HasFeeRules));
-            OnPropertyChanged(nameof(HasNoFeeRules));
-            OnPropertyChanged(nameof(TotalFilteredCount));
-            OnPropertyChanged(nameof(TotalPages));
         }
     }
 }

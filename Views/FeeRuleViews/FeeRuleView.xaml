@@ -229,6 +229,8 @@
                                         <Style TargetType="TextBlock">
 
                                             <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="HorizontalAlignment" Value="Right" />
+                                            <Setter Property="Padding" Value="0,0,40,0" />
 
                                             <Setter Property="FontWeight" Value="SemiBold" />
 
@@ -343,7 +345,6 @@
 
                 <!--  =================================================  -->
                 <!--  PAGINATION BAR  -->
-                <!--  Same design as ResidentView  -->
                 <!--  =================================================  -->
 
                 <Grid Margin="0,16,0,0">
@@ -366,10 +367,12 @@
 
                             <Run Text="စုစုပေါင်း စာရင်း :" />
 
+                            <!--  CHANGED: TotalFilteredCount -> TotalCount  -->
+
                             <Run
                                 FontWeight="Bold"
                                 Foreground="{DynamicResource TextPrimary}"
-                                Text="{Binding TotalFilteredCount, Mode=OneWay}" />
+                                Text="{Binding TotalCount, Mode=OneWay}" />
 
                             <Run Text=" ခု" />
 
@@ -390,7 +393,7 @@
                             <ComboBox
                                 Width="70"
                                 ItemsSource="{Binding PageSizeOptions}"
-                                SelectedItem="{Binding PageSize}" />
+                                SelectedItem="{Binding PageSize, Mode=TwoWay}" />
 
                         </StackPanel>
 

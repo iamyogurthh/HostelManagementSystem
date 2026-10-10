@@ -12,18 +12,13 @@ namespace HostelManagementSystem.Models
         public int Id { get; set; }
 
         // =========================================================
-        // CATEGORY & ROOM RELATIONSHIPS
+        // CATEGORY RELATIONSHIP
         // =========================================================
         [Required]
         public int StudentCategoryId { get; set; }
 
         [ForeignKey(nameof(StudentCategoryId))]
         public StudentCategory? StudentCategory { get; set; }
-
-        public int? RoomId { get; set; }
-
-        [ForeignKey(nameof(RoomId))]
-        public Room? Room { get; set; }
 
         // =========================================================
         // REQUIRED STUDENT INFO
@@ -32,7 +27,8 @@ namespace HostelManagementSystem.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Img { get; set; } = "pack://application:,,,/Image/DefaultImages/default_student.png";
+        public string Img { get; set; } =
+            "pack://application:,,,/Image/DefaultImages/default_student.png";
 
         [Required]
         public DateTime Birthday { get; set; }
@@ -82,20 +78,40 @@ namespace HostelManagementSystem.Models
         // RELATIONSHIPS (1-to-Many)
         // =========================================================
         public List<StudentAcademicRecord> AcademicRecords { get; set; } = new();
+
         public List<StudentAccommodation> Accommodations { get; set; } = new();
+
         public List<FeeCharge> FeeCharges { get; set; } = new();
+
         public List<Payment> Payments { get; set; } = new();
 
         // =========================================================
         // STATUS & METADATA
         // =========================================================
+        // Soft delete / active record status.
         public bool IsActive { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public DateTime? UpdatedAt { get; set; }
 
+        // =========================================================
+        // COMPUTED PROPERTIES
+        // =========================================================
         [NotMapped]
-        public string LatestRollNumber => AcademicRecords?.OrderByDescending(r => r.Id).FirstOrDefault()?.RollNumber ?? "-";
+        public string LatestRollNumber =>
+            AcademicRecords?
+                .OrderByDescending(r => r.Id)
+                .FirstOrDefault()?
+                .RollNumber ?? "-";
+
+        [NotMapped]
+        public StudentAccommodation? CurrentAccommodation =>
+            Accommodations?
+                .FirstOrDefault(a =>
+                    a.IsActive &&
+                    a.EndDate == null);
+        [NotMapped]
+        public bool IsUnpaid { get; set; }
     }
 }
