@@ -59,13 +59,13 @@
                         Margin="0,0,8,0"
                         Command="{Binding OpenStudentCategoryManagementCommand}"
                         Content="ကျောင်းသား အမျိုးအစားများ"
-                        Style="{StaticResource SecondaryButtonStyle}" />
+                        Style="{StaticResource PrimaryButtonStyle}" />
                     <Button
                         Height="42"
                         Margin="0,0,0,0"
                         Command="{Binding OpenRoomTypeManagementCommand}"
                         Content="အခန်းအမျိုးအစားများ"
-                        Style="{StaticResource SecondaryButtonStyle}" />
+                        Style="{StaticResource PrimaryButtonStyle}" />
                 </StackPanel>
             </Grid>
 
@@ -103,8 +103,8 @@
                             <TextBlock
                                 Margin="0,6,0,0"
                                 FontSize="11"
-                                FontWeight="Light"
-                                Foreground="#10B981"
+                                FontWeight="bold"
+                                Foreground="#2D8C6C"
                                 Text="လက်ရှိနေထိုင်သူ" />
                         </StackPanel>
                         <ui:SymbolIcon
@@ -148,7 +148,8 @@
                             <ProgressBar
                                 Height="6"
                                 Margin="0,12,0,0"
-                                Foreground="{DynamicResource PrimaryAccent}"
+                                Background="{DynamicResource ProgressBarBackground}"
+                                Foreground="{DynamicResource ProgressBarForeground}"
                                 Maximum="100"
                                 Value="{Binding OccupancyRate}" />
                         </StackPanel>
@@ -181,7 +182,7 @@
                                 Margin="0,4,0,0"
                                 FontSize="24"
                                 FontWeight="Bold"
-                                Foreground="#10B981"
+                                Foreground="#2D8C6C"
                                 Text="{Binding AvailableRooms}" />
                             <TextBlock
                                 Margin="0,6,0,0"
@@ -333,7 +334,7 @@
                                     <ui:ProgressRing
                                         Width="110"
                                         Height="110"
-                                        Foreground="#6366F1"
+                                        Foreground="#357ae8"
                                         IsIndeterminate="False"
                                         Progress="{Binding GenderData.MalePercentage, Mode=OneWay}" />
 
@@ -342,7 +343,7 @@
                                             HorizontalAlignment="Center"
                                             FontSize="18"
                                             FontWeight="Bold"
-                                            Foreground="#6366F1"
+                                            Foreground="#357ae8"
                                             Text="ကျား" />
                                         <TextBlock
                                             HorizontalAlignment="Center"

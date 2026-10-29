@@ -48,7 +48,7 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="ကျောင်းသား/သူ အသစ်ထည့်ရန်" />
             </DockPanel>
 
@@ -76,7 +76,7 @@
                     Margin="0,0,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၁။ ကျောင်းသား/သူ ဓာတ်ပုံ" />
 
                 <Grid Margin="0,0,0,24">
@@ -173,7 +173,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၂။ ကိုယ်ရေးအချက်အလက်များ" />
 
                 <!--  Name Field  -->
@@ -424,7 +424,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၃။ မိဘအချက်အလက်များ" />
 
                 <!--  Father & Mother Names  -->
@@ -607,7 +607,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၄။ ပညာရေးအချက်အလက်များ" />
 
 
@@ -854,7 +854,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၅။ မှတ်ပုံတင် ဓာတ်ပုံများ" />
 
                 <Grid Margin="0,0,0,20">

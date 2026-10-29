@@ -57,6 +57,10 @@ namespace HostelManagementSystem.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("TEXT");
 
@@ -74,6 +78,9 @@ namespace HostelManagementSystem.Migrations
 
                     b.Property<DateOnly>("PeriodStart")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
@@ -95,7 +102,10 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasIndex("StudentId", "Status");
 
-                    b.ToTable("FeeCharges");
+                    b.ToTable("FeeCharges", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_FeeCharges_Amount_Positive", "Amount > 0");
+                        });
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.FeeRule", b =>
@@ -179,6 +189,7 @@ namespace HostelManagementSystem.Migrations
 
                     b.Property<string>("ReceiptNumber")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("StudentId")
@@ -192,9 +203,15 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasIndex("PaymentDate");
 
+                    b.HasIndex("ReceiptNumber")
+                        .IsUnique();
+
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Payments_TotalAmount_Positive", "TotalAmount > 0");
+                        });
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.PaymentAllocation", b =>
@@ -219,7 +236,13 @@ namespace HostelManagementSystem.Migrations
 
                     b.HasIndex("PaymentId");
 
-                    b.ToTable("PaymentAllocations");
+                    b.HasIndex("PaymentId", "FeeChargeId")
+                        .IsUnique();
+
+                    b.ToTable("PaymentAllocations", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_PaymentAllocations_Amount_Positive", "Amount > 0");
+                        });
                 });
 
             modelBuilder.Entity("HostelManagementSystem.Models.Room", b =>

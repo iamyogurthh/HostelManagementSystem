@@ -19,20 +19,33 @@
             </Grid.RowDefinitions>
 
             <!--  1. Header Section  -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <!--  Breadcrumb showing Parent Building Name  -->
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="{Binding Building.Name, StringFormat='{}{0}၏ အထပ်များ'}" />
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding BackCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+                <StackPanel>
+                    <!--  Breadcrumb showing Parent Building Name  -->
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Building.Name, StringFormat='{}{0}၏ အထပ်များ'}" />
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
-                    Text="အထပ်အသစ်ထည့်ရန်" />
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="အထပ်အသစ်ထည့်ရန်" />
+                </StackPanel>
+
             </StackPanel>
 
             <!--  Section Divider  -->

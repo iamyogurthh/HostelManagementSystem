@@ -222,35 +222,35 @@
                                             <StackPanel VerticalAlignment="Center">
                                                 <!--  Building  -->
                                                 <TextBlock
-                                                    Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    Margin="0,0,0,4"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, FallbackValue=''}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Floor  -->
                                                 <TextBlock
-                                                    Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    Margin="0,0,0,4"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding CurrentAccommodation.Room.Floor.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Name, FallbackValue='အခန်းမရှိသေးပါ'}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Room  -->
                                                 <TextBlock
                                                     Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding CurrentAccommodation.Room.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Name, FallbackValue=''}"
                                                     TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
                                         </DataTemplate>

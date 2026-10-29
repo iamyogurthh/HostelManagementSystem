@@ -274,6 +274,10 @@ namespace HostelManagementSystem.Database
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.PaymentDate);
 
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.ReceiptNumber)
+                .IsUnique();
+
             // =========================================================
             // PAYMENT ALLOCATION INDEXES
             // =========================================================
@@ -282,6 +286,14 @@ namespace HostelManagementSystem.Database
 
             modelBuilder.Entity<PaymentAllocation>()
                 .HasIndex(pa => pa.FeeChargeId);
+
+            modelBuilder.Entity<PaymentAllocation>()
+                .HasIndex(pa => new
+                {
+                    pa.PaymentId,
+                    pa.FeeChargeId
+                })
+                .IsUnique();
 
             // =========================================================
             // MONEY PRECISION
@@ -302,6 +314,21 @@ namespace HostelManagementSystem.Database
             modelBuilder.Entity<PaymentAllocation>()
                 .Property(pa => pa.Amount)
                 .HasPrecision(18, 2);
+
+            modelBuilder.Entity<FeeCharge>()
+                .ToTable("FeeCharges", table => table.HasCheckConstraint(
+                    "CK_FeeCharges_Amount_Positive",
+                    "Amount > 0"));
+
+            modelBuilder.Entity<Payment>()
+                .ToTable("Payments", table => table.HasCheckConstraint(
+                    "CK_Payments_TotalAmount_Positive",
+                    "TotalAmount > 0"));
+
+            modelBuilder.Entity<PaymentAllocation>()
+                .ToTable("PaymentAllocations", table => table.HasCheckConstraint(
+                    "CK_PaymentAllocations_Amount_Positive",
+                    "Amount > 0"));
         }
     }
 }

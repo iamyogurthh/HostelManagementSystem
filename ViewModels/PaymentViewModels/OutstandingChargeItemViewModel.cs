@@ -23,6 +23,9 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
         public decimal Amount =>
             Charge.Amount;
 
+        public string Description =>
+            Charge.Description ?? string.Empty;
+
         public decimal PaidAmount =>
             Charge.Allocations?
                 .Sum(a => a.Amount) ?? 0m;

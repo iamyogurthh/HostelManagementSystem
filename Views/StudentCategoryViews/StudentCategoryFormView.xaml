@@ -19,19 +19,34 @@
             </Grid.RowDefinitions>
 
             <!--  1. Header Section  -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="{Binding Title}" />
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
-                    Text="ကျောင်းသား အမျိုးအစား အချက်အလက်များ" />
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding CancelCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Title}" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="ကျောင်းသား အမျိုးအစား အချက်အလက်များ" />
+                </StackPanel>
+
             </StackPanel>
 
             <!--  Section Divider  -->

@@ -335,7 +335,7 @@ public record BuildingOccupancyItem(
     public string ProgressBarColor =>
         OccupancyPercentage >= 100
             ? "#EF4444"
-            : "#4F46E5";
+            : "#2D8C6C";
 }
 
 public record MajorDistributionItem(

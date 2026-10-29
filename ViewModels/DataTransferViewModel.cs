@@ -206,13 +206,17 @@ namespace HostelManagementSystem.ViewModels
                         jsonOptions);
                 });
 
+
+                
                 StatusMessage =
                     "ဒေတာ သိမ်းဆည်းခြင်း အောင်မြင်ပါသည်။";
+               
             }
             catch (Exception ex)
             {
                 StatusMessage =
                     $"Export အမှား ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}";
+
             }
             finally
             {
@@ -220,6 +224,8 @@ namespace HostelManagementSystem.ViewModels
                     new BusyMessage(
                         false,
                         string.Empty));
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                StatusMessage = string.Empty;
             }
         }
 
@@ -551,6 +557,7 @@ namespace HostelManagementSystem.ViewModels
 
                 StatusMessage =
                     "ဒေတာ ထည့်သွင်းခြင်း အောင်မြင်ပါသည်။";
+               
             }
             catch (Exception ex)
             {
@@ -563,6 +570,8 @@ namespace HostelManagementSystem.ViewModels
                     new BusyMessage(
                         false,
                         string.Empty));
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                StatusMessage = string.Empty;
             }
         }
 

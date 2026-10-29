@@ -20,20 +20,35 @@
             </Grid.RowDefinitions>
 
             <!--  1. Header Section  -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <!--  Breadcrumb showing Parent Floor Name  -->
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="{Binding Floor.Name, StringFormat='{}{0}၏ အခန်းများ'}" />
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
-                    Text="အခန်းအချက်အလက် ပြင်ဆင်ရန်" />
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding BackCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+                <StackPanel>
+                    <!--  Breadcrumb showing Parent Floor Name  -->
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Floor.Name, StringFormat='{}{0}၏ အခန်းများ'}" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="အခန်းအချက်အလက် ပြင်ဆင်ရန်" />
+                </StackPanel>
+
             </StackPanel>
 
             <!--  Section Divider  -->

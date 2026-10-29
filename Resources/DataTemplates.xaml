@@ -115,6 +115,9 @@
     <DataTemplate DataType="{x:Type paymentVM:RecordPaymentViewModel}">
         <paymentViews:RecordPaymentView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type paymentVM:ManualChargeViewModel}">
+        <paymentViews:ManualChargeView />
+    </DataTemplate>
 
     <!--  Room Assignment related pages  -->
     <DataTemplate DataType="{x:Type assignRoomVm:RoomAssignmentViewModel}">

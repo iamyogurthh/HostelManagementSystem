@@ -72,9 +72,9 @@ namespace HostelManagementSystem
 
             ApplicationAccentColorManager.Apply(
                 System.Windows.Media.Color.FromRgb(
-                    0x4F,
-                    0x46,
-                    0xE5
+                    0x05,
+                    0x50,
+                    0x35
                 ),
                 ApplicationTheme.Dark
             );

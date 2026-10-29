@@ -27,20 +27,33 @@
                 =====================================================
             -->
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding CancelCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
 
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="{Binding Title}" />
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Title}" />
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
-                    Text="အခန်းခနှုန်းထားအသစ် သတ်မှတ်ခြင်း" />
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="အခန်းခနှုန်းထားအသစ် သတ်မှတ်ခြင်း" />
+                </StackPanel>
+
 
             </StackPanel>
 

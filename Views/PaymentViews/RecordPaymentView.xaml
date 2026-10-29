@@ -26,7 +26,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
 
@@ -150,117 +149,7 @@
                 </StackPanel>
 
 
-                <!--  ADVANCE INFO  -->
-
-                <Border
-                    Grid.Column="1"
-                    Padding="12,8"
-                    Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
-                    CornerRadius="6">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            FontSize="10"
-                            Foreground="{DynamicResource TextSecondary}"
-                            Text="ကြိုတင်ပေးချေမှု" />
-
-                        <TextBlock
-                            Margin="0,2,0,0"
-                            FontSize="13"
-                            FontWeight="SemiBold"
-                            Foreground="{DynamicResource TextPrimary}"
-                            Text="{Binding AdvanceMonths, Mode=OneWay, StringFormat={}{0} လ}" />
-
-                    </StackPanel>
-
-                </Border>
-
             </Grid>
-
-
-            <!--
-                =====================================================
-                ADVANCE MONTHS
-                =====================================================
-            -->
-
-            <StackPanel Grid.Row="4" Margin="0,0,0,16">
-
-                <TextBlock
-                    Margin="0,0,0,6"
-                    FontSize="12"
-                    FontWeight="SemiBold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="ကြိုတင်ပေးချေမည့် လအရေအတွက်" />
-
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <ComboBox
-                        Grid.Column="0"
-                        Height="40"
-                        VerticalContentAlignment="Center"
-                        SelectedValue="{Binding AdvanceMonths, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedValuePath="Tag">
-
-                        <ComboBoxItem Content="လက်ရှိအခကြေးငွေများသာ" Tag="0" />
-
-                        <ComboBoxItem Content="၁ လ ကြိုတင်" Tag="1" />
-
-                        <ComboBoxItem Content="၂ လ ကြိုတင်" Tag="2" />
-
-                        <ComboBoxItem Content="၃ လ ကြိုတင်" Tag="3" />
-
-                        <ComboBoxItem Content="၄ လ ကြိုတင်" Tag="4" />
-
-                        <ComboBoxItem Content="၅ လ ကြိုတင်" Tag="5" />
-
-                        <ComboBoxItem Content="၆ လ ကြိုတင်" Tag="6" />
-
-                        <ComboBoxItem Content="၇ လ ကြိုတင်" Tag="7" />
-
-                        <ComboBoxItem Content="၈ လ ကြိုတင်" Tag="8" />
-
-                        <ComboBoxItem Content="၉ လ ကြိုတင်" Tag="9" />
-
-                        <ComboBoxItem Content="၁၀ လ ကြိုတင်" Tag="10" />
-
-                        <ComboBoxItem Content="၁၁ လ ကြိုတင်" Tag="11" />
-
-                        <ComboBoxItem Content="၁၂ လ ကြိုတင်" Tag="12" />
-
-                    </ComboBox>
-
-
-                    <Button
-                        Grid.Column="1"
-                        Height="40"
-                        Margin="10,0,0,0"
-                        Padding="16,0"
-                        Command="{Binding ApplyAdvanceMonthsCommand}"
-                        Content="တွက်ချက်မည်"
-                        Style="{StaticResource SecondaryButtonStyle}" />
-
-                </Grid>
-
-
-                <TextBlock
-                    Margin="0,5,0,0"
-                    FontSize="11"
-                    Foreground="{DynamicResource TextSecondary}"
-                    Text="ဥပမာ - ၂ လ ကြိုတင်ရွေးချယ်ပါက လက်ရှိလပြီးနောက် ၂ လစာ အခကြေးငွေများကို ကြိုတင်တွက်ချက်ပေးမည်။"
-                    TextWrapping="Wrap" />
-
-            </StackPanel>
-
 
             <!--
                 =====================================================
@@ -268,7 +157,7 @@
                 =====================================================
             -->
 
-            <StackPanel Grid.Row="5" Margin="0,0,0,16">
+            <StackPanel Grid.Row="4" Margin="0,0,0,16">
 
                 <TextBlock
                     Margin="0,0,0,6"
@@ -324,7 +213,7 @@
                 =====================================================
             -->
 
-            <StackPanel Grid.Row="6" Margin="0,0,0,16">
+            <StackPanel Grid.Row="5" Margin="0,0,0,16">
 
                 <TextBlock
                     Margin="0,0,0,6"
@@ -348,7 +237,7 @@
                 =====================================================
             -->
 
-            <Grid Grid.Row="7" Margin="0,0,0,16">
+            <Grid Grid.Row="6" Margin="0,0,0,16">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -403,7 +292,7 @@
                 =====================================================
             -->
 
-            <Grid Grid.Row="8" Margin="0,0,0,16">
+            <Grid Grid.Row="7" Margin="0,0,0,16">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

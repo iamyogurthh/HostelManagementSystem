@@ -42,7 +42,7 @@
                     <TextBlock
                         Margin="0,4,0,0"
                         FontSize="14"
-                        Foreground="{DynamicResource PrimaryAccent}"
+                        Foreground="{DynamicResource TextSecondary}"
                         Text="{Binding Student.Name, StringFormat='{}{0} အတွက် အခန်းသတ်မှတ်ရန်'}" />
                 </StackPanel>
 

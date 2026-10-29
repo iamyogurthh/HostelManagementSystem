@@ -8,12 +8,16 @@
     <SolidColorBrush x:Key="TextPrimary" Color="#000000" />
     <SolidColorBrush x:Key="TextSecondary" Color="#6B7280" />
 
-    <!--  Accent (#671EE1 Engine)  -->
-    <SolidColorBrush x:Key="PrimaryAccent" Color="#671EE1" />
-    <SolidColorBrush x:Key="PrimaryHover" Color="#7C3AED" />
-    <SolidColorBrush x:Key="SidebarHoverTint" Color="#15671EE1" />
+    <!--  Accent (#055035 Engine)  -->
+    <SolidColorBrush x:Key="PrimaryAccent" Color="#055035" />
+    <SolidColorBrush x:Key="PrimaryHover" Color="#055035" />
+    <SolidColorBrush x:Key="SidebarHoverTint" Color="#15055035" />
 
     <!--  Aliases for BuildingView and Card Bindings  -->
     <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="#FFFFFF" />
     <SolidColorBrush x:Key="BorderBrush" Color="#E5E7EB" />
+
+    <!--  Progress Bar  -->
+    <SolidColorBrush x:Key="ProgressBarForeground" Color="#2D8C6C" />
+    <SolidColorBrush x:Key="ProgressBarBackground" Color="#E5E8EF" />
 </ResourceDictionary>

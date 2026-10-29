@@ -86,7 +86,7 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
             OutstandingCharges.Count > 0;
 
         [ObservableProperty]
-        private ObservableCollection<Payment> _payments = new();
+        private ObservableCollection<PaymentItemViewModel> _payments = new();
 
         [ObservableProperty]
         private decimal _outstandingBalance;
@@ -115,9 +115,7 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
         // SERVICES
         // =========================================================
 
-        private readonly FeeChargeService _feeChargeService;
         private readonly PaymentService _paymentService;
-        private readonly StudentAccommodationService _accommodationService;
 
 
         // =========================================================
@@ -133,14 +131,8 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
 
         public PaymentViewModel()
         {
-            _feeChargeService =
-                new FeeChargeService();
-
             _paymentService =
                 new PaymentService();
-
-            _accommodationService =
-                new StudentAccommodationService();
 
             _ = InitializeAsync();
         }
@@ -316,7 +308,7 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"ကျောင်းသားအချက်အလက်များ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                    $"ကျောင်းသားအချက်အလတ်များ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
                     "အမှား",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -405,26 +397,6 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
             {
                 IsLoading = true;
 
-                // Only generate new fee charges while the student
-                // currently has an accommodation.
-                var accommodation = await _accommodationService
-                    .GetCurrentAsync(studentId);
-
-                if (loadVersion != _financialLoadVersion)
-                    return;
-
-                if (accommodation != null)
-                {
-                    var today = DateOnly.FromDateTime(DateTime.Today);
-
-                    await _feeChargeService.EnsureChargesThroughAsync(
-                        studentId,
-                        today);
-
-                    if (loadVersion != _financialLoadVersion)
-                        return;
-                }
-
                 // Refresh unpaid status for current and former residents.
                 await RefreshSelectedStudentUnpaidStatusAsync(
                     studentId,
@@ -457,7 +429,8 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
                 if (loadVersion != _financialLoadVersion)
                     return;
 
-                Payments = new ObservableCollection<Payment>(payments);
+                Payments = new ObservableCollection<PaymentItemViewModel>(
+                     payments.Select(p => new PaymentItemViewModel(p)));
             }
             catch (Exception ex)
             {
@@ -634,7 +607,7 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"ငွေကြေးအကျဉ်းချုပ်အချက်အလက်များ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}",
+                    $"ငွေကြေးအကျဉ်းချုပ်အချက်အလက်များ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါက်ခဲ့သည်: {ex.Message}",
                     "အမှား",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -652,10 +625,9 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
                 new ObservableCollection<OutstandingChargeItemViewModel>();
 
             Payments =
-                new ObservableCollection<Payment>();
+                new ObservableCollection<PaymentItemViewModel>();
 
-            OutstandingBalance =
-                0m;
+            OutstandingBalance = 0m;
         }
 
 
@@ -741,6 +713,14 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
             WeakReferenceMessenger.Default.Send(
                 new NavigateMessage(
                     recordPaymentVm));
+        }
+
+        [RelayCommand]
+        private void OpenManualCharge()
+        {
+            WeakReferenceMessenger.Default.Send(
+                new NavigateMessage(
+                    new ManualChargeViewModel(this)));
         }
 
 

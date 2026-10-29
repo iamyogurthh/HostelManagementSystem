@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:HostelManagementSystem.Models"
+    xmlns:vm="clr-namespace:HostelManagementSystem.ViewModels.PaymentViewModels"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -28,6 +29,7 @@
     <Grid Margin="0,0,16,0">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -58,11 +60,7 @@
                     Foreground="{DynamicResource TextPrimary}"
                     Text="ငွေပေးချေမှု စီမံခန့်ခွဲမှု" />
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="12"
-                    Foreground="{DynamicResource TextSecondary}"
-                    Text="ကျောင်းသားများ၏ ငွေပေးချေမှုနှင့် လက်ကျန်ငွေများကို စီမံခန့်ခွဲပါ" />
+
 
             </StackPanel>
 
@@ -71,106 +69,118 @@
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
 
-                <!--  TOTAL OUTSTANDING  -->
-
-                <Border
-                    Width="160"
-                    Margin="0,0,10,0"
-                    Padding="12,10"
-                    Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
-                    CornerRadius="8">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            FontSize="11"
-                            Foreground="{DynamicResource TextSecondary}"
-                            Text="စုစုပေါင်း လက်ကျန်ငွေ" />
-
-                        <TextBlock
-                            Margin="0,4,0,0"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="#E53935"
-                            Text="{Binding TotalSystemOutstanding, Mode=OneWay, StringFormat={}{0:N0} MMK, FallbackValue='0 MMK'}" />
-
-                    </StackPanel>
-
-                </Border>
-
-
-                <!--  MONTHLY COLLECTION  -->
-
-                <Border
-                    Width="160"
-                    Padding="12,10"
-                    Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
-                    CornerRadius="8">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            FontSize="11"
-                            Foreground="{DynamicResource TextSecondary}"
-                            Text="ယခုလ ရရှိပြီးငွေ" />
-
-                        <TextBlock
-                            Margin="0,4,0,0"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="#4CAF50"
-                            Text="{Binding MonthlyCollectedTotal, Mode=OneWay, StringFormat={}{0:N0} MMK, FallbackValue='0 MMK'}" />
-
-                    </StackPanel>
-
-                </Border>
-
                 <Button
-                    Width="48"
-                    Height="40"
-                    Margin="16,0,0,0"
-                    Padding="0"
-                    Command="{Binding RefreshStudentFinancialDataCommand}"
-                    Style="{StaticResource SecondaryButtonStyle}"
-                    ToolTip="Refresh">
-
-                    <Button.Triggers>
-                        <EventTrigger RoutedEvent="Button.Click">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="RefreshIcon"
-                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                        From="0"
-                                        To="720"
-                                        Duration="0:0:1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Button.Triggers>
-
-                    <Viewbox Width="20" Height="20">
-                        <Canvas Width="640" Height="640">
-                            <Path
-                                x:Name="RefreshIcon"
-                                Data="M500.7 138.7L512 149.4L512 96C512 78.3 526.3 64 544 64C561.7 64 576 78.3 576 96L576 224C576 241.7 561.7 256 544 256L416 256C398.3 256 384 241.7 384 224C384 206.3 398.3 192 416 192L463.9 192L456.3 184.8C456.1 184.6 455.9 184.4 455.7 184.2C380.7 109.2 259.2 109.2 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C238.9 39.1 400.7 39 500.7 138.7z"
-                                Fill="{DynamicResource TextPrimary}">
-
-                                <Path.RenderTransform>
-                                    <RotateTransform CenterX="320" CenterY="320" />
-                                </Path.RenderTransform>
-                            </Path>
-                        </Canvas>
-                    </Viewbox>
-                </Button>
-
+                    Height="38"
+                    Margin="8,0,0,0"
+                    Padding="16,0"
+                    Command="{Binding OpenManualChargeCommand}"
+                    Content="အဆောင်ခကောက်ရန်"
+                    Style="{StaticResource PrimaryButtonStyle}" />
             </StackPanel>
 
         </Grid>
+
+        <StackPanel
+            Grid.Row="1"
+            Margin="0,0,0,16"
+            Orientation="Horizontal">
+            <!--  TOTAL OUTSTANDING  -->
+
+            <Border
+                Width="160"
+                Margin="0,0,10,0"
+                Padding="12,10"
+                Background="{DynamicResource CardBackground}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="8">
+
+                <StackPanel>
+
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="စုစုပေါင်း လက်ကျန်ငွေ" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#E53935"
+                        Text="{Binding TotalSystemOutstanding, Mode=OneWay, StringFormat={}{0:N0} MMK, FallbackValue='0 MMK'}" />
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!--  MONTHLY COLLECTION  -->
+
+            <Border
+                Width="160"
+                Padding="12,10"
+                Background="{DynamicResource CardBackground}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="8">
+
+                <StackPanel>
+
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="ယခုလ ရရှိပြီးငွေ" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#4CAF50"
+                        Text="{Binding MonthlyCollectedTotal, Mode=OneWay, StringFormat={}{0:N0} MMK, FallbackValue='0 MMK'}" />
+
+                </StackPanel>
+
+            </Border>
+
+            <Button
+                Width="48"
+                Height="40"
+                Margin="16,0,0,0"
+                Padding="0"
+                Command="{Binding RefreshStudentFinancialDataCommand}"
+                Style="{StaticResource SecondaryButtonStyle}"
+                ToolTip="Refresh">
+
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.Click">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetName="RefreshIcon"
+                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                    From="0"
+                                    To="720"
+                                    Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+
+                <Viewbox Width="20" Height="20">
+                    <Canvas Width="640" Height="640">
+                        <Path
+                            x:Name="RefreshIcon"
+                            Data="M500.7 138.7L512 149.4L512 96C512 78.3 526.3 64 544 64C561.7 64 576 78.3 576 96L576 224C576 241.7 561.7 256 544 256L416 256C398.3 256 384 241.7 384 224C384 206.3 398.3 192 416 192L463.9 192L456.3 184.8C456.1 184.6 455.9 184.4 455.7 184.2C380.7 109.2 259.2 109.2 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C238.9 39.1 400.7 39 500.7 138.7z"
+                            Fill="{DynamicResource TextPrimary}">
+
+                            <Path.RenderTransform>
+                                <RotateTransform CenterX="320" CenterY="320" />
+                            </Path.RenderTransform>
+                        </Path>
+                    </Canvas>
+                </Viewbox>
+            </Button>
+        </StackPanel>
 
 
         <!--
@@ -180,7 +190,7 @@
         -->
 
         <Border
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,0,0,16"
             Padding="12"
             Background="{DynamicResource CardBackground}"
@@ -226,7 +236,6 @@
                         Command="{Binding ResetSearchCommand}"
                         Content="Clear"
                         Style="{StaticResource SecondaryButtonStyle}" />
-
                 </StackPanel>
 
             </Grid>
@@ -240,7 +249,7 @@
             =====================================================
         -->
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="380" />
@@ -313,9 +322,9 @@
                                             <Border
                                                 x:Name="ItemBorder"
                                                 Padding="12"
-                                                Background="{DynamicResource WindowBackground}"
+                                                Background="{DynamicResource CardBackground}"
                                                 BorderBrush="{DynamicResource BorderColor}"
-                                                BorderThickness="1"
+                                                BorderThickness="2"
                                                 CornerRadius="6">
 
                                                 <ContentPresenter />
@@ -338,7 +347,7 @@
 
                                                 <Trigger Property="IsSelected" Value="True">
 
-                                                    <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource CardBackground}" />
+                                                    <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource WindowBackground}" />
 
                                                     <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{DynamicResource PrimaryAccent}" />
 
@@ -402,23 +411,21 @@
 
 
                                         <!--  CURRENT ROOM  -->
-
                                         <TextBlock
-                                            FontSize="14"
+                                            FontSize="12"
                                             Foreground="{DynamicResource TextPrimary}"
-                                            TextTrimming="CharacterEllipsis">
-
-                                            <Run Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, Mode=OneWay}" />
-
-                                            <Run Text=" / " />
-
-                                            <Run Text="{Binding CurrentAccommodation.Room.Floor.Name, Mode=OneWay}" />
-
-                                            <Run Text=" / " />
-
-                                            <Run Text="{Binding CurrentAccommodation.Room.Name, Mode=OneWay}" />
-
-                                        </TextBlock>
+                                            Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            Text="{Binding CurrentAccommodation.Room.Floor.Name, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            Text="{Binding CurrentAccommodation.Room.Name, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
 
                                     </StackPanel>
 
@@ -805,6 +812,19 @@
 
                                                     </TextBlock>
 
+                                                    <!--  Description  -->
+
+                                                    <TextBlock
+                                                        Margin="0,3,0,0"
+                                                        FontSize="11"
+                                                        Foreground="{DynamicResource TextSecondary}">
+
+                                                        <Run Text="Note: " />
+
+                                                        <Run Text="{Binding Description, Mode=OneWay}" />
+
+                                                    </TextBlock>
+
                                                 </StackPanel>
 
 
@@ -824,30 +844,6 @@
                                                         FontWeight="Bold"
                                                         Foreground="#D32F2F"
                                                         Text="{Binding RemainingAmount, Mode=OneWay, StringFormat={}{0:N0} MMK}" />
-
-
-                                                    <TextBlock
-                                                        Margin="0,2,0,0"
-                                                        FontSize="10"
-                                                        Foreground="{DynamicResource TextSecondary}"
-                                                        Text="ကျန်ငွေ" />
-
-
-                                                    <!--  STATUS  -->
-
-                                                    <Border
-                                                        Margin="0,4,0,0"
-                                                        HorizontalAlignment="Right"
-                                                        Style="{StaticResource BadgeStyle}">
-
-                                                        <TextBlock
-                                                            FontSize="10"
-                                                            FontWeight="SemiBold"
-                                                            Foreground="#D32F2F"
-                                                            Text="{Binding Status, Mode=OneWay}" />
-
-                                                    </Border>
-
                                                 </StackPanel>
 
                                             </Grid>
@@ -867,6 +863,7 @@
                                 =================================================
                             -->
 
+                            <!--  PAYMENT HISTORY  -->
                             <TextBlock
                                 Margin="0,16,0,8"
                                 FontSize="14"
@@ -874,13 +871,9 @@
                                 Foreground="{DynamicResource TextPrimary}"
                                 Text="ငွေပေးချေမှုမှတ်တမ်း (Payment History)" />
 
-
                             <ItemsControl ItemsSource="{Binding Payments}">
-
                                 <ItemsControl.ItemTemplate>
-
-                                    <DataTemplate DataType="{x:Type models:Payment}">
-
+                                    <DataTemplate DataType="{x:Type vm:PaymentItemViewModel}">
                                         <Border
                                             Margin="0,0,0,6"
                                             Padding="10,8"
@@ -890,51 +883,51 @@
                                             CornerRadius="6">
 
                                             <Grid>
-
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
-
                                                 <!--  PAYMENT INFORMATION  -->
-
                                                 <StackPanel>
 
-
-                                                    <!--  RECEIPT  -->
-
+                                                    <!--  RECEIPT NUMBER  -->
                                                     <TextBlock
                                                         FontSize="12"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource TextPrimary}"
                                                         Text="{Binding ReceiptNumber, Mode=OneWay}" />
 
-
                                                     <!--  DATE  -->
-
                                                     <TextBlock
                                                         Margin="0,2,0,0"
                                                         FontSize="12"
                                                         Foreground="{DynamicResource TextSecondary}"
                                                         Text="{Binding PaymentDate, Mode=OneWay, StringFormat={}{0:dd MMM yyyy HH:mm}}" />
 
-
-                                                    <!--  Note  -->
-
+                                                    <!--  NOTES (If present)  -->
                                                     <TextBlock
                                                         Margin="0,2,0,0"
-                                                        FontSize="10"
+                                                        FontSize="12"
                                                         Foreground="{DynamicResource TextSecondary}"
-                                                        Text="{Binding Notes, Mode=OneWay, StringFormat={}{0:dd MMM yyyy HH:mm}}" />
+                                                        Text="{Binding Notes, Mode=OneWay}" />
+
+                                                    <!--  DYNAMIC COVERAGE PERIOD  -->
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextSecondary}"
+                                                        Text="{Binding DateRangeText, Mode=OneWay}" />
+
+                                                    <!--  DYNAMIC MONTH COUNT (e.g. 1 လစာ / 2 လစာ)  -->
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextSecondary}"
+                                                        Text="{Binding DescriptionText, Mode=OneWay}" />
 
                                                 </StackPanel>
 
-
-                                                <!--  PAYMENT AMOUNT  -->
-
+                                                <!--  PAYMENT AMOUNT & METHOD  -->
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-
                                                     <TextBlock
                                                         FontSize="12"
                                                         FontWeight="Bold"
@@ -946,19 +939,13 @@
                                                         FontSize="10"
                                                         Foreground="{DynamicResource TextSecondary}"
                                                         Text="{Binding PaymentMethod, Mode=OneWay}" />
-
                                                 </StackPanel>
 
                                             </Grid>
-
                                         </Border>
-
                                     </DataTemplate>
-
                                 </ItemsControl.ItemTemplate>
-
                             </ItemsControl>
-
                         </StackPanel>
 
                     </ScrollViewer>
