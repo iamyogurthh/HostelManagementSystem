@@ -13,8 +13,30 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
             new AppRelease
             {
                 Version = AppVersionInfo.CurrentVersion,
+                ReleaseDate = "November 5, 2026",
+                ReleaseType = "Feature Release",
+                ReleaseNotes =
+                [
+                    "Added manual billing and payment management.",
+                    "Added fee-rule support for manual charges.",
+                    "Improved student search performance with server-side filtering.",
+                    "Added automatic search and filter updates with debounce support.",
+                    "Improved building, floor, and room management.",
+                    "Prevented deletion of buildings, floors, and rooms containing students.",
+                    "Fixed data import and export compatibility after the billing migration.",
+                    "Added startup splash screen with a visual loading indicator.",
+                    "Added persistent light and dark theme support.",
+                    "Improved Settings navigation and default License tab selection.",
+                    "Fixed default images for rooms when image paths are missing or invalid.",
+                    "Improved the room assignment experience.",
+                    "Fixed resident list filtering."
+                ]
+            },
+            new AppRelease
+            {
+                Version = AppVersionInfo.CurrentVersion,
                 ReleaseDate = "October 9, 2026",
-                ReleaseType = "Latest Release",
+                ReleaseType = "Feature Release",
                 ReleaseNotes =
                 [
                     "Added payment management.",
@@ -26,7 +48,7 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
             {
                 Version = "dev1.1.0",
                 ReleaseDate = "September 20, 2026",
-                ReleaseType = "Previous Release",
+                ReleaseType = "Feature Release",
                 ReleaseNotes =
                 [
                     "Added student category management.",

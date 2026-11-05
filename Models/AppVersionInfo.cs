@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Reflection;
 
 namespace HostelManagementSystem.Models
 {
     public static class AppVersionInfo
     {
-        public const string CurrentVersion = "dev1.2.0";
+        public static string CurrentVersion =>
+            Assembly.GetEntryAssembly()?
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion
+            ?? "1.2.0";
     }
 }

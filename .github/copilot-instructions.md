@@ -12,3 +12,7 @@
 - Allow administrators to either type a total amount or select an existing fee rule.
 - Student selection must scale efficiently for thousands of students, preferably with searchable/server-filtered selection rather than loading every student into a ComboBox.
 - The manual fee charge form should match the existing application form layout and styling.
+
+## Software Distribution
+- For software distribution, use a public GitHub repository with GitHub Actions, Inno Setup, and GitHub Releases.
+- Implement the release pipeline step by step, starting with automated installer creation.
