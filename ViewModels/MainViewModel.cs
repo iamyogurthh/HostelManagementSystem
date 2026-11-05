@@ -37,6 +37,7 @@ namespace HostelManagementSystem.ViewModels
 
         public string CurrentVersion => AppVersionInfo.CurrentVersion;
 
+
         public string LicenseRemainingText =>
             GetLicenseRemainingText();
 
