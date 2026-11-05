@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
 
-    <!--  Primary Accent Button (Filled Purple)  -->
+    <!--  Primary Accent Button  -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource PrimaryAccent}" />
         <Setter Property="Foreground" Value="#FFFFFF" />

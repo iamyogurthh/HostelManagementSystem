@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 
 namespace HostelManagementSystem.ViewModels.PaymentViewModels
@@ -25,6 +26,8 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
 
         [ObservableProperty]
         private string _searchName = string.Empty;
+
+        private CancellationTokenSource? _searchDebounceCts;
 
 
         // =========================================================
@@ -59,6 +62,30 @@ namespace HostelManagementSystem.ViewModels.PaymentViewModels
                     unpaidStudentIds.Contains(student.Id);
             }
         }
+
+        partial void OnSearchNameChanged(string value)
+        {
+            ScheduleSearch();
+        }
+
+        private async void ScheduleSearch()
+        {
+            _searchDebounceCts?.Cancel();
+            _searchDebounceCts?.Dispose();
+            _searchDebounceCts = new CancellationTokenSource();
+            var token = _searchDebounceCts.Token;
+
+            try
+            {
+                await Task.Delay(350, token);
+                CurrentPage = 1;
+                await SearchStudentsAsync();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+
 
 
         // =========================================================

@@ -40,6 +40,30 @@ namespace HostelManagementSystem.ViewModels.FeeRuleViewModels
         [ObservableProperty]
         private string _selectedStatus = "အားလုံး";
 
+        partial void OnFilterFromDateChanged(DateTime? value) => ScheduleFilterRefresh();
+        partial void OnFilterToDateChanged(DateTime? value) => ScheduleFilterRefresh();
+        partial void OnSelectedStatusChanged(string value) => ScheduleFilterRefresh();
+
+        private CancellationTokenSource? _filterDebounceCts;
+
+        private async void ScheduleFilterRefresh()
+        {
+            _filterDebounceCts?.Cancel();
+            _filterDebounceCts?.Dispose();
+            _filterDebounceCts = new CancellationTokenSource();
+            var token = _filterDebounceCts.Token;
+
+            try
+            {
+                await Task.Delay(150, token);
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+
         public ObservableCollection<string> StatusOptions { get; } =
             new()
             {

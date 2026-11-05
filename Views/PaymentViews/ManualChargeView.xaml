@@ -23,6 +23,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  HEADER  -->
@@ -113,8 +114,8 @@
                         Margin="8,0,0,0"
                         Padding="14,0"
                         Command="{Binding SearchStudentsCommand}"
-                        Content="ရှာမည်"
-                        Style="{StaticResource SecondaryButtonStyle}" />
+                        Content="Search"
+                        Style="{StaticResource PrimaryButtonStyle}" />
 
                     <ListBox
                         Grid.Row="1"
@@ -133,6 +134,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock
@@ -147,6 +149,13 @@
                                         FontSize="12"
                                         Foreground="{DynamicResource TextPrimary}"
                                         Text="{Binding NRC}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Margin="0,3,0,0"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        Text="{Binding StudentCategory.Name}" />
+
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

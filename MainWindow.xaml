@@ -19,6 +19,91 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style x:Key="ThemeToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Border
+                                    x:Name="lightSegment"
+                                    Margin="1"
+                                    Padding="8,0"
+                                    Background="Transparent"
+                                    CornerRadius="5">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Foreground="White"
+                                        Text="☼  Light" />
+                                </Border>
+
+                                <Border
+                                    x:Name="darkSegment"
+                                    Grid.Column="1"
+                                    Margin="1"
+                                    Padding="8,0"
+                                    Background="Transparent"
+                                    CornerRadius="5">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        Text="◐  Dark" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="lightSegment" Property="Background" Value="{DynamicResource PrimaryAccent}" />
+                                <Setter TargetName="lightSegment" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect
+                                            BlurRadius="3"
+                                            Opacity="0.12"
+                                            ShadowDepth="1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="darkSegment" Property="Background" Value="{DynamicResource PrimaryAccent}" />
+                                <Setter TargetName="darkSegment" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect
+                                            BlurRadius="3"
+                                            Opacity="0.12"
+                                            ShadowDepth="1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.88" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Background="{DynamicResource WindowBackground}">
@@ -55,15 +140,16 @@
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <Image
-                            Width="40"
-                            Height="40"
-                            Margin="0,0,5,0"
+                            Width="32"
+                            Height="32"
+                            Margin="0,0,8,0"
                             Source="pack://application:,,,/Image/hms_logo.png" />
-                        <!-- <TextBlock
+                        <TextBlock
                             VerticalAlignment="Center"
+                            FontSize="16"
                             FontWeight="Bold"
-                            Foreground="{DynamicResource TextPrimary}"
-                            Text="Hostel Management" />-->
+                            Foreground="#E4DE26"
+                            Text="Shwe Hostel" />
                     </StackPanel>
 
                     <!--  Navigation Items  -->
@@ -114,9 +200,6 @@
                         GroupName="SidebarNav"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M12,3C7.58,3 4,4.79 4,7V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V7C20,4.79 16.42,3 12,3ZM18,17C18,17.5 15.87,19 12,19C8.13,19 6,17.5 6,17V14.77C7.61,15.55 9.72,16 12,16C14.28,16 16.39,15.55 18,14.77V17ZM18,12.5C16.39,13.28 14.28,13.73 12,13.73C9.72,13.73 7.61,13.28 6,12.5V9.77C7.61,10.55 9.72,11 12,11C14.28,11 16.39,10.55 18,9.77V12.5ZM12,5C15.87,5 18,6.5 18,7C18,7.5 15.87,9 12,9C8.13,9 6,7.5 6,7C6,6.5 8.13,5 12,5Z" />
-                </StackPanel>
-
-                <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
                     <RadioButton
                         Margin="10,0,10,10"
                         Command="{Binding NavigateToCommand}"
@@ -125,6 +208,49 @@
                         GroupName="SidebarNav"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M9.671,4.136 A2.34,2.34 0 0,1 14.33,4.136 A2.34,2.34 0 0,0 17.649,6.051 A2.34,2.34 0 0,1 19.979,10.084 A2.34,2.34 0 0,0 19.979,13.915 A2.34,2.34 0 0,1 17.649,17.948 A2.34,2.34 0 0,0 14.33,19.863 A2.34,2.34 0 0,1 9.671,19.863 A2.34,2.34 0 0,0 6.351,17.948 A2.34,2.34 0 0,1 4.021,13.915 A2.34,2.34 0 0,0 4.021,10.084 A2.34,2.34 0 0,1 6.351,6.051 A2.34,2.34 0 0,0 9.671,4.136 Z M12,9 A3,3 0 1,1 12,15 A3,3 0 1,1 12,9 Z" />
+
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                    <Border
+                        Height="80"
+                        Margin="10,0,10,10"
+                        Padding="10,6"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0.0" Color="#055035" />
+                                <GradientStop Offset="1.0" Color="#0BB679" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+
+                        <StackPanel>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                FontSize="11"
+                                Foreground="White"
+                                Text="လိုင်စင်သက်တမ်း" />
+
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Left"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="{Binding LicenseRemainingText}" />
+                        </StackPanel>
+
+
+                    </Border>
+
+
+                    <ToggleButton
+                        Margin="10,0,10,15"
+                        IsChecked="{Binding IsDarkMode, Mode=TwoWay}"
+                        Style="{StaticResource ThemeToggleStyle}"
+                        ToolTip="Switch theme" />
 
                     <Border
                         Margin="10,0,10,15"

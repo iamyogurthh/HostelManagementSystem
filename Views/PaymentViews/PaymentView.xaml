@@ -70,7 +70,7 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal">
 
                 <Button
-                    Height="38"
+                    Height="42"
                     Margin="8,0,0,0"
                     Padding="16,0"
                     Command="{Binding OpenManualChargeCommand}"
@@ -905,25 +905,18 @@
                                                         Foreground="{DynamicResource TextSecondary}"
                                                         Text="{Binding PaymentDate, Mode=OneWay, StringFormat={}{0:dd MMM yyyy HH:mm}}" />
 
-                                                    <!--  NOTES (If present)  -->
-                                                    <TextBlock
-                                                        Margin="0,2,0,0"
-                                                        FontSize="12"
-                                                        Foreground="{DynamicResource TextSecondary}"
-                                                        Text="{Binding Notes, Mode=OneWay}" />
 
                                                     <!--  DYNAMIC COVERAGE PERIOD  -->
                                                     <TextBlock
                                                         FontSize="12"
                                                         Foreground="{DynamicResource TextSecondary}"
                                                         Text="{Binding DateRangeText, Mode=OneWay}" />
-
-                                                    <!--  DYNAMIC MONTH COUNT (e.g. 1 လစာ / 2 လစာ)  -->
+                                                    <!--  NOTES (If present)  -->
                                                     <TextBlock
+                                                        Margin="0,2,0,0"
                                                         FontSize="12"
                                                         Foreground="{DynamicResource TextSecondary}"
-                                                        Text="{Binding DescriptionText, Mode=OneWay}" />
-
+                                                        Text="{Binding Notes, Mode=OneWay}" />
                                                 </StackPanel>
 
                                                 <!--  PAYMENT AMOUNT & METHOD  -->
@@ -962,7 +955,7 @@
                         <Button
                             Height="42"
                             Command="{Binding OpenRecordPaymentDialogCommand}"
-                            Content="ငွေလက်ခံမည် (Record Payment)"
+                            Content="ငွေလက်ခံမည်"
                             Style="{StaticResource PrimaryButtonStyle}" />
 
                     </Grid>

@@ -129,6 +129,22 @@ namespace HostelManagementSystem.ViewModels
                     await using var db =
                         new AppDbContext();
 
+                    var stillOccupied = await db.StudentAccommodations
+                        .AnyAsync(a =>
+                            a.RoomId == room.Id &&
+                            a.IsActive &&
+                            a.EndDate == null);
+
+                    if (stillOccupied)
+                    {
+                        MessageBox.Show(
+                            "ဤအခန်းတွင် လူနေထိုင်လျက်ရှိနေသေးသဖြင့် ဖျက်၍မရပါ။",
+                            "သတိပေးချက်",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Stop);
+                        return;
+                    }
+
                     var targetRoom =
                         await db.Rooms
                             .FirstOrDefaultAsync(

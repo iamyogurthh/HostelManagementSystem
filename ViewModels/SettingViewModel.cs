@@ -20,7 +20,12 @@ public partial class SettingViewModel : ObservableObject
         License = new LicenseSettingsViewModel();
         Version = new VersionSettingsViewModel();
 
-        _currentSettingViewModel = Theme;
+        _currentSettingViewModel = License;
+    }
+
+    public void ResetToDefaultView()
+    {
+        CurrentSettingViewModel = License;
     }
 
     [RelayCommand]

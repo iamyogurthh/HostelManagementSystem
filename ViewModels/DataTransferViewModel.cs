@@ -472,6 +472,23 @@ namespace HostelManagementSystem.ViewModels
 
                         if (payload.FeeCharges?.Count > 0)
                         {
+                            // Backward compatibility for backups created before
+                            // manual billing fields were introduced. Older files
+                            // may contain an unknown source value or no description.
+                            foreach (var charge in payload.FeeCharges)
+                            {
+                                if (!Enum.IsDefined(charge.Source))
+                                {
+                                    charge.Source = FeeChargeSource.Manual;
+                                }
+
+                                if (charge.Source == FeeChargeSource.Manual &&
+                                    string.IsNullOrWhiteSpace(charge.Description))
+                                {
+                                    charge.Description = "Imported fee charge";
+                                }
+                            }
+
                             await BatchUpsertAsync(
                                 db,
                                 payload.FeeCharges,
@@ -597,12 +614,17 @@ namespace HostelManagementSystem.ViewModels
             // GET EXISTING IDS
             // =====================================================
 
-            var existingIds =
-                (await db.Set<T>()
+            // Evaluate the key selector in memory. A Func<T, int> cannot be
+            // translated by EF Core when used directly inside IQueryable.Select.
+            var existingEntities =
+                await db.Set<T>()
                     .AsNoTracking()
-                    .Select(x => keySelector(x))
-                    .ToListAsync())
-                .ToHashSet();
+                    .ToListAsync();
+
+            var existingIds =
+                existingEntities
+                    .Select(keySelector)
+                    .ToHashSet();
 
 
             // =====================================================

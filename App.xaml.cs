@@ -19,6 +19,7 @@ namespace HostelManagementSystem
 
         private Window? _licenseWindow;
         private MainWindow? _mainWindow;
+        private SplashWindow? _splashWindow;
 
         protected override async void OnStartup(
             StartupEventArgs e)
@@ -31,6 +32,11 @@ namespace HostelManagementSystem
 
             ShutdownMode =
                 ShutdownMode.OnExplicitShutdown;
+
+            _splashWindow =
+                new SplashWindow();
+
+            _splashWindow.Show();
 
 
             // =====================================================
@@ -179,6 +185,8 @@ namespace HostelManagementSystem
 
         private void OpenLicenseWindow()
         {
+            CloseSplashWindow();
+
             var licenseView =
                 new LicenseActivationView();
 
@@ -289,6 +297,8 @@ namespace HostelManagementSystem
 
         private void OpenMainWindow()
         {
+            CloseSplashWindow();
+
             _mainWindow =
                 new MainWindow();
 
@@ -301,6 +311,17 @@ namespace HostelManagementSystem
             _mainWindow.Show();
 
             _mainWindow.Activate();
+        }
+
+        private void CloseSplashWindow()
+        {
+            if (_splashWindow == null)
+            {
+                return;
+            }
+
+            _splashWindow.Close();
+            _splashWindow = null;
         }
 
 

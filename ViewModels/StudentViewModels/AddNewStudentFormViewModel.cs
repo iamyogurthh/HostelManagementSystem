@@ -616,6 +616,31 @@ namespace HostelManagementSystem.ViewModels.StudentViewModels
             await NavigateBackAsync();
         }
 
+        // ============================================================
+        // Export Blank Form Template
+        // ============================================================
+
+        [RelayCommand]
+        private async Task ExportFormTemplateAsync()
+        {
+            try
+            {
+                var exportPdfService =
+                    new ExportPDFService();
+
+                await exportPdfService
+                    .ExportFormTemplateAsPdfAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"ဖောင်ပုံစံ PDF ထုတ်ရာတွင် အမှားဖြစ်ပေါ်ခဲ့သည်:\n{ex.Message}",
+                    "PDF Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
         private async Task NavigateBackAsync()
         {
             if (_navigateBackCallback != null)

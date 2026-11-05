@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using HostelManagementSystem.Helpers;
 using HostelManagementSystem.Messages;
+using HostelManagementSystem.Services;
 using HostelManagementSystem.ViewModels.FeeRuleViewModels;
 using HostelManagementSystem.ViewModels.PaymentViewModels;
 using HostelManagementSystem.Models;
@@ -22,6 +24,9 @@ namespace HostelManagementSystem.ViewModels
         [ObservableProperty]
         private string _busyText = "ခဏစောင့်ပါ...";
 
+        [ObservableProperty]
+        private bool _isDarkMode = ThemeManager.IsDarkMode;
+
         public DashboardViewModel Dashboard { get; }
         public BuildingViewModel Building { get; }
         public ResidentViewModel Resident { get; }
@@ -31,6 +36,14 @@ namespace HostelManagementSystem.ViewModels
         public PaymentViewModel Payment { get; }
 
         public string CurrentVersion => AppVersionInfo.CurrentVersion;
+
+        public string LicenseRemainingText =>
+            GetLicenseRemainingText();
+
+        partial void OnIsDarkModeChanged(bool value)
+        {
+            ThemeManager.SetTheme(value);
+        }
 
         public MainViewModel(
             DashboardViewModel dashboard,
@@ -53,6 +66,21 @@ namespace HostelManagementSystem.ViewModels
             IsActive = true;
 
 
+        }
+
+        private static string GetLicenseRemainingText()
+        {
+            var license = new LicenseStorage().Load();
+
+            if (license?.ExpiresAt == null)
+            {
+                return "သက်တမ်းကုန်ဆုံးရက်မရှိ";
+            }
+
+            var remaining = license.ExpiresAt.Value.ToUniversalTime() - DateTime.UtcNow;
+            var remainingDays = Math.Max(0, (int)Math.Ceiling(remaining.TotalDays));
+
+            return $"{remainingDays}ရက်ကျန်";
         }
 
         public MainViewModel() : this(
@@ -98,6 +126,7 @@ namespace HostelManagementSystem.ViewModels
                     break;
 
                 case "setting":
+                    Setting.ResetToDefaultView();
                     SetCurrentView(Setting);
                     break;
 

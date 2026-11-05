@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 
 namespace HostelManagementSystem.ViewModels
@@ -30,6 +31,8 @@ namespace HostelManagementSystem.ViewModels
 
         [ObservableProperty]
         private string _searchName = string.Empty;
+
+        private CancellationTokenSource? _searchDebounceCts;
 
         // =========================================================
         // DATA
@@ -100,6 +103,28 @@ namespace HostelManagementSystem.ViewModels
             _ = InitializeViewModelAsync();
         }
 
+        partial void OnSearchNameChanged(string value)
+        {
+            ScheduleFilterReload();
+        }
+
+        private async void ScheduleFilterReload()
+        {
+            _searchDebounceCts?.Cancel();
+            _searchDebounceCts?.Dispose();
+            _searchDebounceCts = new CancellationTokenSource();
+            var token = _searchDebounceCts.Token;
+
+            try
+            {
+                await Task.Delay(350, token);
+                CurrentPage = 1;
+                await LoadDataAsync();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
         // =========================================================
         // INITIALIZATION
         // =========================================================
@@ -152,6 +177,8 @@ namespace HostelManagementSystem.ViewModels
                 _ =
                     LoadFloorsForBuildingAsync(value);
             }
+
+            ScheduleFilterReload();
         }
 
         partial void OnSelectedFloorChanged(
@@ -166,6 +193,8 @@ namespace HostelManagementSystem.ViewModels
                 _ =
                     LoadRoomsForFloorAsync(value);
             }
+
+            ScheduleFilterReload();
         }
 
         // =========================================================

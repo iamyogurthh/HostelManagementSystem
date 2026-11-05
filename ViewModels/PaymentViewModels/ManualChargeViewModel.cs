@@ -10,6 +10,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace HostelManagementSystem.ViewModels.PaymentViewModels;
 
@@ -19,6 +20,7 @@ public partial class ManualChargeViewModel : ObservableObject
 
     private readonly PaymentViewModel _previousViewModel;
     private readonly FeeChargeService _feeChargeService = new();
+    private CancellationTokenSource? _studentSearchDebounceCts;
 
     [ObservableProperty]
     private ObservableCollection<Student> _students = new();
@@ -64,6 +66,28 @@ public partial class ManualChargeViewModel : ObservableObject
         _ = InitializeAsync();
     }
 
+    partial void OnStudentSearchTextChanged(string value)
+    {
+        ScheduleStudentSearch();
+    }
+
+    private async void ScheduleStudentSearch()
+    {
+        _studentSearchDebounceCts?.Cancel();
+        _studentSearchDebounceCts?.Dispose();
+        _studentSearchDebounceCts = new CancellationTokenSource();
+        var token = _studentSearchDebounceCts.Token;
+
+        try
+        {
+            await Task.Delay(350, token);
+            await SearchStudentsAsync();
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
     partial void OnErrorMessageChanged(string value)
     {
         OnPropertyChanged(nameof(HasError));
@@ -94,6 +118,7 @@ public partial class ManualChargeViewModel : ObservableObject
             await using var db = new AppDbContext();
             var query = db.Students
                 .AsNoTracking()
+                .Include(student => student.StudentCategory)
                 .Where(student => student.IsActive);
 
             var search = StudentSearchText.Trim();

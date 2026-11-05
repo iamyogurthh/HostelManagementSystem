@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:HostelManagementSystem.Views"
+    xmlns:converters="clr-namespace:HostelManagementSystem.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -11,6 +12,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:ImagePathFallbackConverter x:Key="ImagePathFallbackConverter" />
     </UserControl.Resources>
 
 
@@ -161,7 +163,7 @@
                                         <!--  Border handles the top-left and top-right corner rounding cleanly  -->
                                         <Border CornerRadius="10,10,0,0">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{Binding Img, TargetNullValue='pack://application:,,,/Image/DefaultImages/default_room.png'}" Stretch="UniformToFill" />
+                                                <ImageBrush ImageSource="{Binding Img, Converter={StaticResource ImagePathFallbackConverter}}" Stretch="UniformToFill" />
                                             </Border.Background>
                                         </Border>
 
