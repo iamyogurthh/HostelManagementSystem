@@ -1,45 +1,52 @@
 ﻿using HostelManagementSystem.Database;
-using HostelManagementSystem.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HostelManagementSystem.Models;
+using HostelManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HostelManagementSystem.Services
 {
     public class StudentService
     {
-        public async Task DeleteStudentWithRelatedDataAsync(int studentId)
+        private readonly StudentAccommodationService _accommodationService;
+
+        public StudentService()
+        {
+            _accommodationService = new StudentAccommodationService();
+        }
+
+        /// <summary>
+        /// Soft-deletes a student.
+        ///
+        /// The student and all historical records remain in the
+        /// database. The current accommodation is closed first.
+        /// </summary>
+        public async Task DeleteStudentWithRelatedDataAsync(
+            int studentId,
+            DateOnly endDate)
         {
             await using var db = new AppDbContext();
 
-            var studentRecord = await db.Students
-                .Include(s => s.AcademicRecords)
-                .FirstOrDefaultAsync(s => s.Id == studentId);
+            // Make sure the student exists.
+            var studentExists = await db.Students
+                .AnyAsync(s => s.Id == studentId);
 
-            if (studentRecord != null)
+            if (!studentExists)
             {
-                // 1. Delete local image files
-                var imageManager = new ImageManager();
-                await Task.Run(() =>
-                {
-                    if (!string.IsNullOrWhiteSpace(studentRecord.Img)) imageManager.DeleteImage(studentRecord.Img);
-                    if (!string.IsNullOrWhiteSpace(studentRecord.High_school_certificate_img)) imageManager.DeleteImage(studentRecord.High_school_certificate_img);
-                    if (!string.IsNullOrWhiteSpace(studentRecord.NRC_img_front)) imageManager.DeleteImage(studentRecord.NRC_img_front);
-                    if (!string.IsNullOrWhiteSpace(studentRecord.NRC_img_back)) imageManager.DeleteImage(studentRecord.NRC_img_back);
-                });
-
-                // 2. Remove Academic Records
-                if (studentRecord.AcademicRecords != null && studentRecord.AcademicRecords.Any())
-                {
-                    db.StudentAcademicRecords.RemoveRange(studentRecord.AcademicRecords);
-                }
-
-                // 3. Remove Student
-                db.Students.Remove(studentRecord);
-                await db.SaveChangesAsync();
+                return;
             }
+
+            // ---------------------------------------------------------
+            // Close current accommodation + deactivate student.
+            //
+            // Passing the same DbContext means both operations are
+            // saved together.
+            // ---------------------------------------------------------
+
+            await _accommodationService.DeactivateStudentAsync(
+                studentId,
+                endDate,
+                db);
+
+            await db.SaveChangesAsync();
         }
     }
 }

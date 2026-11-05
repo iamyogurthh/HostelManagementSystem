@@ -28,23 +28,46 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  ================= HEADER =================  -->
-            <StackPanel
-                Grid.Row="0"
-                Margin="0,0,0,16"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top">
-                <TextBlock
-                    Margin="0,0,0,4"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="Dashboard" />
-                <TextBlock
-                    FontSize="14"
-                    Foreground="{DynamicResource TextSecondary}"
-                    Text="Welcome back! Here is your hostel summary." />
-            </StackPanel>
+            <!--  ================= HEADER & ACTIONS =================  -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock
+                        Margin="0,0,0,4"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="Dashboard" />
+                    <TextBlock
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="Welcome back! Here is your hostel summary." />
+                </StackPanel>
+
+                <!--  Quick Action Buttons  -->
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Height="42"
+                        Margin="0,0,8,0"
+                        Command="{Binding OpenStudentCategoryManagementCommand}"
+                        Content="ကျောင်းသား အမျိုးအစားများ"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Height="42"
+                        Margin="0,0,0,0"
+                        Command="{Binding OpenRoomTypeManagementCommand}"
+                        Content="အခန်းအမျိုးအစားများ"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                </StackPanel>
+            </Grid>
 
             <!--  ================= 1. KPI COUNTERS =================  -->
             <Grid Grid.Row="1">
@@ -80,8 +103,8 @@
                             <TextBlock
                                 Margin="0,6,0,0"
                                 FontSize="11"
-                                FontWeight="Light"
-                                Foreground="#10B981"
+                                FontWeight="bold"
+                                Foreground="#2D8C6C"
                                 Text="လက်ရှိနေထိုင်သူ" />
                         </StackPanel>
                         <ui:SymbolIcon
@@ -125,7 +148,8 @@
                             <ProgressBar
                                 Height="6"
                                 Margin="0,12,0,0"
-                                Foreground="{DynamicResource PrimaryAccent}"
+                                Background="{DynamicResource ProgressBarBackground}"
+                                Foreground="{DynamicResource ProgressBarForeground}"
                                 Maximum="100"
                                 Value="{Binding OccupancyRate}" />
                         </StackPanel>
@@ -158,7 +182,7 @@
                                 Margin="0,4,0,0"
                                 FontSize="24"
                                 FontWeight="Bold"
-                                Foreground="#10B981"
+                                Foreground="#2D8C6C"
                                 Text="{Binding AvailableRooms}" />
                             <TextBlock
                                 Margin="0,6,0,0"
@@ -301,29 +325,25 @@
                             <!--  Male Circle Card  -->
                             <StackPanel HorizontalAlignment="Center">
                                 <Grid Width="110" Height="110">
-                                    <!--  Unfilled Background Track (Dark Gray Circle)  -->
                                     <ui:ProgressRing
                                         Width="110"
                                         Height="110"
                                         Foreground="{DynamicResource BorderBrush}"
                                         IsIndeterminate="False"
                                         Progress="100" />
-
-                                    <!--  Foreground Progress Ring  -->
                                     <ui:ProgressRing
                                         Width="110"
                                         Height="110"
-                                        Foreground="#6366F1"
+                                        Foreground="#357ae8"
                                         IsIndeterminate="False"
                                         Progress="{Binding GenderData.MalePercentage, Mode=OneWay}" />
 
-                                    <!--  Inner Content  -->
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontSize="18"
                                             FontWeight="Bold"
-                                            Foreground="#6366F1"
+                                            Foreground="#357ae8"
                                             Text="ကျား" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
@@ -346,15 +366,12 @@
                             <!--  Female Circle Card  -->
                             <StackPanel HorizontalAlignment="Center">
                                 <Grid Width="110" Height="110">
-                                    <!--  Unfilled Background Track (Dark Gray Circle)  -->
                                     <ui:ProgressRing
                                         Width="110"
                                         Height="110"
                                         Foreground="{DynamicResource BorderBrush}"
                                         IsIndeterminate="False"
                                         Progress="100" />
-
-                                    <!--  Foreground Progress Ring  -->
                                     <ui:ProgressRing
                                         Width="110"
                                         Height="110"
@@ -362,7 +379,6 @@
                                         IsIndeterminate="False"
                                         Progress="{Binding GenderData.FemalePercentage, Mode=OneWay}" />
 
-                                    <!--  Inner Content  -->
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock
                                             HorizontalAlignment="Center"

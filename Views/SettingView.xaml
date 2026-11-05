@@ -22,6 +22,11 @@
             <settingViews:LicenseSettingsView />
         </DataTemplate>
 
+        <!--  Version View  -->
+        <DataTemplate DataType="{x:Type settingVm:VersionSettingsViewModel}">
+            <settingViews:VersionSettingsView />
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid Margin="0,0,16,0">
@@ -65,7 +70,7 @@
 
                 <StackPanel>
 
-                    <RadioButton
+                    <!-- <RadioButton
                         Command="{Binding SelectThemeCommand}"
                         GroupName="SettingsNavigation"
                         IsChecked="True"
@@ -74,11 +79,12 @@
 
                         <TextBlock VerticalAlignment="Center" Text="Theme" />
 
-                    </RadioButton>
+                    </RadioButton>-->
 
                     <RadioButton
                         Command="{Binding SelectLicenseCommand}"
                         GroupName="SettingsNavigation"
+                        IsChecked="True"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M4,5A2,2 0,0 1,6,3H18A2,2 0,0 1,20,5V19A2,2 0,0 1,18,21H6A2,2 0,0 1,4,19V5M7,7V9H17V7H7M7,12V14H17V12H7M7,17V19H12V17H7Z">
 
@@ -87,7 +93,7 @@
                     </RadioButton>
 
                     <RadioButton
-                        Command="{Binding SelectLicenseCommand}"
+                        Command="{Binding SelectVersionCommand}"
                         GroupName="SettingsNavigation"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M6,2H14L19,7V22H6V2M14,2V8H19M9,12H16M9,16H16M9,20H13">
@@ -95,15 +101,15 @@
                         <TextBlock VerticalAlignment="Center" Text="Versions" />
 
                     </RadioButton>
-                    <RadioButton
-                        Command="{Binding SelectLicenseCommand}"
+                    <!-- <RadioButton
+                        Command="{Binding SelectVersionCommand}"
                         GroupName="SettingsNavigation"
                         Style="{StaticResource SidebarItemStyle}"
                         Tag="M12,2A10,10 0,1 0,12,22A10,10 0,0 0,12,2M11,10H13V17H11V10M11,6H13V8H11V6Z">
 
                         <TextBlock VerticalAlignment="Center" Text="About" />
 
-                    </RadioButton>
+                    </RadioButton>-->
 
 
                 </StackPanel>

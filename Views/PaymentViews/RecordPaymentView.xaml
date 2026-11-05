@@ -1,0 +1,358 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.PaymentViews.RecordPaymentView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    </UserControl.Resources>
+
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+        <Grid Margin="0,0,16,0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <!--
+                =====================================================
+                HEADER
+                =====================================================
+            -->
+
+            <Grid Grid.Row="0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Grid.Column="0">
+
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ငွေပေးချေမှု မှတ်တမ်းတင်ရန်" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="ကျောင်းသား၏ အခကြေးငွေကို မှတ်တမ်းတင်ပါ" />
+
+                </StackPanel>
+
+
+                <!--  STUDENT  -->
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="ကျောင်းသား" />
+
+                    <TextBlock
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding Student.Name, Mode=OneWay}" />
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!--
+                =====================================================
+                DIVIDER
+                =====================================================
+            -->
+
+            <Border
+                Grid.Row="1"
+                Height="1"
+                Margin="0,16,0,16"
+                Background="{DynamicResource BorderColor}" />
+
+
+            <!--
+                =====================================================
+                ERROR MESSAGE
+                =====================================================
+            -->
+
+            <Border
+                Grid.Row="2"
+                Margin="0,0,0,16"
+                Padding="12"
+                Background="#FFF3F3"
+                BorderBrush="#E53935"
+                BorderThickness="1"
+                CornerRadius="6"
+                Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <TextBlock
+                    FontSize="12"
+                    Foreground="#D32F2F"
+                    Text="{Binding ErrorMessage, Mode=OneWay}"
+                    TextWrapping="Wrap" />
+
+            </Border>
+
+
+            <!--
+                =====================================================
+                OUTSTANDING BALANCE
+                =====================================================
+            -->
+
+            <Grid Grid.Row="3" Margin="0,0,0,16">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel>
+
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="လက်ရှိ ပေးရန်ကျန်ငွေ" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="#D32F2F"
+                        Text="{Binding OutstandingBalance, Mode=OneWay, StringFormat={}{0:N0} MMK}" />
+
+                </StackPanel>
+
+
+            </Grid>
+
+            <!--
+                =====================================================
+                PAYMENT AMOUNT
+                =====================================================
+            -->
+
+            <StackPanel Grid.Row="4" Margin="0,0,0,16">
+
+                <TextBlock
+                    Margin="0,0,0,6"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextPrimary}"
+                    Text="ပေးချေမည့်ပမာဏ" />
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBox
+                        Grid.Column="0"
+                        Height="40"
+                        Padding="10,0"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding PaymentAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0}}" />
+
+
+                    <Button
+                        Grid.Column="1"
+                        Height="40"
+                        Margin="8,0,0,0"
+                        Padding="14,0"
+                        Command="{Binding SetFullAmountCommand}"
+                        Content="အပြည့်ပေးမည်"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+
+
+                    <Button
+                        Grid.Column="2"
+                        Height="40"
+                        Margin="8,0,0,0"
+                        Padding="14,0"
+                        Command="{Binding ClearAmountCommand}"
+                        Content="ဖျက်မည်"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+
+                </Grid>
+
+            </StackPanel>
+
+
+            <!--
+                =====================================================
+                PAYMENT METHOD
+                =====================================================
+            -->
+
+            <StackPanel Grid.Row="5" Margin="0,0,0,16">
+
+                <TextBlock
+                    Margin="0,0,0,6"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextPrimary}"
+                    Text="ငွေပေးချေမှုနည်းလမ်း" />
+
+                <ComboBox
+                    Height="40"
+                    VerticalContentAlignment="Center"
+                    ItemsSource="{Binding PaymentMethods}"
+                    SelectedItem="{Binding SelectedPaymentMethod, Mode=TwoWay}" />
+
+            </StackPanel>
+
+
+            <!--
+                =====================================================
+                RECEIPT
+                =====================================================
+            -->
+
+            <Grid Grid.Row="6" Margin="0,0,0,16">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+                <!--  RECEIPT  -->
+
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+
+                    <TextBlock
+                        Margin="0,0,0,6"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ပြေစာနံပါတ်" />
+
+                    <TextBox
+                        Height="40"
+                        Padding="10,0"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding ReceiptNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                </StackPanel>
+
+
+                <!--  PAYMENT DATE  -->
+
+                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+
+                    <TextBlock
+                        Margin="0,0,0,6"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ငွေပေးချေသည့်ရက်" />
+
+                    <DatePicker
+                        Height="40"
+                        VerticalContentAlignment="Center"
+                        SelectedDate="{Binding PaymentDate, Mode=TwoWay}" />
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!--
+                =====================================================
+                NOTES + ACTIONS
+                =====================================================
+            -->
+
+            <Grid Grid.Row="7" Margin="0,0,0,16">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <!--  NOTES  -->
+
+                <StackPanel Grid.Row="0">
+
+                    <TextBlock
+                        Margin="0,0,0,6"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="မှတ်ချက်" />
+
+                    <TextBox
+                        MinHeight="70"
+                        Padding="10"
+                        AcceptsReturn="True"
+                        Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+
+                </StackPanel>
+
+
+                <!--  ACTIONS  -->
+
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+
+
+
+                    <Button
+                        Height="40"
+                        MinWidth="150"
+                        Margin="0,0,16,0"
+                        Command="{Binding RecordPaymentCommand}"
+                        Content="ငွေပေးချေမှု မှတ်တမ်းတင်မည်"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Height="40"
+                        MinWidth="100"
+                        Margin="0,0,8,0"
+                        Command="{Binding CancelCommand}"
+                        Content="ပယ်ဖျက်ရန်"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+
+                </StackPanel>
+
+            </Grid>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</UserControl>

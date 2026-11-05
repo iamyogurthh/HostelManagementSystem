@@ -67,8 +67,12 @@ namespace HostelManagementSystem.ViewModels
         {
             if (building == null) return;
 
-            // TODO: Replace with resident check logic upon Resident model implementation
-            bool hasOccupiedRooms = false;
+            await using var occupancyDb = new AppDbContext();
+            var hasOccupiedRooms = await occupancyDb.StudentAccommodations
+                .AnyAsync(a =>
+                    a.IsActive &&
+                    a.EndDate == null &&
+                    a.Room.Floor.BuildingId == building.Id);
 
             if (hasOccupiedRooms)
             {
@@ -103,6 +107,22 @@ namespace HostelManagementSystem.ViewModels
 
                     if (targetBuilding != null)
                     {
+                        var stillOccupied = await db.StudentAccommodations
+                            .AnyAsync(a =>
+                                a.IsActive &&
+                                a.EndDate == null &&
+                                a.Room.Floor.BuildingId == building.Id);
+
+                        if (stillOccupied)
+                        {
+                            MessageBox.Show(
+                                "ဤအဆောင်တွင် လူနေထိုင်လျက်ရှိသော အခန်းများ ရှိနေသေးသဖြင့် ဖျက်၍မရပါ။",
+                                "သတိပေးချက်",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Stop);
+                            return;
+                        }
+
                         string imageToDelete = targetBuilding.Img;
 
                         // Cascade soft delete

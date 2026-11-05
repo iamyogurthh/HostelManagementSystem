@@ -19,19 +19,33 @@
             </Grid.RowDefinitions>
 
             <!--  1. Header Section  -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource TextPrimary}"
-                    Text="အဆောင်စီမံခန့်ခွဲမှု" />
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding BackCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
 
-                <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
-                    Text="အဆောင်အချက်အလက် ပြင်ဆင်ရန်" />
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အဆောင်စီမံခန့်ခွဲမှု" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="အဆောင်အချက်အလက် ပြင်ဆင်ရန်" />
+                </StackPanel>
+
             </StackPanel>
 
             <!--  Section Divider  -->

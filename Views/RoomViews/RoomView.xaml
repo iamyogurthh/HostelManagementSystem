@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:HostelManagementSystem.Views"
+    xmlns:converters="clr-namespace:HostelManagementSystem.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -11,6 +12,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:ImagePathFallbackConverter x:Key="ImagePathFallbackConverter" />
     </UserControl.Resources>
 
 
@@ -27,20 +29,23 @@
             <!--  Action & Navigation Bar  -->
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
+                    <!--  Left space, Center space (fits text), Right space  -->
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <!--  Back Button (Left Aligned)  -->
                 <Button
                     Grid.Column="0"
+                    Height="48"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Command="{Binding BackCommand}"
                     Content="Back"
                     Style="{StaticResource SecondaryButtonStyle}" />
 
-                <!--  Context Header: Building Name & Floor Name  -->
+                <!--  Context Header: Perfectly Centered in the middle column  -->
                 <StackPanel
                     Grid.Column="1"
                     HorizontalAlignment="Center"
@@ -49,22 +54,35 @@
                     <TextBlock
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Foreground="#671EE1"
+                        Foreground="{DynamicResource TextPrimary}"
                         Text="{Binding Building.Name, StringFormat='&quot;{0}&quot; - '}" />
                     <TextBlock
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Foreground="#671EE1"
+                        Foreground="{DynamicResource TextPrimary}"
                         Text="{Binding Floor.Name, StringFormat='&quot;{0}&quot; ၏ အခန်းများ'}" />
                 </StackPanel>
 
-                <Button
+                <!--  Action Buttons (Right Aligned)  -->
+                <StackPanel
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Command="{Binding OpenCreateRoomFormCommand}"
-                    Content="+ အခန်းအသစ်"
-                    Style="{StaticResource PrimaryButtonStyle}" />
+                    Orientation="Horizontal">
+                    <Button
+                        Height="48"
+                        Margin="0,0,8,0"
+                        Command="{Binding OpenRoomTypeManagementCommand}"
+                        Content="အခန်းအမျိုးအစားများ"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+
+                    <Button
+                        Height="48"
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenCreateRoomFormCommand}"
+                        Content="+ အခန်းအသစ်"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                </StackPanel>
             </Grid>
 
             <!--  Main Content  -->
@@ -141,23 +159,15 @@
                                 </Border.InputBindings>
 
                                 <StackPanel>
-                                    <!--  Fixed 16:9 Image Preview Area (Width: 194px, Height: 120px)  -->
-                                    <Grid Height="120">
-                                        <Border ClipToBounds="True" CornerRadius="6">
-                                            <Image
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Stretch="UniformToFill">
-                                                <Image.Source>
-                                                    <BitmapImage
-                                                        CacheOption="OnLoad"
-                                                        DecodePixelWidth="300"
-                                                        UriSource="{Binding Img, TargetNullValue='pack://application:,,,/Image/DefaultImages/default_room.png'}" />
-                                                </Image.Source>
-                                            </Image>
+                                    <Grid Height="125" HorizontalAlignment="Stretch">
+                                        <!--  Border handles the top-left and top-right corner rounding cleanly  -->
+                                        <Border CornerRadius="10,10,0,0">
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding Img, Converter={StaticResource ImagePathFallbackConverter}}" Stretch="UniformToFill" />
+                                            </Border.Background>
                                         </Border>
 
-                                        <!--  Floating Action Buttons  -->
+                                        <!--  Overlay content (Buttons)  -->
                                         <StackPanel
                                             Margin="6"
                                             HorizontalAlignment="Right"
@@ -165,43 +175,37 @@
                                             Orientation="Horizontal">
 
                                             <!--  Edit Button  -->
-                                            <Button
-                                                Height="26"
+                                            <Border
                                                 Margin="0,0,4,0"
-                                                Background="#CC000000"
-                                                BorderThickness="0"
-                                                Command="{Binding DataContext.OpenEditRoomFormCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Content="✏"
-                                                Cursor="Hand"
-                                                FontSize="11"
-                                                Foreground="White"
-                                                ToolTip="ပြင်ဆင်ရန်">
-                                                <Button.Resources>
-                                                    <Style TargetType="Border">
-                                                        <Setter Property="CornerRadius" Value="13" />
-                                                    </Style>
-                                                </Button.Resources>
-                                            </Button>
+                                                ClipToBounds="True"
+                                                CornerRadius="13">
+                                                <Button
+                                                    Height="26"
+                                                    Background="#CC000000"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.OpenEditRoomFormCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="✏"
+                                                    Cursor="Hand"
+                                                    FontSize="11"
+                                                    Foreground="White"
+                                                    ToolTip="ပြင်ဆင်ရန်" />
+                                            </Border>
 
                                             <!--  Delete Button  -->
-                                            <Button
-                                                Height="26"
-                                                Background="#CC000000"
-                                                BorderThickness="0"
-                                                Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Content="🗑"
-                                                Cursor="Hand"
-                                                FontSize="11"
-                                                Foreground="#FF6B6B"
-                                                ToolTip="ဖျက်ရန်">
-                                                <Button.Resources>
-                                                    <Style TargetType="Border">
-                                                        <Setter Property="CornerRadius" Value="13" />
-                                                    </Style>
-                                                </Button.Resources>
-                                            </Button>
+                                            <Border ClipToBounds="True" CornerRadius="13">
+                                                <Button
+                                                    Height="26"
+                                                    Background="#CC000000"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="🗑"
+                                                    Cursor="Hand"
+                                                    FontSize="11"
+                                                    Foreground="#FF6B6B"
+                                                    ToolTip="ဖျက်ရန်" />
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
 
@@ -213,6 +217,14 @@
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextPrimary}"
                                             Text="{Binding Name}" />
+                                        <TextBlock
+                                            Margin="0,8"
+                                            FontSize="12"
+                                            FontWeight="Normal"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            Text="{Binding RoomType.Name}" />
+
+
 
                                         <!--  Icon + Ratio (e.g. 👤 0/4)  -->
                                         <StackPanel Margin="0,4,0,0" Orientation="Horizontal">

@@ -1,0 +1,420 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.RoomAssignmentViews.RoomAssignmentView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:HostelManagementSystem.Views.RoomAssignmentViews"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="700"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+        <Grid Margin="0,0,16,0" HorizontalAlignment="Stretch">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  =====================================================  -->
+            <!--  1. HEADER  -->
+            <!--  =====================================================  -->
+
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းသတ်မှတ်ခြင်း" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="{Binding Student.Name, StringFormat='{}{0} အတွက် အခန်းသတ်မှတ်ရန်'}" />
+                </StackPanel>
+
+                <Button
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Command="{Binding ReleaseAccommodationCommand}"
+                    Content="အဆောင်မှ ထွက်ခွာမည်"
+                    IsEnabled="{Binding HasCurrentRoom}"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+            </Grid>
+
+            <!--  =====================================================  -->
+            <!--  SECTION DIVIDER  -->
+            <!--  =====================================================  -->
+
+            <Border
+                Grid.Row="1"
+                Height="1"
+                Margin="0,0,0,0"
+                Background="Gray" />
+
+            <!--  =====================================================  -->
+            <!--  2. GLOBAL ERROR  -->
+            <!--  =====================================================  -->
+
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,0,0,15"
+                FontSize="13"
+                Foreground="#EF4444"
+                Text="{Binding ErrorMessage}"
+                TextWrapping="Wrap" />
+
+            <!--  =====================================================  -->
+            <!--  3. FORM CONTENT  -->
+            <!--  =====================================================  -->
+
+            <StackPanel Grid.Row="3" Margin="0,0,0,30">
+
+                <!--  =================================================  -->
+                <!--  STUDENT INFORMATION  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,24">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ကျောင်းသားအချက်အလက်" />
+
+                    <Grid Grid.Row="1">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Student Name  -->
+
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="အမည်" />
+
+                            <TextBlock
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="{Binding Student.Name, FallbackValue='-'}" />
+
+                        </StackPanel>
+
+                        <!--  NRC  -->
+
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="မှတ်ပုံတင်အမှတ်" />
+
+                            <TextBlock
+                                FontSize="15"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="{Binding Student.NRC, FallbackValue='-'}" />
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  CURRENT ROOM  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,24">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="လက်ရှိအခန်း" />
+
+                    <Border
+                        Grid.Row="1"
+                        Padding="12"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
+                        CornerRadius="6">
+
+                        <TextBlock
+                            FontSize="14"
+                            Foreground="{DynamicResource TextPrimary}"
+                            Text="{Binding CurrentRoomText, FallbackValue='အခန်းမရှိပါ'}" />
+
+                    </Border>
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  BUILDING  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အဆောက်အဦ *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableBuildings}"
+                        SelectedItem="{Binding SelectedBuilding, Mode=TwoWay}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding BuildingError}" />
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  FLOOR  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အထပ် *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableFloors}"
+                        SelectedItem="{Binding SelectedFloor, Mode=TwoWay}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding FloorError}" />
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  ROOM  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်း *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableRooms}"
+                        SelectedItem="{Binding SelectedRoom, Mode=TwoWay}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding RoomError}" />
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  SELECTED ROOM INFORMATION  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ရွေးချယ်ထားသောအခန်းအချက်အလက်" />
+
+                    <Grid Grid.Row="1">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Room Type  -->
+
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="အခန်းအမျိုးအစား" />
+
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="{Binding SelectedRoom.RoomType.Name, FallbackValue='-'}" />
+
+                        </StackPanel>
+
+                        <!--  Capacity  -->
+
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Text="လူဝင်ဆံ့နိုင်မှု" />
+
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="{DynamicResource TextPrimary}"
+                                Text="{Binding SelectedRoom.Capacity, FallbackValue='-'}" />
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Grid>
+
+                <!--  =================================================  -->
+                <!--  ASSIGNMENT DATE  -->
+                <!--  =================================================  -->
+
+                <Grid Margin="0,0,0,20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းသတ်မှတ်သည့်ရက် *" />
+
+                    <DatePicker
+                        Grid.Row="1"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        SelectedDate="{Binding AssignmentDate, Mode=TwoWay}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding AssignmentDateError}" />
+
+                </Grid>
+
+            </StackPanel>
+
+            <!--  =====================================================  -->
+            <!--  4. FORM ACTIONS  -->
+            <!--  =====================================================  -->
+
+            <StackPanel
+                Grid.Row="4"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+
+                <Button
+                    Margin="0,0,12,0"
+                    Command="{Binding AssignRoomCommand}"
+                    Content="{Binding ActionButtonText}"
+                    Style="{StaticResource PrimaryButtonStyle}" />
+
+                <Button
+                    Command="{Binding CancelCommand}"
+                    Content="မလုပ်တော့ပါ"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</UserControl>

@@ -18,7 +18,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,16,0">
 
-                <!--  HEADER TITLE & ADD BUTTON  -->
+                <!--  HEADER TITLE & ACTION BUTTONS  -->
                 <Grid Margin="0,0,0,16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -38,14 +38,24 @@
                             Text="အဆောင်သားများ စာရင်း" />
                     </StackPanel>
 
-                    <Button
-                        Grid.Column="1"
-                        Height="48px"
-                        Command="{Binding OpenAddNewStudentFormCommand}"
-                        Content="+ လူအသစ်ထည့်ရန်"
-                        Style="{StaticResource PrimaryButtonStyle}" />
-                </Grid>
+                    <!--  Action Buttons  -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <!--  Manage Student Categories Button  -->
+                        <Button
+                            Height="48px"
+                            Margin="0,0,8,0"
+                            Command="{Binding OpenStudentCategoryManagementCommand}"
+                            Content="ကျောင်းသား အမျိုးအစားများ"
+                            Style="{StaticResource SecondaryButtonStyle}" />
 
+                        <!--  Add New Student Button  -->
+                        <Button
+                            Height="48px"
+                            Command="{Binding OpenAddNewStudentFormCommand}"
+                            Content="+ လူအသစ်ထည့်ရန်"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                    </StackPanel>
+                </Grid>
                 <!--  SEARCH & FILTER PANEL  -->
                 <Border Margin="0,0,0,16" CornerRadius="8">
                     <Grid VerticalAlignment="Bottom">
@@ -181,6 +191,12 @@
                                     Binding="{Binding Name}"
                                     Header="အမည်" />
 
+                                <!--  Column 1: Category  -->
+                                <DataGridTextColumn
+                                    Width="1.3*"
+                                    Binding="{Binding StudentCategory.Name}"
+                                    Header="Category" />
+
                                 <!--  Column 2: NRC  -->
                                 <DataGridTextColumn
                                     Width="1.6*"
@@ -206,35 +222,35 @@
                                             <StackPanel VerticalAlignment="Center">
                                                 <!--  Building  -->
                                                 <TextBlock
-                                                    Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    Margin="0,0,0,4"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Floor.Building.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Building.Name, FallbackValue=''}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Floor  -->
                                                 <TextBlock
-                                                    Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    Margin="0,0,0,4"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Floor.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Floor.Name, FallbackValue='အခန်းမရှိသေးပါ'}"
                                                     TextTrimming="CharacterEllipsis" />
 
                                                 <!--  Room  -->
                                                 <TextBlock
                                                     Margin="0,0,0,2"
-                                                    FontSize="10"
+                                                    FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{DynamicResource PrimaryAccent}"
                                                     LineHeight="11"
                                                     LineStackingStrategy="BlockLineHeight"
-                                                    Text="{Binding Room.Name, FallbackValue='-'}"
+                                                    Text="{Binding CurrentAccommodation.Room.Name, FallbackValue=''}"
                                                     TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
                                         </DataTemplate>
@@ -269,6 +285,19 @@
                                                     Icon="{ui:SymbolIcon Info24}"
                                                     Style="{StaticResource InfoActionButtonStyle}"
                                                     ToolTip="အသေးစိတ်ကြည့်ရန်" />
+
+                                                <!--  Assign Room Button  -->
+                                                <ui:Button
+                                                    Width="32"
+                                                    Height="32"
+                                                    Margin="0,0,8,0"
+                                                    Padding="0"
+                                                    Command="{Binding DataContext.AssignRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Icon="{ui:SymbolIcon Home24}"
+                                                    Style="{StaticResource InfoActionButtonStyle}"
+                                                    ToolTip="အခန်းသတ်မှတ်ရန် / ပြောင်းရန်" />
+
 
                                                 <!--  Edit Button  -->
                                                 <ui:Button

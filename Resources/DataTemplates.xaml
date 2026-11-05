@@ -1,10 +1,20 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:assignRoomV="clr-namespace:HostelManagementSystem.Views.RoomAssignmentViews"
+    xmlns:assignRoomVm="clr-namespace:HostelManagementSystem.ViewModels.RoomAssignmentViewModels"
+    xmlns:feeRuleV="clr-namespace:HostelManagementSystem.Views.FeeRuleViews"
+    xmlns:feeRuleVM="clr-namespace:HostelManagementSystem.ViewModels.FeeRuleViewModels"
+    xmlns:paymentVM="clr-namespace:HostelManagementSystem.ViewModels.PaymentViewModels"
+    xmlns:paymentViews="clr-namespace:HostelManagementSystem.Views.PaymentViews"
     xmlns:roomDetailViews="clr-namespace:HostelManagementSystem.Views.RoomDetailViews"
+    xmlns:roomTypeVM="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels.RoomTypeViewModels"
+    xmlns:roomTypeViews="clr-namespace:HostelManagementSystem.Views.RoomViews.RoomTypeViews"
     xmlns:roomViews="clr-namespace:HostelManagementSystem.Views.RoomViews"
     xmlns:roomVm="clr-namespace:HostelManagementSystem.ViewModels.RoomViewModels"
     xmlns:roomdetailVm="clr-namespace:HostelManagementSystem.ViewModels.RoomDetailViewModels"
+    xmlns:studentCategoryV="clr-namespace:HostelManagementSystem.Views.StudentCategoryViews"
+    xmlns:studentCategoryVM="clr-namespace:HostelManagementSystem.ViewModels.StudentCategoryViewModels"
     xmlns:studentDetailViews="clr-namespace:HostelManagementSystem.Views.StudentDetailViews"
     xmlns:studentDetailVm="clr-namespace:HostelManagementSystem.ViewModels.StudentDetailViewModels"
     xmlns:studentV="clr-namespace:HostelManagementSystem.Views.StudentViews"
@@ -27,6 +37,9 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type viewmodels:DataTransferViewModel}">
         <views:DataTransferView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type feeRuleVM:FeeRuleViewModel}">
+        <feeRuleV:FeeRuleView />
     </DataTemplate>
 
     <!--  Building related pages  -->
@@ -58,6 +71,12 @@
     <DataTemplate DataType="{x:Type roomVm:EditRoomFormViewModel}">
         <roomViews:EditRoomFormView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type roomTypeVM:RoomTypeViewModel}">
+        <roomTypeViews:RoomTypeView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type roomTypeVM:RoomTypeFormViewModel}">
+        <roomTypeViews:RoomTypeFormView />
+    </DataTemplate>
 
     <!--  Room Detail related pages  -->
     <DataTemplate DataType="{x:Type roomdetailVm:RoomDetailViewModel}">
@@ -71,10 +90,38 @@
     <DataTemplate DataType="{x:Type studentVM:EditStudentFormViewModel}">
         <studentV:EditStudentFormView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type studentCategoryVM:StudentCategoryViewModel}">
+        <studentCategoryV:StudentCategoryView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type studentCategoryVM:StudentCategoryFormViewModel}">
+        <studentCategoryV:StudentCategoryFormView />
+    </DataTemplate>
+
 
     <!--  Student Detail related pages  -->
     <DataTemplate DataType="{x:Type studentDetailVm:StudentDetailViewModel}">
         <studentDetailViews:StudentDetailView />
+    </DataTemplate>
+
+    <!--  Fee Rule related pages  -->
+    <DataTemplate DataType="{x:Type feeRuleVM:FeeRuleFormViewModel}">
+        <feeRuleV:FeeRuleFormView />
+    </DataTemplate>
+
+    <!--  Payment related pages  -->
+    <DataTemplate DataType="{x:Type paymentVM:PaymentViewModel}">
+        <paymentViews:PaymentView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type paymentVM:RecordPaymentViewModel}">
+        <paymentViews:RecordPaymentView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type paymentVM:ManualChargeViewModel}">
+        <paymentViews:ManualChargeView />
+    </DataTemplate>
+
+    <!--  Room Assignment related pages  -->
+    <DataTemplate DataType="{x:Type assignRoomVm:RoomAssignmentViewModel}">
+        <assignRoomV:RoomAssignmentView />
     </DataTemplate>
 
 </ResourceDictionary>

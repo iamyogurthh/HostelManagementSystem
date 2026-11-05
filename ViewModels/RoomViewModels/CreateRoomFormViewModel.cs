@@ -5,7 +5,10 @@ using HostelManagementSystem.Database;
 using HostelManagementSystem.Messages;
 using HostelManagementSystem.Models;
 using HostelManagementSystem.Utilities;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,10 +25,40 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
         [ObservableProperty]
         private Floor _floor;
 
+        [ObservableProperty]
+        private ObservableCollection<RoomType> _roomTypes = new();
+
+        [ObservableProperty]
+        private RoomType? _selectedRoomType;
+
+        [ObservableProperty]
+        private string? _roomTypeError;
+
         public CreateRoomFormViewModel(Building building, Floor floor)
         {
             Building = building;
             Floor = floor;
+
+            _ = LoadRoomTypesAsync();
+        }
+
+        private async Task LoadRoomTypesAsync()
+        {
+            try
+            {
+                using var db = new AppDbContext();
+                var list = await db.RoomTypes.AsNoTracking().Where(r => r.IsActive == true).ToListAsync();
+                RoomTypes = new ObservableCollection<RoomType>(list);
+
+                if (RoomTypes.Any())
+                {
+                    SelectedRoomType = RoomTypes.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"အခန်းအမျိုးအစားများ ရယူရာတွင် အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်: {ex.Message}";
+            }
         }
 
         [RelayCommand]
@@ -47,7 +80,17 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
                     .FirstOrDefault()?.ErrorMessage;
             }
 
-            if (HasErrors || !string.IsNullOrEmpty(RoomCapacityError))
+            // Room Type Validation
+            if (SelectedRoomType == null)
+            {
+                RoomTypeError = "အခန်းအမျိုးအစား ရွေးချယ်ပါ";
+            }
+            else
+            {
+                RoomTypeError = null;
+            }
+
+            if (HasErrors || !string.IsNullOrEmpty(RoomCapacityError) || !string.IsNullOrEmpty(RoomTypeError))
             {
                 return;
             }
@@ -76,6 +119,7 @@ namespace HostelManagementSystem.ViewModels.RoomViewModels
                         Img = savedImagePath,
                         IsActive = IsActive,
                         FloorId = Floor.Id,
+                        RoomTypeId = SelectedRoomType!.Id
                     };
 
                     await db.Rooms.AddAsync(newRoom);

@@ -26,10 +26,12 @@ namespace HostelManagementSystem.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        public string Img { get; set; } = "pack://application:,,,/Image/DefaultImages/default_room.png";
+        public string Img { get; set; } =
+            "pack://application:,,,/Image/DefaultImages/default_room.png";
 
         public int Capacity { get; set; }
 
+        // Soft delete / active room status.
         public bool IsActive { get; set; } = true;
 
         // =========================================================
@@ -38,17 +40,27 @@ namespace HostelManagementSystem.Models
         [ForeignKey(nameof(FloorId))]
         public Floor Floor { get; set; } = null!;
 
-        // Assigned Students
-        public List<Student> Students { get; set; } = new();
-
-        // Accommodation History & Billing Tracking
+        // =========================================================
+        // ACCOMMODATION HISTORY
+        // =========================================================
         public List<StudentAccommodation> Accommodations { get; set; } = new();
 
         // =========================================================
-        // COMPUTED PROPERTIES (UI & WPF LOGIC)
+        // COMPUTED PROPERTIES
         // =========================================================
+
+        /// <summary>
+        /// Number of students currently staying in this room.
+        ///
+        /// IsActive means the accommodation record has not been
+        /// soft-deleted.
+        ///
+        /// EndDate == null means the accommodation is currently active.
+        /// </summary>
         [NotMapped]
-        public int CurrentResidentsCount => Students?.Count(s => s.IsActive) ?? 0;
+        public int CurrentResidentsCount =>
+            Accommodations?
+                .Count(a => a.IsActive && a.EndDate == null) ?? 0;
 
         [NotMapped]
         public bool IsAvailableForBooking =>

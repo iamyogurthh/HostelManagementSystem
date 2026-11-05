@@ -7,8 +7,8 @@ namespace HostelManagementSystem.DTOs
     class UpdateStudentDto
     {
         public int Id { get; set; }
-        public int RoomId { get; set; }
         public string Name { get; set; } = string.Empty;
+        public int StudentCategoryId { get; set; }
         public string Gender { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
         public string NRC { get; set; } = string.Empty;

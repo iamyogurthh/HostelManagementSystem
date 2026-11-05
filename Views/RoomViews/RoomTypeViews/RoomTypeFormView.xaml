@@ -1,0 +1,152 @@
+﻿<UserControl
+    x:Class="HostelManagementSystem.Views.RoomViews.RoomTypeViews.RoomTypeFormView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="700"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="0,0,16,0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  1. Header Section  -->
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Height="48"
+                    Margin="0,0,16,0"
+                    Command="{Binding CancelCommand}"
+                    Content="Back"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="{Binding FormTitle}" />
+
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondary}"
+                        Text="အခန်းအမျိုးအစား အချက်အလက်များ" />
+                </StackPanel>
+
+            </StackPanel>
+
+            <!--  Section Divider  -->
+            <Border
+                Grid.Row="1"
+                Height="1"
+                Margin="0,0,0,16"
+                Background="gray" />
+
+            <!--  2. Global DB Error Banner  -->
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,0,0,15"
+                FontSize="13"
+                Foreground="#EF4444"
+                Text="{Binding ErrorMessage}"
+                TextWrapping="Wrap" />
+
+            <!--  3. Form Content  -->
+            <StackPanel Grid.Row="3" Margin="0,0,0,30">
+
+                <!--  Name Field  -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="အခန်းအမျိုးအစားအမည် *" />
+
+                    <TextBox
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding NameError}" />
+                </Grid>
+
+                <!--  Description Field  -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ဖော်ပြချက်" />
+
+                    <TextBox
+                        Grid.Row="1"
+                        Height="100"
+                        Padding="12"
+                        HorizontalAlignment="Stretch"
+                        AcceptsReturn="True"
+                        Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding DescriptionError}" />
+                </Grid>
+
+            </StackPanel>
+
+            <!--  4. Form Actions  -->
+            <StackPanel
+                Grid.Row="4"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <Button
+                    Margin="0,0,12,0"
+                    Command="{Binding SaveCommand}"
+                    Content="{Binding SaveButtonText}"
+                    Style="{StaticResource PrimaryButtonStyle}" />
+
+                <Button
+                    Command="{Binding CancelCommand}"
+                    Content="မလုပ်တော့ပါ"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

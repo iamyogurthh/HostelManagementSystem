@@ -39,7 +39,7 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="ကျောင်းသား/သူ ပြင်ဆင်ရန်" />
             </DockPanel>
 
@@ -67,7 +67,7 @@
                     Margin="0,0,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၁။ ကျောင်းသား/သူ ဓာတ်ပုံ" />
 
                 <Grid Margin="0,0,0,24">
@@ -126,67 +126,37 @@
                                 Content="Remove"
                                 Style="{StaticResource SecondaryButtonStyle}" />
                         </StackPanel>
-
-                        <!--  Cascading Room Selection Dropdowns (Edit Form)  -->
-                        <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
-                            <!--  Building Dropdown  -->
-                            <StackPanel Margin="0,0,10,0">
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အဆောက်အအုံ" />
-                                <ComboBox
-                                    Width="150"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableBuildings}"
-                                    SelectedItem="{Binding SelectedBuilding, Mode=TwoWay}" />
-                            </StackPanel>
-
-                            <!--  Floor Dropdown  -->
-                            <StackPanel Margin="0,0,10,0">
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အထပ်" />
-                                <ComboBox
-                                    Width="130"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableFloors}"
-                                    SelectedItem="{Binding SelectedFloor, Mode=TwoWay}" />
-                            </StackPanel>
-
-                            <!--  Room Dropdown  -->
-                            <StackPanel>
-                                <TextBlock
-                                    Margin="0,0,0,4"
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Text="အခန်း *" />
-                                <ComboBox
-                                    Width="130"
-                                    Height="38"
-                                    Padding="8,0"
-                                    VerticalContentAlignment="Center"
-                                    DisplayMemberPath="Name"
-                                    IsEnabled="{Binding IsRoomSelectionEnabled}"
-                                    ItemsSource="{Binding AvailableRooms}"
-                                    SelectedItem="{Binding Room, Mode=TwoWay}" />
-                            </StackPanel>
-                        </StackPanel>
                     </StackPanel>
+                </Grid>
+
+                <!--  Student Category  -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextPrimary}"
+                        Text="ကျောင်းသား/သူ အမျိုးအစား *" />
+
+                    <ComboBox
+                        Grid.Row="1"
+                        Height="38"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableStudentCategories}"
+                        SelectedItem="{Binding SelectedStudentCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="#EF4444"
+                        Text="{Binding StudentCategoryError}" />
                 </Grid>
 
                 <!--  SECTION 2: Personal Information  -->
@@ -194,7 +164,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၂။ ကိုယ်ရေးအချက်အလက်များ" />
 
                 <!--  Name Field  -->
@@ -445,7 +415,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၃။ မိဘအချက်အလက်များ" />
 
                 <!--  Father & Mother Names  -->
@@ -628,7 +598,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၄။ ပညာရေးအချက်အလက်များ" />
 
 
@@ -875,7 +845,7 @@
                     Margin="0,10,0,12"
                     FontSize="16"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource PrimaryAccent}"
+                    Foreground="{DynamicResource TextSecondary}"
                     Text="၅။ မှတ်ပုံတင် ဓာတ်ပုံများ" />
 
                 <Grid Margin="0,0,0,20">

@@ -46,27 +46,19 @@
                     <TextBlock
                         FontSize="18"
                         FontWeight="Bold"
-                        Foreground="#4F46E5"
+                        Foreground="{DynamicResource TextPrimary}"
                         Text="{Binding Building.Name, StringFormat='&quot;{0}&quot; - '}" />
                     <TextBlock
                         FontSize="18"
                         FontWeight="Bold"
-                        Foreground="#4F46E5"
+                        Foreground="{DynamicResource TextPrimary}"
                         Text="{Binding Floor.Name, StringFormat='&quot;{0}&quot; - '}" />
                     <TextBlock
                         FontSize="18"
                         FontWeight="Bold"
-                        Foreground="#4F46E5"
+                        Foreground="{DynamicResource TextPrimary}"
                         Text="{Binding Room.Name, StringFormat='&quot;{0}&quot; ၏ လူစာရင်း'}" />
                 </StackPanel>
-
-                <Button
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Command="{Binding OpenAddNewStudentFormCommand}"
-                    Content="+ လူအသစ်ထည့်ရန်"
-                    Style="{StaticResource PrimaryButtonStyle}" />
             </Grid>
 
             <!--  UPDATED TABLE SECTION: Using WPF UI Card and DataGrid  -->

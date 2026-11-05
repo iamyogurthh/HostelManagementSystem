@@ -69,8 +69,12 @@ namespace HostelManagementSystem.ViewModels
         {
             if (floor == null) return;
 
-            // TODO: Replace with resident check logic upon Resident model implementation
-            bool hasOccupiedRooms = false;
+            await using var occupancyDb = new AppDbContext();
+            var hasOccupiedRooms = await occupancyDb.StudentAccommodations
+                .AnyAsync(a =>
+                    a.IsActive &&
+                    a.EndDate == null &&
+                    a.Room.FloorId == floor.Id);
 
             if (hasOccupiedRooms)
             {
@@ -104,6 +108,22 @@ namespace HostelManagementSystem.ViewModels
 
                     if (targetFloor != null)
                     {
+                        var stillOccupied = await db.StudentAccommodations
+                            .AnyAsync(a =>
+                                a.IsActive &&
+                                a.EndDate == null &&
+                                a.Room.FloorId == floor.Id);
+
+                        if (stillOccupied)
+                        {
+                            MessageBox.Show(
+                                "ဤအထပ်တွင် လူနေထိုင်လျက်ရှိသော အခန်းများ ရှိနေသေးသဖြင့် ဖျက်၍မရပါ။",
+                                "သတိပေးချက်",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Stop);
+                            return;
+                        }
+
                         targetFloor.IsActive = false;
 
                         // Soft delete all child rooms under this floor
