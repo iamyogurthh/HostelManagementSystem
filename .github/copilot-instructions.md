@@ -16,3 +16,4 @@
 ## Software Distribution
 - For software distribution, use a public GitHub repository with GitHub Actions, Inno Setup, and GitHub Releases.
 - Implement the release pipeline step by step, starting with automated installer creation.
+- For application updates, implement the simple first version: asynchronously check the latest stable GitHub Release once at startup, notify users when a newer version exists, and let them open/download the installer manually; do not implement automatic installation yet.

@@ -3,11 +3,13 @@ using HostelManagementSystem.Helpers;
 using HostelManagementSystem.Services;
 using HostelManagementSystem.ViewModels;
 using HostelManagementSystem.Views;
+using HostelManagementSystem.Services.Update;
 using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows;
 using Wpf.Ui.Appearance;
 
@@ -311,6 +313,38 @@ namespace HostelManagementSystem
             _mainWindow.Show();
 
             _mainWindow.Activate();
+
+            _ = CheckForUpdatesAsync();
+        }
+
+        private static async Task CheckForUpdatesAsync()
+        {
+            var updateService = new GitHubUpdateService();
+            var release = await updateService.GetLatestStableReleaseAsync();
+
+            if (release == null ||
+                !GitHubUpdateService.IsNewerVersion(
+                    release.TagName,
+                    Models.AppVersionInfo.CurrentVersion))
+            {
+                return;
+            }
+
+            await Current.Dispatcher.InvokeAsync(() =>
+            {
+                var result = MessageBox.Show(
+                    $"A new version ({release.TagName.TrimStart('v', 'V')}) is available.\n\n" +
+                    "Would you like to open the download page?",
+                    "Update Available",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes &&
+                    !string.IsNullOrWhiteSpace(release.HtmlUrl))
+                {
+                    GitHubUpdateService.OpenReleasePage(release.HtmlUrl);
+                }
+            });
         }
 
         private void CloseSplashWindow()

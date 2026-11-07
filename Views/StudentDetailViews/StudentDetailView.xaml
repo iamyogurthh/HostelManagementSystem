@@ -92,32 +92,39 @@
                         </Grid.ColumnDefinitions>
 
                         <!--  Profile Picture (Clickable to View Larger)  -->
-                        <Border
-                            Grid.Column="0"
-                            Width="100"
-                            Height="120"
-                            Margin="0,0,24,0"
-                            Background="{DynamicResource WindowBackground}"
-                            BorderBrush="#A0A0A0"
-                            BorderThickness="1"
-                            CornerRadius="8"
-                            Cursor="Hand">
-                            <Border.InputBindings>
-                                <MouseBinding
-                                    Command="{Binding OpenImagePreviewCommand}"
-                                    CommandParameter="{Binding ProfileImagePath}"
-                                    MouseAction="LeftClick" />
-                            </Border.InputBindings>
-                            <Grid ClipToBounds="True">
-                                <ui:SymbolIcon
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="42"
-                                    Foreground="{DynamicResource TextSecondary}"
-                                    Symbol="Person24" />
-                                <Image Source="{Binding ProfileImagePath}" Stretch="UniformToFill" />
-                            </Grid>
-                        </Border>
+                        <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                            <Border
+                                Width="200"
+                                Height="220"
+                                Background="{DynamicResource WindowBackground}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding OpenImagePreviewCommand}"
+                                        CommandParameter="{Binding ProfileImagePath}"
+                                        MouseAction="LeftClick" />
+                                </Border.InputBindings>
+                                <Grid ClipToBounds="True">
+                                    <ui:SymbolIcon
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="42"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        Symbol="Person24" />
+                                    <Image Source="{Binding ProfileImagePath}" Stretch="UniformToFill" />
+                                </Grid>
+                            </Border>
+                            <Button
+                                Width="200"
+                                Height="38"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding SaveProfileImageCommand}"
+                                Content="Save Image"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
 
                         <!--  Identity Details  -->
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -550,6 +557,12 @@
                                         HorizontalAlignment="Center"
                                         Source="{Binding NrcFrontImagePath}"
                                         Stretch="Uniform" />
+                                    <Button
+                                        Margin="0,12,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SaveNrcFrontImageCommand}"
+                                        Content="Save Image"
+                                        Style="{StaticResource SecondaryButtonStyle}" />
                                 </StackPanel>
                             </Border>
 
@@ -580,6 +593,12 @@
                                         HorizontalAlignment="Center"
                                         Source="{Binding NrcBackImagePath}"
                                         Stretch="Uniform" />
+                                    <Button
+                                        Margin="0,12,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SaveNrcBackImageCommand}"
+                                        Content="Save Image"
+                                        Style="{StaticResource SecondaryButtonStyle}" />
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -611,6 +630,12 @@
                                     HorizontalAlignment="Left"
                                     Source="{Binding HighSchoolCertImagePath}"
                                     Stretch="Uniform" />
+                                <Button
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding SaveHighSchoolCertificateImageCommand}"
+                                    Content="Save Image"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
                             </StackPanel>
                         </Border>
 

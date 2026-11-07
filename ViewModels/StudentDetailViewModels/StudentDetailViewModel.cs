@@ -9,6 +9,7 @@ using HostelManagementSystem.Utilities;
 using HostelManagementSystem.ViewModels.RoomDetailViewModels;
 using HostelManagementSystem.ViewModels.StudentViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -241,6 +242,106 @@ namespace HostelManagementSystem.ViewModels.StudentDetailViewModels
         {
             IsImagePreviewOpen = false;
             PreviewImagePath = null;
+        }
+
+        [RelayCommand]
+        private async Task SaveProfileImageAsync()
+        {
+            await SaveImageAsync(
+                ProfileImagePath,
+                Student?.Name ?? "Student Image");
+        }
+
+        [RelayCommand]
+        private async Task SaveNrcFrontImageAsync()
+        {
+            await SaveImageAsync(
+                NrcFrontImagePath,
+                $"{Student?.Name ?? "Student"} NRC Front Image");
+        }
+
+        [RelayCommand]
+        private async Task SaveNrcBackImageAsync()
+        {
+            await SaveImageAsync(
+                NrcBackImagePath,
+                $"{Student?.Name ?? "Student"} NRC Back Image");
+        }
+
+        [RelayCommand]
+        private async Task SaveHighSchoolCertificateImageAsync()
+        {
+            await SaveImageAsync(
+                HighSchoolCertImagePath,
+                $"{Student?.Name ?? "Student"} Certificate Image");
+        }
+
+        private static async Task SaveImageAsync(string? imagePath, string imageName)
+        {
+            if (string.IsNullOrWhiteSpace(imagePath))
+            {
+                MessageBox.Show(
+                    "This image is not available.",
+                    "Image Not Available",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var dialog = new SaveFileDialog
+            {
+                Title = $"Save {imageName}",
+                FileName = imageName.Replace(" ", "_") + ".png",
+                Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg;*.jpeg)|*.jpg;*.jpeg|All Files (*.*)|*.*",
+                AddExtension = true,
+                OverwritePrompt = true
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                if (imagePath.StartsWith("pack://", StringComparison.OrdinalIgnoreCase))
+                {
+                    var resource = Application.GetResourceStream(new Uri(imagePath));
+                    if (resource == null)
+                    {
+                        throw new FileNotFoundException("The image resource could not be found.");
+                    }
+
+                    await using var source = resource.Stream;
+                    await using var destination = File.Create(dialog.FileName);
+                    await source.CopyToAsync(destination);
+                }
+                else
+                {
+                    if (!File.Exists(imagePath))
+                    {
+                        throw new FileNotFoundException("The image file could not be found.");
+                    }
+
+                    await using var source = File.OpenRead(imagePath);
+                    await using var destination = File.Create(dialog.FileName);
+                    await source.CopyToAsync(destination);
+                }
+
+                MessageBox.Show(
+                    "The image was saved successfully.",
+                    "Image Saved",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"The image could not be saved.\n\n{ex.Message}",
+                    "Save Failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         // =========================================================

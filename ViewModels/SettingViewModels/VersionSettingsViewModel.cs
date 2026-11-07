@@ -11,8 +11,29 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
         public ObservableCollection<AppRelease> Releases { get; } =
         [
             new AppRelease
-            {
+{
                 Version = AppVersionInfo.CurrentVersion,
+                ReleaseDate = "November 12, 2026",
+                ReleaseType = "Latest Release",
+                ReleaseNotes =
+                [
+                    "Added GitHub Release update notifications for newer stable versions.",
+                    "Added automated Windows installer creation with Inno Setup.",
+                    "Added GitHub Actions release automation for self-contained win-x64 builds.",
+                    "Added Save Image buttons for student profile, NRC, and certificate images.",
+                    "Improved student image save filenames by including the student's name.",
+                    "Fixed student profile image Save Image button placement.",
+                    "Fixed room default image display when the stored image path is empty or invalid.",
+                    "Improved automatic search and filter behavior with debounce support.",
+                    "Fixed Settings navigation so the License tab and content reset correctly.",
+                    "Improved application version display by removing the Git commit hash.",
+                    "Improved room assignment and student detail usability.",
+                    "Fixed resident list filtering."
+                ]
+            },
+            new AppRelease
+            { 
+                Version = "1.2.1",
                 ReleaseDate = "November 5, 2026",
                 ReleaseType = "Feature Release",
                 ReleaseNotes =
@@ -34,7 +55,7 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
             },
             new AppRelease
             {
-                Version = AppVersionInfo.CurrentVersion,
+                Version = "1.2.0",
                 ReleaseDate = "October 9, 2026",
                 ReleaseType = "Feature Release",
                 ReleaseNotes =
