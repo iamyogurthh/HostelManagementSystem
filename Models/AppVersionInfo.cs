@@ -8,6 +8,6 @@ namespace HostelManagementSystem.Models
             Assembly.GetEntryAssembly()?
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                 .InformationalVersion
-            ?? "1.2.0";
+            ?? "1.2.3";
     }
 }

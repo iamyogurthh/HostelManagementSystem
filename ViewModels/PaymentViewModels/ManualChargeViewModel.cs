@@ -101,6 +101,19 @@ public partial class ManualChargeViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private void SetBillingPeriod(string? months)
+    {
+        if (!int.TryParse(months, out var monthCount) ||
+            monthCount <= 0 ||
+            PeriodStart == default)
+        {
+            return;
+        }
+
+        PeriodEnd = PeriodStart.Date.AddMonths(monthCount).AddDays(-1);
+    }
+
     private async Task InitializeAsync()
     {
         await LoadFeeRulesAsync();

@@ -11,12 +11,13 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
         public ObservableCollection<AppRelease> Releases { get; } =
         [
             new AppRelease
-{
+            {
                 Version = AppVersionInfo.CurrentVersion,
-                ReleaseDate = "November 12, 2026",
+                ReleaseDate = "November 13, 2026",
                 ReleaseType = "Latest Release",
                 ReleaseNotes =
                 [
+                    "Added billing period shortcut buttons for 1, 2, 3, 6, and 12 months.",
                     "Added GitHub Release update notifications for newer stable versions.",
                     "Added automated Windows installer creation with Inno Setup.",
                     "Added GitHub Actions release automation for self-contained win-x64 builds.",

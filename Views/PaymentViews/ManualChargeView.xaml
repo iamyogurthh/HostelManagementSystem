@@ -90,7 +90,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40" />
-                        <RowDefinition Height="180" />
+                        <RowDefinition Height="200" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -145,15 +145,15 @@
 
                                     <TextBlock
                                         Grid.Row="1"
-                                        Margin="0,3,0,0"
+                                        Margin="0,8,0,0"
                                         FontSize="12"
                                         Foreground="{DynamicResource TextPrimary}"
                                         Text="{Binding NRC}" />
                                     <TextBlock
                                         Grid.Row="2"
-                                        Margin="0,3,0,0"
+                                        Margin="0,4,0,0"
                                         FontSize="12"
-                                        Foreground="{DynamicResource TextSecondary}"
+                                        Foreground="{DynamicResource TextPrimary}"
                                         Text="{Binding StudentCategory.Name}" />
 
                                 </Grid>
@@ -165,13 +165,21 @@
 
             <!--  BILLING PERIOD  -->
             <Grid Grid.Row="4" Margin="0,0,0,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,8,0">
                     <TextBlock
                         Margin="0,0,0,6"
                         FontSize="12"
@@ -182,7 +190,10 @@
                     <DatePicker Height="40" SelectedDate="{Binding PeriodStart, Mode=TwoWay}" />
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Margin="4,0,4,0">
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="4,0,4,0">
                     <TextBlock
                         Margin="0,0,0,6"
                         FontSize="12"
@@ -193,7 +204,10 @@
                     <DatePicker Height="40" SelectedDate="{Binding PeriodEnd, Mode=TwoWay}" />
                 </StackPanel>
 
-                <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="8,0,0,0">
                     <TextBlock
                         Margin="0,0,0,6"
                         FontSize="12"
@@ -202,6 +216,57 @@
                         Text="ပေးချေရမည့်ရက်" />
 
                     <DatePicker Height="40" SelectedDate="{Binding DueDate, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    Margin="0,8,0,0"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="76"
+                        Height="38"
+                        Margin="0,0,8,0"
+                        Command="{Binding SetBillingPeriodCommand}"
+                        CommandParameter="1"
+                        Content="၁ လစာ"
+                        FontSize="12"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Width="76"
+                        Height="38"
+                        Margin="0,0,8,0"
+                        Command="{Binding SetBillingPeriodCommand}"
+                        CommandParameter="2"
+                        Content="၂ လစာ"
+                        FontSize="12"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Width="76"
+                        Height="38"
+                        Margin="0,0,8,0"
+                        Command="{Binding SetBillingPeriodCommand}"
+                        CommandParameter="3"
+                        Content="၃ လစာ"
+                        FontSize="12"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Width="76"
+                        Height="38"
+                        Margin="0,0,8,0"
+                        Command="{Binding SetBillingPeriodCommand}"
+                        CommandParameter="6"
+                        Content="၆ လစာ"
+                        FontSize="12"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Width="76"
+                        Height="38"
+                        Command="{Binding SetBillingPeriodCommand}"
+                        CommandParameter="12"
+                        Content="၁၂ လစာ"
+                        FontSize="12"
+                        Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
             </Grid>
 
@@ -305,6 +370,7 @@
                     Margin="0,0,12,0"
                     Command="{Binding SaveCommand}"
                     Content="အခကြေးငွေသိမ်းမည်"
+                    FontSize="12"
                     Style="{StaticResource PrimaryButtonStyle}" />
 
                 <Button
@@ -312,6 +378,7 @@
                     MinWidth="100"
                     Command="{Binding CancelCommand}"
                     Content="ပယ်ဖျက်ရန်"
+                    FontSize="12"
                     Style="{StaticResource SecondaryButtonStyle}" />
             </StackPanel>
         </Grid>
