@@ -17,6 +17,7 @@ namespace HostelManagementSystem.ViewModels.SettingViewModels
                 ReleaseType = "Latest Release",
                 ReleaseNotes =
                 [
+                    "Update Student Detail UI Layout",
                     "Added billing period shortcut buttons for 1, 2, 3, 6, and 12 months.",
                     "Added GitHub Release update notifications for newer stable versions.",
                     "Added automated Windows installer creation with Inno Setup.",
