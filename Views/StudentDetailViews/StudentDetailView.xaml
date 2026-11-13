@@ -127,14 +127,15 @@
                         </StackPanel>
 
                         <!--  Identity Details  -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
                             <TextBlock
+                                Margin="0,0,0,8"
                                 FontSize="26"
                                 FontWeight="Bold"
                                 Foreground="{DynamicResource TextPrimary}"
                                 Text="{Binding Student.Name}" />
 
-                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,8,0,8" Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
@@ -145,8 +146,30 @@
                                     Foreground="{DynamicResource TextPrimary}"
                                     Text="{Binding Student.NRC}" />
                             </StackPanel>
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="မွေးသက္ကရာဇ်: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.Birthday, StringFormat={}{0:dd/MM/yyyy}}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    Text="ကျား/မ: " />
+                                <TextBlock
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Student.Gender}" />
+                            </StackPanel>
 
-                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
@@ -158,7 +181,7 @@
                                     Text="{Binding Student.Student_ph}" />
                             </StackPanel>
 
-                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,8,0,8" Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
@@ -169,7 +192,7 @@
                                     Foreground="{DynamicResource TextPrimary}"
                                     Text="{Binding Student.Major}" />
                             </StackPanel>
-                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
@@ -180,7 +203,8 @@
                                     Foreground="{DynamicResource TextPrimary}"
                                     Text="{Binding Student.StudentCategory.Name}" />
                             </StackPanel>
-                            <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+
+                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource TextSecondary}"
@@ -213,7 +237,7 @@
                         FontSize="16"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource TextPrimary}"
-                        Text="ကိုယ်ရေးအချက်အလက်များ" />
+                        Text="မိဘ အချက်အလက်များ" />
 
                     <Grid Margin="0,0,0,24">
                         <Grid.ColumnDefinitions>
@@ -302,34 +326,7 @@
                             Foreground="{DynamicResource TextPrimary}"
                             Text="{Binding Student.Parent_ph}" />
 
-                        <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            Margin="0,0,0,12"
-                            Foreground="{DynamicResource TextSecondary}"
-                            Text="ကျား/မ" />
-                        <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="3"
-                            Margin="0,0,0,12"
-                            FontWeight="Medium"
-                            Foreground="{DynamicResource TextPrimary}"
-                            Text="{Binding Student.Gender}" />
 
-                        <!--  Row 3: Birthday  -->
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            Margin="0,0,0,12"
-                            Foreground="{DynamicResource TextSecondary}"
-                            Text="မွေးသက္ကရာဇ်" />
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Margin="0,0,16,12"
-                            FontWeight="Medium"
-                            Foreground="{DynamicResource TextPrimary}"
-                            Text="{Binding Student.Birthday, StringFormat={}{0:dd/MM/yyyy}}" />
                     </Grid>
 
                     <StackPanel Margin="0,0,0,24">
